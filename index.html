@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amal Yaumi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        @media (min-width: 768px) {
+            .header {
+                padding: 30px;
+            }
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        @media (min-width: 768px) {
+            .header h1 {
+                font-size: 2.5em;
+            }
+        }
+
+        .date-info {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 12px 15px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            color: #6c757d;
+            transition: all 0.3s ease;
+        }
+
+        @media (min-width: 768px) {
+            .nav-tab {
+                padding: 15px 20px;
+                font-size: 1.1em;
+            }
+        }
+
+        .nav-tab.active {
+            background: white;
+            color: #ff6b35;
+            border-bottom: 3px solid #ff6b35;
+        }
+
+        .nav-tab:hover {
+            background: #e9ecef;
+        }
+
+        .content {
+            padding: 15px;
+        }
+
+        @media (min-width: 768px) {
+            .content {
+                padding: 30px;
+            }
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .employee-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .employee-grid {
+                grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+                gap: 20px;
+                margin-bottom: 30px;
+            }
+        }
+
+        .employee-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+            border-left: 4px solid #ff6b35;
+        }
+
+        @media (min-width: 768px) {
+            .employee-card {
+                padding: 20px;
+            }
+        }
+
+        .employee-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .employee-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .progress-badge {
+            background: #ff6b35;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+
+        .checklist-items {
+            display: grid;
+            gap: 8px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            transition: all 0.2s ease;
+        }
+
+        .checklist-item:hover {
+            border-color: #ff6b35;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 12px;
+            cursor: pointer;
+        }
+
+        .checklist-item label {
+            cursor: pointer;
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .checklist-item.completed {
+            background: #fff3e0;
+            border-color: #ff6b35;
+        }
+
+        .checklist-item.completed label {
+            text-decoration: line-through;
+            color: #6c757d;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        @media (min-width: 480px) {
+            .summary-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 768px) {
+            .summary-stats {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 20px;
+                margin-bottom: 30px;
+            }
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        @media (min-width: 768px) {
+            .stat-card {
+                padding: 25px;
+            }
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .report-table {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .report-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .report-table th {
+            background: #2c3e50;
+            color: white;
+            padding: 12px 8px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        @media (min-width: 768px) {
+            .report-table th {
+                padding: 15px;
+                font-size: 1em;
+            }
+        }
+
+        .report-table td {
+            padding: 8px;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 0.85em;
+        }
+
+        @media (min-width: 768px) {
+            .report-table td {
+                padding: 12px 15px;
+                font-size: 1em;
+            }
+        }
+
+        .report-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .percentage-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .percentage-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b35, #f7931e);
+            transition: width 0.3s ease;
+        }
+
+        .auto-reset-info {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .auto-reset-info::before {
+            content: "⏰";
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .nav-tabs {
+                flex-direction: column;
+            }
+            
+            .summary-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .report-table {
+                overflow-x: auto;
+            }
+            
+            .report-table table {
+                min-width: 800px;
+            }
+            
+            .employee-name {
+                font-size: 1.1em;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            
+            .checklist-item {
+                padding: 12px 8px;
+            }
+            
+            .checklist-item label {
+                font-size: 0.95em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Amal Yaumi Kantor Pusat</h1>
+            <div class="date-info" id="currentDate"></div>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('checklist')">Checklist Harian</button>
+            <button class="nav-tab" onclick="switchTab('report')">Rekap Bulanan</button>
+        </div>
+
+        <div class="content">
+            <div id="checklist" class="tab-content active">
+                <div class="auto-reset-info">
+                    <span>Checklist akan otomatis reset setiap hari pada pukul 00:00. Data tetap tersimpan untuk rekap bulanan.</span>
+                </div>
+
+                <div class="employee-grid" id="employeeGrid">
+                    <!-- Employee cards will be generated here -->
+                </div>
+            </div>
+
+            <div id="report" class="tab-content">
+                <div class="summary-stats" id="summaryStats">
+                    <!-- Summary statistics will be generated here -->
+                </div>
+
+                <div class="report-table">
+                    <table id="reportTable">
+                        <thead>
+                            <tr>
+                                <th>Nama Pegawai</th>
+                                <th>Qiyamul Lail/th>
+                                <th>Shubuh berjamaah</th>
+                                <th>Sedekah</th>
+                                <th>Sholat Dhuha</th>
+                                <th>Silaturahim</th>
+                                <th>Doa untuk Ibka</th>
+                                <th>Istighfar & Sholawat</th>
+                                <th>Rata-rata</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportBody">
+                            <!-- Report data will be generated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data pegawai dan item checklist
+        const employees = [
+            'Yuni', 'Didik', 'Budi', 'Riris', 'Rico',
+            'Syafiq', 'Faruq', 'Maruf', 'Mamduh', 'Rendi',
+            'Hammam', 'Sukris', 'Ibad', 'Faisal', 'Naim',
+            'Abdullah', 'Pegawai', 'Pegawai', 'Pegawai', 'Pegawai',
+            'Pegawai', 'Pegawai', 'Pegawai', 'Pegawai', 'Pegawai',
+            'Pegawai', 'Pegawai', 'Pegawai', 'Pegawai', 'Pegawai'
+        ];
+
+        const checklistItems = [
+            'Qiyamul Lail',
+            'Shubuh Berjamaah',
+            'Sedekah (utamakan shubuh)',
+            'Sholat dhuha',
+            'Silaturahmi',
+            'Doa untuk Ibka',
+            'Istighfar & sholawat'
+        ];
+
+        // Inisialisasi data
+        let checklistData = {};
+        let monthlyData = {};
+
+        function initializeData() {
+            const today = new Date().toDateString();
+            
+            // Reset data harian jika hari berbeda
+            const lastDate = localStorage.getItem('lastChecklistDate');
+            if (lastDate !== today) {
+                checklistData = {};
+                localStorage.setItem('lastChecklistDate', today);
+            } else {
+                checklistData = JSON.parse(localStorage.getItem('checklistData') || '{}');
+            }
+
+            // Load monthly data
+            monthlyData = JSON.parse(localStorage.getItem('monthlyData') || '{}');
+
+            // Initialize employee data
+            employees.forEach(employee => {
+                if (!checklistData[employee]) {
+                    checklistData[employee] = {};
+                }
+                if (!monthlyData[employee]) {
+                    monthlyData[employee] = {};
+                }
+                
+                checklistItems.forEach(item => {
+                    if (checklistData[employee][item] === undefined) {
+                        checklistData[employee][item] = false;
+                    }
+                });
+            });
+        }
+
+        function saveData() {
+            localStorage.setItem('checklistData', JSON.stringify(checklistData));
+            localStorage.setItem('monthlyData', JSON.stringify(monthlyData));
+        }
+
+        function updateMonthlyData() {
+            const today = new Date();
+            const monthKey = `${today.getFullYear()}-${today.getMonth() + 1}`;
+            const dateKey = today.toDateString();
+
+            employees.forEach(employee => {
+                if (!monthlyData[employee][monthKey]) {
+                    monthlyData[employee][monthKey] = {};
+                }
+                
+                monthlyData[employee][monthKey][dateKey] = { ...checklistData[employee] };
+            });
+        }
+
+        function generateEmployeeCards() {
+            const grid = document.getElementById('employeeGrid');
+            grid.innerHTML = '';
+
+            employees.forEach(employee => {
+                const completedItems = checklistItems.filter(item => checklistData[employee][item]).length;
+                const progressPercent = Math.round((completedItems / checklistItems.length) * 100);
+
+                const card = document.createElement('div');
+                card.className = 'employee-card';
+                card.innerHTML = `
+                    <div class="employee-name">
+                        ${employee}
+                        <span class="progress-badge">${completedItems}/${checklistItems.length}</span>
+                    </div>
+                    <div class="checklist-items">
+                        ${checklistItems.map((item, index) => `
+                            <div class="checklist-item ${checklistData[employee][item] ? 'completed' : ''}">
+                                <input type="checkbox" 
+                                       id="${employee}-${index}" 
+                                       ${checklistData[employee][item] ? 'checked' : ''}
+                                       onchange="toggleChecklistItem('${employee}', '${item}', this)">
+                                <label for="${employee}-${index}">${item}</label>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function toggleChecklistItem(employee, item, checkbox) {
+            checklistData[employee][item] = checkbox.checked;
+            updateMonthlyData();
+            saveData();
+            
+            // Update visual feedback
+            const checklistItem = checkbox.closest('.checklist-item');
+            if (checkbox.checked) {
+                checklistItem.classList.add('completed');
+            } else {
+                checklistItem.classList.remove('completed');
+            }
+            
+            // Update progress badge
+            const completedItems = checklistItems.filter(item => checklistData[employee][item]).length;
+            const progressBadge = checklistItem.closest('.employee-card').querySelector('.progress-badge');
+            progressBadge.textContent = `${completedItems}/${checklistItems.length}`;
+        }
+
+        function generateReport() {
+            const today = new Date();
+            const monthKey = `${today.getFullYear()}-${today.getMonth() + 1}`;
+            
+            // Generate summary statistics
+            generateSummaryStats(monthKey);
+            
+            // Generate detailed report table
+            generateReportTable(monthKey);
+        }
+
+        function generateSummaryStats(monthKey) {
+            const statsContainer = document.getElementById('summaryStats');
+            
+            let totalEmployees = employees.length;
+            let totalCompletionRate = 0;
+            let itemStats = {};
+            
+            // Initialize item statistics
+            checklistItems.forEach(item => {
+                itemStats[item] = { total: 0, employees: 0 };
+            });
+
+            // Calculate statistics
+            employees.forEach(employee => {
+                const monthData = monthlyData[employee][monthKey] || {};
+                const dates = Object.keys(monthData);
+                
+                if (dates.length > 0) {
+                    let employeeTotal = 0;
+                    
+                    // Calculate completion rate for each item
+                    checklistItems.forEach(item => {
+                        const completedDays = dates.filter(date => monthData[date] && monthData[date][item]).length;
+                        const itemPercentage = (completedDays / 30) * 100; // Base calculation on 30 days
+                        employeeTotal += itemPercentage;
+                        
+                        itemStats[item].total += itemPercentage;
+                        itemStats[item].employees++;
+                    });
+                    
+                    totalCompletionRate += (employeeTotal / checklistItems.length);
+                }
+            });
+
+            const averageCompletionRate = Math.round(totalCompletionRate / totalEmployees);
+            
+            // Find least and most completed items
+            let leastCompletedItem = '';
+            let leastPercentage = 100;
+            let mostCompletedItem = '';
+            let mostPercentage = 0;
+            
+            checklistItems.forEach(item => {
+                const avgPercentage = itemStats[item].employees > 0 ? 
+                    itemStats[item].total / itemStats[item].employees : 0;
+                    
+                if (avgPercentage < leastPercentage) {
+                    leastPercentage = avgPercentage;
+                    leastCompletedItem = item;
+                }
+                
+                if (avgPercentage > mostPercentage) {
+                    mostPercentage = avgPercentage;
+                    mostCompletedItem = item;
+                }
+            });
+
+            statsContainer.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${totalEmployees}</div>
+                    <div class="stat-label">Total Pegawai</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${averageCompletionRate}%</div>
+                    <div class="stat-label">Rata-rata Penyelesaian</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${Math.round(leastPercentage)}%</div>
+                    <div class="stat-label">Paling Sedikit<br><small>${leastCompletedItem.split('(')[0]}</small></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${Math.round(mostPercentage)}%</div>
+                    <div class="stat-label">Paling Banyak<br><small>${mostCompletedItem.split('(')[0]}</small></div>
+                </div>
+            `;
+        }
+
+        function generateReportTable(monthKey) {
+            const tbody = document.getElementById('reportBody');
+            tbody.innerHTML = '';
+
+            employees.forEach(employee => {
+                const monthData = monthlyData[employee][monthKey] || {};
+                const dates = Object.keys(monthData);
+                
+                const itemPercentages = {};
+                checklistItems.forEach(item => {
+                    const completedDays = dates.filter(date => monthData[date] && monthData[date][item]).length;
+                    // Calculate percentage based on 30 days in a month (more accurate monthly calculation)
+                    itemPercentages[item] = Math.round((completedDays / 30) * 100);
+                });
+
+                const averagePercentage = Math.round(
+                    Object.values(itemPercentages).reduce((sum, pct) => sum + pct, 0) / checklistItems.length
+                );
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${employee}</strong></td>
+                    ${checklistItems.map(item => `
+                        <td>
+                            <div class="percentage-bar">
+                                <div class="percentage-fill" style="width: ${itemPercentages[item]}%"></div>
+                            </div>
+                            <small>${itemPercentages[item]}%</small>
+                        </td>
+                    `).join('')}
+                    <td><strong>${averagePercentage}%</strong></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all nav tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked nav tab
+            event.target.classList.add('active');
+            
+            // Generate report when switching to report tab
+            if (tabName === 'report') {
+                generateReport();
+            }
+        }
+
+        function updateCurrentDate() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            document.getElementById('currentDate').textContent = 
+                now.toLocaleDateString('id-ID', options);
+        }
+
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeData();
+            updateCurrentDate();
+            generateEmployeeCards();
+            
+            // Check for date change every minute
+            setInterval(() => {
+                const today = new Date().toDateString();
+                const lastDate = localStorage.getItem('lastChecklistDate');
+                if (lastDate !== today) {
+                    location.reload(); // Reload to reset daily data
+                }
+                updateCurrentDate();
+            }, 60000);
+        });
+    </script>
+</body>
+</html>
