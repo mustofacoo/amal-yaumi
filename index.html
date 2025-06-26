@@ -502,6 +502,11 @@
             const today = new Date();
             return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
         }
+        function getDaysInMonth(year, month /*1-12*/) {
+            // Return number of days in month (month param is 1-12)
+            return new Date(year, month, 0).getDate();
+        }
+
 
         function showError(message) {
             const errorEl = document.getElementById('errorMessage');
@@ -687,6 +692,11 @@
 
         async function generateSummaryStats(monthKey) {
             const statsContainer = document.getElementById('summaryStats');
+
+            // Determine number of days in this month
+            const [year, monthStr] = monthKey.split('-');
+            const daysInMonth = getDaysInMonth(Number(year), Number(monthStr));
+
             
             try {
                 const monthlyData = await getMonthlyData(monthKey);
@@ -712,7 +722,7 @@
                             const completedDays = dates.filter(date => 
                                 employeeData[date] && employeeData[date][item]
                             ).length;
-                            const itemPercentage = (completedDays / dates.length) * 100;
+                            const itemPercentage = (completedDays / daysInMonth) * 100;
                             employeeTotal += itemPercentage;
                             
                             itemStats[item].total += itemPercentage;
@@ -775,6 +785,11 @@
             const tbody = document.getElementById('reportBody');
             tbody.innerHTML = '';
 
+            // Determine number of days in this month
+            const [year, monthStr] = monthKey.split('-');
+            const daysInMonth = getDaysInMonth(Number(year), Number(monthStr));
+
+
             try {
                 const monthlyData = await getMonthlyData(monthKey);
 
@@ -788,7 +803,7 @@
                             employeeData[date] && employeeData[date][item]
                         ).length;
                         itemPercentages[item] = dates.length > 0 ? 
-                            Math.round((completedDays / dates.length) * 100) : 0;
+                            Math.round((completedDays / daysInMonth) * 100) : 0;
                     });
 
                     const averagePercentage = Math.round(
@@ -821,9 +836,13 @@
                 throw new Error('Database tidak tersedia');
             }
 
-            const snapshot = await window.db.collection("checklist")
+            
+
+            const [year, monthStr] = monthKey.split('-');
+            const daysInMonth = getDaysInMonth(Number(year), Number(monthStr));
+const snapshot = await window.db.collection("checklist")
                 .where(firebase.firestore.FieldPath.documentId(), '>=', `${monthKey}-01`)
-                .where(firebase.firestore.FieldPath.documentId(), '<=', `${monthKey}-31`)
+                .where(firebase.firestore.FieldPath.documentId(), '<=', `${monthKey}-${String(daysInMonth).padStart(2,'0')}`)
                 .get();
 
             const monthlyData = {};
