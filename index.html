@@ -68,6 +68,14 @@
             opacity: 0.9;
         }
 
+        .status-info {
+            background: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+
         .nav-tabs {
             display: flex;
             background: #f8f9fa;
@@ -329,6 +337,7 @@
             margin-bottom: 20px;
             display: flex;
             align-items: center;
+            font-size: 0.9em;
         }
 
         .auto-reset-info::before {
@@ -357,6 +366,19 @@
         }
 
         .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            background: #d1edff;
+            color: #0c5460;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-message.show {
             display: block;
         }
 
@@ -399,6 +421,7 @@
         <div class="header">
             <h1>Amal Yaumi Kantor Pusat</h1>
             <div class="date-info" id="currentDate"></div>
+            <div class="status-info" id="statusInfo">🔄 Memuat aplikasi...</div>
         </div>
 
         <div class="nav-tabs">
@@ -408,10 +431,11 @@
 
         <div class="content">
             <div class="error-message" id="errorMessage"></div>
+            <div class="success-message" id="successMessage"></div>
             
             <div id="checklist" class="tab-content active">
                 <div class="auto-reset-info">
-                    <span>Dibuat oleh Kantor Pusat Ibnu Katsir</span>
+                    <span>Dibuat oleh Kantor Pusat Ibnu Katsir | Reset otomatis setiap hari pukul 00:00 WIB</span>
                 </div>
                 <div class="loading-spinner" id="loadingSpinner">
                     <div>Memuat data...</div>
@@ -444,32 +468,15 @@
     </div>
 
     <script>
-        // Wait for Firebase to load
-        function initializeApp() {
-            // Firebase Configuration
-            const firebaseConfig = {
-                apiKey: "AIzaSyDdCvdJrthzS07BkAQagNAadWvV3PcNnDk",
-                authDomain: "amall-yaumi.firebaseapp.com",
-                projectId: "amall-yaumi",
-                storageBucket: "amall-yaumi.firebasestorage.app",
-                messagingSenderId: "743065908741",
-                appId: "1:743065908741:web:5551c8cdb47a3edac58e6c"
-            };
-
-            try {
-                // Initialize Firebase
-                if (!firebase.apps.length) {
-                    firebase.initializeApp(firebaseConfig);
-                }
-                window.db = firebase.firestore();
-                console.log('Firebase initialized successfully');
-                return true;
-            } catch (error) {
-                console.error('Firebase initialization error:', error);
-                showError('Gagal menginisialisasi Firebase: ' + error.message);
-                return false;
-            }
-        }
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDdCvdJrthzS07BkAQagNAadWvV3PcNnDk",
+            authDomain: "amall-yaumi.firebaseapp.com",
+            projectId: "amall-yaumi",
+            storageBucket: "amall-yaumi.firebasestorage.app",
+            messagingSenderId: "743065908741",
+            appId: "1:743065908741:web:5551c8cdb47a3edac58e6c"
+        };
 
         // Application Data
         const employees = [
@@ -492,6 +499,8 @@
         // Global variables
         let checklistData = {};
         let unsubscribe = null;
+        let isFirebaseConnected = false;
+        let lastResetCheck = null;
 
         // Utility Functions
         function getTodayKey() {
@@ -502,19 +511,38 @@
             const today = new Date();
             return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
         }
-        function getDaysInMonth(year, month /*1-12*/) {
-            // Return number of days in month (month param is 1-12)
+
+        function getDaysInMonth(year, month) {
             return new Date(year, month, 0).getDate();
         }
 
+        function updateStatusInfo(message, isError = false) {
+            const statusEl = document.getElementById('statusInfo');
+            statusEl.textContent = message;
+            if (isError) {
+                statusEl.style.background = 'rgba(248, 215, 218, 0.9)';
+                statusEl.style.color = '#721c24';
+            } else {
+                statusEl.style.background = 'rgba(255,255,255,0.1)';
+                statusEl.style.color = 'white';
+            }
+        }
 
-        function showError(message) {
+        function showMessage(message, isError = false) {
             const errorEl = document.getElementById('errorMessage');
-            errorEl.textContent = message;
-            errorEl.classList.add('show');
-            setTimeout(() => {
+            const successEl = document.getElementById('successMessage');
+            
+            if (isError) {
+                errorEl.textContent = message;
+                errorEl.classList.add('show');
+                successEl.classList.remove('show');
+                setTimeout(() => errorEl.classList.remove('show'), 5000);
+            } else {
+                successEl.textContent = message;
+                successEl.classList.add('show');
                 errorEl.classList.remove('show');
-            }, 5000);
+                setTimeout(() => successEl.classList.remove('show'), 3000);
+            }
         }
 
         function showLoading(show = true) {
@@ -527,9 +555,38 @@
         }
 
         // Firebase Functions
+        function initializeFirebase() {
+            try {
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(firebaseConfig);
+                }
+                window.db = firebase.firestore();
+                
+                // Test Firebase connection
+                return window.db.enableNetwork().then(() => {
+                    console.log('✅ Firebase connected successfully');
+                    isFirebaseConnected = true;
+                    updateStatusInfo('🟢 Firebase terhubung - Data tersinkron real-time');
+                    return true;
+                }).catch(error => {
+                    console.error('❌ Firebase connection test failed:', error);
+                    isFirebaseConnected = false;
+                    updateStatusInfo('🔴 Firebase error - Mode offline', true);
+                    return false;
+                });
+            } catch (error) {
+                console.error('❌ Firebase initialization error:', error);
+                isFirebaseConnected = false;
+                updateStatusInfo('🔴 Firebase initialization failed - Mode offline', true);
+                return Promise.resolve(false);
+            }
+        }
+
         function initializeFirebaseListener() {
-            if (!window.db) {
-                showError('Database belum siap');
+            if (!window.db || !isFirebaseConnected) {
+                showMessage('Database tidak tersedia - menggunakan mode offline', true);
+                initializeEmptyData();
+                generateEmployeeCards();
                 return;
             }
 
@@ -537,8 +594,6 @@
             const todayDocRef = window.db.collection("checklist").doc(todayKey);
 
             showLoading(true);
-
-            // Initialize empty data first
             initializeEmptyData();
 
             // Create document if it doesn't exist
@@ -551,12 +606,15 @@
                             initialData[employee][item] = false;
                         });
                     });
-                    return todayDocRef.set(initialData);
+                    
+                    return todayDocRef.set(initialData).then(() => {
+                        console.log('✅ Created new checklist document for today');
+                        showMessage('✅ Checklist hari ini siap digunakan');
+                    });
                 }
             }).catch(error => {
-                console.error("Error creating document:", error);
-                showError("Gagal membuat dokumen checklist hari ini");
-                // Still show empty cards even if Firebase fails
+                console.error("❌ Error creating document:", error);
+                showMessage("Gagal membuat dokumen checklist - menggunakan mode offline", true);
                 showLoading(false);
                 generateEmployeeCards();
             });
@@ -567,17 +625,16 @@
                     showLoading(false);
                     if (doc.exists) {
                         checklistData = doc.data();
+                        console.log('📡 Real-time data updated');
                     } else {
-                        // If document doesn't exist, initialize with empty data
                         initializeEmptyData();
                     }
                     generateEmployeeCards();
                 },
                 (error) => {
-                    console.error("Error listening to document:", error);
-                    showError("Gagal memuat data checklist - menampilkan mode offline");
+                    console.error("❌ Error listening to document:", error);
+                    showMessage("Koneksi real-time terputus - data mungkin tidak tersinkron", true);
                     showLoading(false);
-                    // Still show empty cards even if Firebase fails
                     initializeEmptyData();
                     generateEmployeeCards();
                 }
@@ -595,22 +652,61 @@
         }
 
         function updateChecklistItem(employee, item, checked) {
-            if (!window.db) {
-                showError('Database tidak tersedia - perubahan tidak akan disimpan');
+            if (!window.db || !isFirebaseConnected) {
+                showMessage('Mode offline - perubahan tidak akan tersinkron', true);
                 return;
             }
 
             const todayKey = getTodayKey();
             const todayDocRef = window.db.collection("checklist").doc(todayKey);
 
-            const updatePath = `${employee}.${item}`;
+            // Use dot notation that's compatible with Firestore
             const updateData = {};
-            updateData[updatePath] = checked;
+            updateData[`${employee}.${item}`] = checked;
 
-            todayDocRef.update(updateData).catch(error => {
-                console.error("Error updating checklist:", error);
-                showError("Gagal menyimpan perubahan checklist");
+            todayDocRef.update(updateData).then(() => {
+                console.log(`✅ Updated ${employee} - ${item}: ${checked}`);
+            }).catch(error => {
+                console.error("❌ Error updating checklist:", error);
+                showMessage("Gagal menyimpan perubahan - coba lagi", true);
+                
+                // Revert UI change on error
+                const checkbox = document.querySelector(`input[data-employee="${employee}"][data-item="${item}"]`);
+                if (checkbox) {
+                    checkbox.checked = !checked;
+                }
             });
+        }
+
+        // Reset Management
+        function setupDailyReset() {
+            // Check for date change every minute
+            setInterval(() => {
+                const now = new Date();
+                const currentDate = getTodayKey();
+                
+                if (lastResetCheck && lastResetCheck !== currentDate) {
+                    console.log('🔄 Date changed, reinitializing checklist');
+                    
+                    // Clean up old listener
+                    if (unsubscribe) {
+                        unsubscribe();
+                    }
+                    
+                    // Reinitialize for new day
+                    if (isFirebaseConnected) {
+                        initializeFirebaseListener();
+                    } else {
+                        initializeEmptyData();
+                        generateEmployeeCards();
+                    }
+                    
+                    updateCurrentDate();
+                    showMessage('🌅 Checklist baru untuk hari ini telah dimuat');
+                }
+                
+                lastResetCheck = currentDate;
+            }, 60000); // Check every minute
         }
 
         // UI Generation Functions
@@ -640,6 +736,8 @@
                                     <input 
                                         type="checkbox" 
                                         id="${checkboxId}" 
+                                        data-employee="${employee}"
+                                        data-item="${item}"
                                         ${isChecked ? 'checked' : ''} 
                                         onchange="toggleChecklistItem('${employee}', '${item}', this)"
                                     />
@@ -684,7 +782,7 @@
                 ]);
             } catch (error) {
                 console.error("Error generating report:", error);
-                showError("Gagal membuat laporan");
+                showMessage("Gagal membuat laporan", true);
             } finally {
                 showLoading(false);
             }
@@ -693,11 +791,9 @@
         async function generateSummaryStats(monthKey) {
             const statsContainer = document.getElementById('summaryStats');
 
-            // Determine number of days in this month
             const [year, monthStr] = monthKey.split('-');
             const daysInMonth = getDaysInMonth(Number(year), Number(monthStr));
 
-            
             try {
                 const monthlyData = await getMonthlyData(monthKey);
                 
@@ -705,12 +801,10 @@
                 let totalCompletionRate = 0;
                 let itemStats = {};
                 
-                // Initialize item statistics
                 checklistItems.forEach(item => {
                     itemStats[item] = { total: 0, employees: 0 };
                 });
 
-                // Calculate statistics
                 Object.keys(monthlyData).forEach(employee => {
                     const employeeData = monthlyData[employee];
                     const dates = Object.keys(employeeData);
@@ -736,7 +830,6 @@
                 const averageCompletionRate = totalEmployees > 0 ? 
                     Math.round(totalCompletionRate / totalEmployees) : 0;
                 
-                // Find least and most completed items
                 let leastCompletedItem = '';
                 let leastPercentage = 100;
                 let mostCompletedItem = '';
@@ -785,10 +878,8 @@
             const tbody = document.getElementById('reportBody');
             tbody.innerHTML = '';
 
-            // Determine number of days in this month
             const [year, monthStr] = monthKey.split('-');
             const daysInMonth = getDaysInMonth(Number(year), Number(monthStr));
-
 
             try {
                 const monthlyData = await getMonthlyData(monthKey);
@@ -832,15 +923,14 @@
         }
 
         async function getMonthlyData(monthKey) {
-            if (!window.db) {
+            if (!window.db || !isFirebaseConnected) {
                 throw new Error('Database tidak tersedia');
             }
 
-            
-
             const [year, monthStr] = monthKey.split('-');
             const daysInMonth = getDaysInMonth(Number(year), Number(monthStr));
-const snapshot = await window.db.collection("checklist")
+            
+            const snapshot = await window.db.collection("checklist")
                 .where(firebase.firestore.FieldPath.documentId(), '>=', `${monthKey}-01`)
                 .where(firebase.firestore.FieldPath.documentId(), '<=', `${monthKey}-${String(daysInMonth).padStart(2,'0')}`)
                 .get();
@@ -866,23 +956,17 @@ const snapshot = await window.db.collection("checklist")
 
         // Tab Management
         function switchTab(tabName) {
-            // Hide all tab contents
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
             
-            // Remove active class from all nav tabs
             document.querySelectorAll('.nav-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
             
-            // Show selected tab content
             document.getElementById(tabName).classList.add('active');
-            
-            // Add active class to clicked nav tab
             event.target.classList.add('active');
             
-            // Generate report when switching to report tab
             if (tabName === 'report') {
                 generateReport();
             }
@@ -902,62 +986,56 @@ const snapshot = await window.db.collection("checklist")
         }
 
         // Application Initialization
-        function startApplication() {
-            updateCurrentDate();
+        async function startApplication() {
+            console.log('🚀 Starting Amal Yaumi application...');
             
-            // Try to initialize Firebase
-            if (typeof firebase !== 'undefined') {
-                const firebaseReady = initializeApp();
-                if (firebaseReady) {
-                    initializeFirebaseListener();
-                } else {
-                    // Firebase failed, but still show the UI
-                    showError('Firebase tidak tersedia - berjalan dalam mode offline');
-                    initializeEmptyData();
-                    generateEmployeeCards();
-                    showLoading(false);
-                }
+            updateCurrentDate();
+            lastResetCheck = getTodayKey();
+            
+            // Initialize Firebase
+            const firebaseReady = await initializeFirebase();
+            
+            if (firebaseReady) {
+                initializeFirebaseListener();
             } else {
-                // Firebase not loaded, show offline mode
-                showError('Firebase belum dimuat - berjalan dalam mode offline');
+                showMessage('Berjalan dalam mode offline - data tidak akan tersinkron', true);
                 initializeEmptyData();
                 generateEmployeeCards();
                 showLoading(false);
             }
             
-            // Update date every minute
+            // Setup daily reset checker
+            setupDailyReset();
+            
+            // Update date display every minute
             setInterval(updateCurrentDate, 60000);
             
-            // Check for date change and reinitialize if needed
-            setInterval(() => {
-                const currentDate = getTodayKey();
-                const displayedDate = document.getElementById('currentDate').dataset.date;
-                
-                if (displayedDate && displayedDate !== currentDate) {
-                    // Date has changed, reinitialize
-                    if (unsubscribe) {
-                        unsubscribe();
-                    }
-                    if (window.db) {
-                        initializeFirebaseListener();
-                    }
-                }
-                
-                document.getElementById('currentDate').dataset.date = currentDate;
-            }, 60000);
+            console.log('✅ Application initialized');
         }
 
-        // Wait for DOM and Firebase to be ready
+        // Event Listeners
         document.addEventListener('DOMContentLoaded', function() {
-            // Add a small delay to ensure Firebase scripts are fully loaded
             setTimeout(startApplication, 100);
         });
 
-        // Cleanup on page unload
         window.addEventListener('beforeunload', function() {
             if (unsubscribe) {
                 unsubscribe();
             }
+        });
+
+        // Handle online/offline status
+        window.addEventListener('online', function() {
+            updateStatusInfo('🟢 Kembali online - mencoba menyambung ke Firebase...');
+            setTimeout(() => {
+                if (isFirebaseConnected) {
+                    initializeFirebaseListener();
+                }
+            }, 1000);
+        });
+
+        window.addEventListener('offline', function() {
+            updateStatusInfo('🔴 Tidak ada koneksi internet - mode offline', true);
         });
     </script>
 </body>
