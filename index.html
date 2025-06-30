@@ -444,6 +444,31 @@
             </div>
 
             <div id="report" class="tab-content">
+                <!-- Month Selector -->
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 1px solid #e9ecef;">
+                    <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                        <label for="monthSelector" style="font-weight: 600; color: #2c3e50; font-size: 1.1em;">
+                            📅 Pilih Bulan Rekap:
+                        </label>
+                        <select id="monthSelector" onchange="generateReport()" style="
+                            padding: 8px 15px;
+                            border: 2px solid #e9ecef;
+                            border-radius: 8px;
+                            background: white;
+                            font-size: 1em;
+                            font-weight: 500;
+                            color: #2c3e50;
+                            cursor: pointer;
+                            min-width: 200px;
+                        ">
+                            <!-- Will be populated by JavaScript -->
+                        </select>
+                        <div style="font-size: 0.9em; color: #6c757d;">
+                            <small>💡 Bulan baru akan otomatis ditambahkan setiap pergantian bulan</small>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="summary-stats" id="summaryStats"></div>
                 <div class="report-table">
                     <table id="reportTable">
@@ -510,6 +535,58 @@
         function getCurrentMonthKey() {
             const today = new Date();
             return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+        }
+
+        function getSelectedMonthKey() {
+            const selector = document.getElementById('monthSelector');
+            return selector ? selector.value : getCurrentMonthKey();
+        }
+
+        function getAvailableMonths() {
+            const months = [];
+            const startDate = new Date('2025-06-01'); // Start from June 2025
+            const currentDate = new Date();
+            
+            // Generate months from June 2025 to current month
+            while (startDate <= currentDate) {
+                const monthKey = `${startDate.getFullYear()}-${String(startDate.getMonth() + 1).padStart(2, '0')}`;
+                const monthName = startDate.toLocaleDateString('id-ID', { 
+                    year: 'numeric', 
+                    month: 'long' 
+                });
+                
+                months.push({ key: monthKey, name: monthName });
+                
+                // Move to next month
+                startDate.setMonth(startDate.getMonth() + 1);
+            }
+            
+            return months.reverse(); // Latest month first
+        }
+
+        function populateMonthSelector() {
+            const selector = document.getElementById('monthSelector');
+            if (!selector) return;
+            
+            const availableMonths = getAvailableMonths();
+            const currentMonthKey = getCurrentMonthKey();
+            
+            selector.innerHTML = '';
+            
+            availableMonths.forEach(month => {
+                const option = document.createElement('option');
+                option.value = month.key;
+                option.textContent = month.name;
+                
+                // Select current month by default
+                if (month.key === currentMonthKey) {
+                    option.selected = true;
+                }
+                
+                selector.appendChild(option);
+            });
+            
+            console.log(`📅 Generated ${availableMonths.length} months for selector`);
         }
 
         function getDaysInMonth(year, month) {
