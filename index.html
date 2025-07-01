@@ -547,6 +547,8 @@
             const startDate = new Date('2025-06-01'); // Start from June 2025
             const currentDate = new Date();
             
+            console.log(`📅 Generating months from ${startDate.toDateString()} to ${currentDate.toDateString()}`);
+            
             // Generate months from June 2025 to current month
             while (startDate <= currentDate) {
                 const monthKey = `${startDate.getFullYear()}-${String(startDate.getMonth() + 1).padStart(2, '0')}`;
@@ -561,32 +563,52 @@
                 startDate.setMonth(startDate.getMonth() + 1);
             }
             
+            console.log(`📅 Generated ${months.length} months:`, months.map(m => m.name));
+            
             return months.reverse(); // Latest month first
         }
 
         function populateMonthSelector() {
             const selector = document.getElementById('monthSelector');
-            if (!selector) return;
+            if (!selector) {
+                console.warn('Month selector not found, will try again later');
+                return;
+            }
             
             const availableMonths = getAvailableMonths();
             const currentMonthKey = getCurrentMonthKey();
             
+            // Store current selection
+            const currentSelection = selector.value;
+            
             selector.innerHTML = '';
+            
+            if (availableMonths.length === 0) {
+                // Fallback if no months generated
+                const currentMonth = new Date();
+                const fallbackMonth = {
+                    key: `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}`,
+                    name: currentMonth.toLocaleDateString('id-ID', { year: 'numeric', month: 'long' })
+                };
+                availableMonths.push(fallbackMonth);
+            }
             
             availableMonths.forEach(month => {
                 const option = document.createElement('option');
                 option.value = month.key;
                 option.textContent = month.name;
                 
-                // Select current month by default
-                if (month.key === currentMonthKey) {
+                // Restore previous selection, or select current month by default
+                if ((currentSelection && month.key === currentSelection) || 
+                    (!currentSelection && month.key === currentMonthKey)) {
                     option.selected = true;
                 }
                 
                 selector.appendChild(option);
             });
             
-            console.log(`📅 Generated ${availableMonths.length} months for selector`);
+            console.log(`📅 Generated ${availableMonths.length} months for selector:`, 
+                       availableMonths.map(m => m.name));
         }
 
         function getDaysInMonth(year, month) {
@@ -757,33 +779,90 @@
 
         // Reset Management
         function setupDailyReset() {
-            // Check for date change every minute
+            // Set initial check
+            lastResetCheck = getTodayKey();
+            
+            // Schedule exact midnight reset
+            scheduleNextMidnightReset();
+            
+            // Also check every minute as backup
             setInterval(() => {
                 const now = new Date();
                 const currentDate = getTodayKey();
                 
                 if (lastResetCheck && lastResetCheck !== currentDate) {
-                    console.log('🔄 Date changed, reinitializing checklist');
-                    
-                    // Clean up old listener
-                    if (unsubscribe) {
-                        unsubscribe();
-                    }
-                    
-                    // Reinitialize for new day
-                    if (isFirebaseConnected) {
-                        initializeFirebaseListener();
-                    } else {
-                        initializeEmptyData();
-                        generateEmployeeCards();
-                    }
-                    
-                    updateCurrentDate();
-                    showMessage('🌅 Checklist baru untuk hari ini telah dimuat');
+                    console.log('🔄 Date changed detected, reinitializing checklist');
+                    performDailyReset();
                 }
                 
                 lastResetCheck = currentDate;
-            }, 60000); // Check every minute
+            }, 60000); // Check every minute as backup
+        }
+
+        function scheduleNextMidnightReset() {
+            const now = new Date();
+            const tomorrow = new Date(now);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            tomorrow.setHours(0, 0, 0, 0); // Set to exactly 00:00:00
+            
+            const timeUntilMidnight = tomorrow.getTime() - now.getTime();
+            
+            console.log(`⏰ Next reset scheduled in ${Math.round(timeUntilMidnight / 1000 / 60)} minutes (at midnight)`);
+            
+            // Schedule the reset for exactly midnight
+            setTimeout(() => {
+                console.log('🌙 Midnight reset triggered at exactly 00:00');
+                performDailyReset();
+                
+                // Schedule the next midnight reset (24 hours later)
+                scheduleNextMidnightReset();
+                
+            }, timeUntilMidnight);
+        }
+
+        function performDailyReset() {
+            console.log('🔄 Performing daily reset...');
+            
+            // Clean up old listener
+            if (unsubscribe) {
+                unsubscribe();
+            }
+            
+            // Reinitialize for new day
+            if (isFirebaseConnected) {
+                initializeFirebaseListener();
+            } else {
+                initializeEmptyData();
+                generateEmployeeCards();
+            }
+            
+            updateCurrentDate();
+            showMessage('🌅 Checklist baru untuk hari ini telah dimuat (Reset pukul 00:00)');
+            
+            // Check if we need to add new month to selector
+            checkAndUpdateMonthSelector();
+            
+            // Update last reset check
+            lastResetCheck = getTodayKey();
+        }
+
+        function checkAndUpdateMonthSelector() {
+            // If we're currently on the report tab, update the month selector
+            const reportTab = document.getElementById('report');
+            if (reportTab && reportTab.classList.contains('active')) {
+                const oldOptionsCount = document.getElementById('monthSelector').options.length;
+                populateMonthSelector();
+                const newOptionsCount = document.getElementById('monthSelector').options.length;
+                
+                // If new month was added, show notification
+                if (newOptionsCount > oldOptionsCount) {
+                    const currentMonth = new Date().toLocaleDateString('id-ID', { 
+                        year: 'numeric', 
+                        month: 'long' 
+                    });
+                    showMessage(`📅 Bulan baru ditambahkan: ${currentMonth}`);
+                }
+            }
         }
 
         // UI Generation Functions
@@ -852,11 +931,20 @@
         async function generateReport() {
             try {
                 showLoading(true);
-                const monthKey = getCurrentMonthKey();
+                const selectedMonthKey = getSelectedMonthKey();
+                console.log(`📊 Generating report for: ${selectedMonthKey}`);
+                
                 await Promise.all([
-                    generateSummaryStats(monthKey),
-                    generateReportTable(monthKey)
+                    generateSummaryStats(selectedMonthKey),
+                    generateReportTable(selectedMonthKey)
                 ]);
+                
+                // Update page title with selected month
+                const selectedMonthName = document.getElementById('monthSelector').selectedOptions[0]?.textContent;
+                if (selectedMonthName) {
+                    updateStatusInfo(`📊 Rekap ${selectedMonthName} berhasil dimuat`);
+                }
+                
             } catch (error) {
                 console.error("Error generating report:", error);
                 showMessage("Gagal membuat laporan", true);
@@ -1045,7 +1133,11 @@
             event.target.classList.add('active');
             
             if (tabName === 'report') {
-                generateReport();
+                // Ensure month selector is populated when switching to report tab
+                setTimeout(() => {
+                    populateMonthSelector();
+                    generateReport();
+                }, 100); // Small delay to ensure DOM is ready
             }
         }
 
@@ -1069,6 +1161,9 @@
             updateCurrentDate();
             lastResetCheck = getTodayKey();
             
+            // Initialize month selector early
+            populateMonthSelector();
+            
             // Initialize Firebase
             const firebaseReady = await initializeFirebase();
             
@@ -1081,13 +1176,23 @@
                 showLoading(false);
             }
             
-            // Setup daily reset checker
+            // Setup daily reset checker with exact midnight timing
             setupDailyReset();
             
             // Update date display every minute
             setInterval(updateCurrentDate, 60000);
             
             console.log('✅ Application initialized');
+            
+            // Debug: Log next reset time
+            const now = new Date();
+            const tomorrow = new Date(now);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            tomorrow.setHours(0, 0, 0, 0);
+            const timeUntilMidnight = tomorrow.getTime() - now.getTime();
+            console.log(`🕐 Current time: ${now.toLocaleString('id-ID')}`);
+            console.log(`🕛 Next reset: ${tomorrow.toLocaleString('id-ID')}`);
+            console.log(`⏱️ Time until reset: ${Math.round(timeUntilMidnight / 1000 / 60)} minutes`);
         }
 
         // Event Listeners
