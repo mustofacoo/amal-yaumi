@@ -115,6 +115,16 @@
             background: #e9ecef;
         }
 
+        .nav-tab:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+            background: #f8f9fa;
+        }
+
+        .nav-tab:disabled:hover {
+            background: #f8f9fa;
+        }
+
         .content {
             padding: 15px;
         }
@@ -443,6 +453,38 @@
             margin-bottom: 5px;
         }
 
+        /* Access Restricted Message */
+        .access-restricted {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .access-restricted-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            opacity: 0.6;
+        }
+
+        .access-restricted h3 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .access-restricted p {
+            color: #6c757d;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .access-restricted .btn {
+            padding: 12px 30px;
+            font-size: 1.1em;
+        }
+
         @media (max-width: 768px) {
             .nav-tabs {
                 flex-direction: column;
@@ -487,7 +529,7 @@
 
         <div class="nav-tabs">
             <button class="nav-tab active" onclick="switchTab('checklist')">Checklist Harian</button>
-            <button class="nav-tab" onclick="switchTab('report')">Rekap Bulanan</button>
+            <button class="nav-tab" id="reportTab" onclick="switchTab('report')" disabled title="Hanya admin yang dapat mengakses rekap bulanan">📊 Rekap Bulanan</button>
             <button class="nav-tab" id="adminTab" onclick="switchTab('admin')" style="display: none;">Admin Panel</button>
             <button class="nav-tab" id="loginTab" onclick="switchTab('login')">Login Admin</button>
         </div>
@@ -509,47 +551,61 @@
 
             <!-- Report Tab -->
             <div id="report" class="tab-content">
-                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 1px solid #e9ecef;">
-                    <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
-                        <label for="monthSelector" style="font-weight: 600; color: #2c3e50; font-size: 1.1em;">
-                            📅 Pilih Bulan Rekap:
-                        </label>
-                        <select id="monthSelector" onchange="generateReport()" style="
-                            padding: 8px 15px;
-                            border: 2px solid #e9ecef;
-                            border-radius: 8px;
-                            background: white;
-                            font-size: 1em;
-                            font-weight: 500;
-                            color: #2c3e50;
-                            cursor: pointer;
-                            min-width: 200px;
-                        ">
-                        </select>
-                        <div style="font-size: 0.9em; color: #6c757d;">
-                            <small>💡 Bulan baru akan otomatis ditambahkan setiap pergantian bulan</small>
+                <div id="reportAccessRestricted" class="access-restricted">
+                    <div class="access-restricted-icon">🔒</div>
+                    <h3>Akses Terbatas</h3>
+                    <p>
+                        Rekap bulanan hanya dapat diakses oleh admin yang sudah login.<br>
+                        Fitur ini berisi data sensitif dan laporan komprehensif tentang performa seluruh pegawai.
+                    </p>
+                    <button onclick="switchTab('login')" class="btn btn-primary">
+                        🔐 Login sebagai Admin
+                    </button>
+                </div>
+
+                <div id="reportContent" style="display: none;">
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 1px solid #e9ecef;">
+                        <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                            <label for="monthSelector" style="font-weight: 600; color: #2c3e50; font-size: 1.1em;">
+                                📅 Pilih Bulan Rekap:
+                            </label>
+                            <select id="monthSelector" onchange="generateReport()" style="
+                                padding: 8px 15px;
+                                border: 2px solid #e9ecef;
+                                border-radius: 8px;
+                                background: white;
+                                font-size: 1em;
+                                font-weight: 500;
+                                color: #2c3e50;
+                                cursor: pointer;
+                                min-width: 200px;
+                            ">
+                            </select>
+                            <div style="font-size: 0.9em; color: #6c757d;">
+                                <small>💡 Bulan baru akan otomatis ditambahkan setiap pergantian bulan</small>
+                            </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="summary-stats" id="summaryStats"></div>
-                <div class="report-table">
-                    <table id="reportTable">
-                        <thead>
-                            <tr>
-                                <th>Nama Pegawai</th>
-                                <th>Qiyamul Lail</th>
-                                <th>Shubuh berjamaah</th>
-                                <th>Sedekah</th>
-                                <th>Sholat Dhuha</th>
-                                <th>Silaturahim</th>
-                                <th>Doa untuk Ibka</th>
-                                <th>Istighfar & Sholawat</th>
-                                <th>Rata‑rata</th>
-                            </tr>
-                        </thead>
-                        <tbody id="reportBody"></tbody>
-                    </table>
+                    
+                    <div class="summary-stats" id="summaryStats"></div>
+                    <div class="report-table">
+                        <table id="reportTable">
+                            <thead>
+                                <tr>
+                                    <th>Nama Pegawai</th>
+                                    <th>Qiyamul Lail</th>
+                                    <th>Shubuh berjamaah</th>
+                                    <th>Sedekah</th>
+                                    <th>Sholat Dhuha</th>
+                                    <th>Silaturahim</th>
+                                    <th>Doa untuk Ibka</th>
+                                    <th>Istighfar & Sholawat</th>
+                                    <th>Rata‑rata</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reportBody"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -573,7 +629,7 @@
                     </div>
                     <div style="text-align: center; margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
                         <small style="color: #6c757d;">
-                            💡 <strong>Petunjuk:</strong> Hanya admin yang memiliki akses untuk mengelola data pegawai dan tugas harian.
+                            💡 <strong>Petunjuk:</strong> Hanya admin yang memiliki akses untuk mengelola data pegawai, tugas harian, dan melihat rekap bulanan.
                         </small>
                     </div>
                 </div>
@@ -636,6 +692,7 @@
                         <li><strong>Menghapus Pegawai:</strong> Klik tombol "Hapus" di samping nama pegawai</li>
                         <li><strong>Menambah Tugas:</strong> Ketik nama tugas baru dan klik "Tambah Tugas"</li>
                         <li><strong>Menghapus Tugas:</strong> Klik tombol "Hapus" di samping nama tugas</li>
+                        <li><strong>Rekap Bulanan:</strong> Akses khusus admin untuk melihat laporan performa pegawai</li>
                         <li><strong>⚠️ Peringatan:</strong> Menghapus pegawai atau tugas akan menghilangkan semua data checklist terkait</li>
                     </ul>
                 </div>
@@ -682,6 +739,52 @@
         let unsubscribe = null;
         let isFirebaseConnected = false;
         let lastResetCheck = null;
+
+        // Admin Access Control Functions
+        function updateAdminAccess() {
+            const reportTab = document.getElementById('reportTab');
+            const reportAccessRestricted = document.getElementById('reportAccessRestricted');
+            const reportContent = document.getElementById('reportContent');
+            
+            if (currentUser) {
+                // Admin logged in - enable report access
+                reportTab.disabled = false;
+                reportTab.title = "Rekap Bulanan - Akses Admin";
+                reportTab.style.opacity = "1";
+                
+                if (reportAccessRestricted) {
+                    reportAccessRestricted.style.display = 'none';
+                }
+                if (reportContent) {
+                    reportContent.style.display = 'block';
+                }
+                
+                console.log('✅ Admin access granted for reports');
+            } else {
+                // No admin - restrict report access
+                reportTab.disabled = true;
+                reportTab.title = "Hanya admin yang dapat mengakses rekap bulanan";
+                reportTab.style.opacity = "0.5";
+                
+                if (reportAccessRestricted) {
+                    reportAccessRestricted.style.display = 'block';
+                }
+                if (reportContent) {
+                    reportContent.style.display = 'none';
+                }
+                
+                console.log('🔒 Report access restricted - admin login required');
+            }
+        }
+
+        function checkReportAccess() {
+            if (!currentUser) {
+                showMessage('🔒 Akses ditolak! Hanya admin yang dapat melihat rekap bulanan', true);
+                switchTab('login');
+                return false;
+            }
+            return true;
+        }
 
         // Utility Functions
         function getTodayKey() {
@@ -800,6 +903,22 @@
                 }
                 window.db = firebase.firestore();
                 
+                // Monitor auth state changes
+                firebase.auth().onAuthStateChanged(function(user) {
+                    currentUser = user;
+                    updateAdminAccess();
+                    
+                    if (user) {
+                        console.log('👤 Admin logged in:', user.email);
+                        document.getElementById('adminTab').style.display = 'block';
+                        document.getElementById('loginTab').style.display = 'none';
+                    } else {
+                        console.log('👤 No admin logged in');
+                        document.getElementById('adminTab').style.display = 'none';
+                        document.getElementById('loginTab').style.display = 'block';
+                    }
+                });
+                
                 return window.db.enableNetwork().then(() => {
                     console.log('✅ Firebase connected successfully');
                     isFirebaseConnected = true;
@@ -836,15 +955,13 @@
                 const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
                 currentUser = userCredential.user;
                 
-                document.getElementById('adminTab').style.display = 'block';
-                document.getElementById('loginTab').style.display = 'none';
+                await loadAdminData();
+                updateAdminUI();
+                updateAdminAccess();
                 
                 switchTab('admin');
                 
-                await loadAdminData();
-                updateAdminUI();
-                
-                showMessage('✅ Login berhasil! Selamat datang Admin');
+                showMessage('✅ Login berhasil! Selamat datang Admin - Akses rekap bulanan telah diaktifkan');
                 
             } catch (error) {
                 console.error('Login error:', error);
@@ -865,13 +982,11 @@
         function logoutAdmin() {
             firebase.auth().signOut().then(() => {
                 currentUser = null;
-                
-                document.getElementById('adminTab').style.display = 'none';
-                document.getElementById('loginTab').style.display = 'block';
+                updateAdminAccess();
                 
                 switchTab('checklist');
                 
-                showMessage('👋 Logout berhasil');
+                showMessage('👋 Logout berhasil - Akses rekap bulanan dibatasi');
                 
                 document.getElementById('adminEmail').value = '';
                 document.getElementById('adminPassword').value = '';
@@ -1233,7 +1348,7 @@
 
         function checkAndUpdateMonthSelector() {
             const reportTab = document.getElementById('report');
-            if (reportTab && reportTab.classList.contains('active')) {
+            if (reportTab && reportTab.classList.contains('active') && currentUser) {
                 const oldOptionsCount = document.getElementById('monthSelector').options.length;
                 populateMonthSelector();
                 const newOptionsCount = document.getElementById('monthSelector').options.length;
@@ -1309,6 +1424,11 @@
 
         // Report Generation Functions
         async function generateReport() {
+            // Check admin access before generating report
+            if (!checkReportAccess()) {
+                return;
+            }
+            
             try {
                 showLoading(true);
                 const selectedMonthKey = getSelectedMonthKey();
@@ -1500,6 +1620,11 @@
 
         // Tab Management
         function switchTab(tabName) {
+            // Check admin access for report tab
+            if (tabName === 'report' && !checkReportAccess()) {
+                return;
+            }
+            
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
@@ -1509,9 +1634,14 @@
             });
             
             document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
             
-            if (tabName === 'report') {
+            // Find and activate the correct tab button
+            const tabButton = event?.target || document.querySelector(`[onclick="switchTab('${tabName}')"]`);
+            if (tabButton) {
+                tabButton.classList.add('active');
+            }
+            
+            if (tabName === 'report' && currentUser) {
                 setTimeout(() => {
                     populateMonthSelector();
                     generateReport();
@@ -1553,10 +1683,13 @@
                 showLoading(false);
             }
             
+            // Initialize admin access control
+            updateAdminAccess();
+            
             setupDailyReset();
             setInterval(updateCurrentDate, 60000);
             
-            console.log('✅ Application initialized');
+            console.log('✅ Application initialized with admin access control');
         }
 
         // Event Listeners
