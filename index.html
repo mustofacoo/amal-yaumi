@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amal Yaumi - Checklist Harian</title>
+    <title>Amal Yaumi Kantor Pusat</title>
     
     <!-- Firebase SDK -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
@@ -529,7 +529,7 @@
 
         <div class="nav-tabs">
             <button class="nav-tab active" onclick="switchTab('checklist')">Checklist Harian</button>
-            <button class="nav-tab" id="reportTab" onclick="switchTab('report')" disabled title="Hanya admin yang dapat mengakses rekap bulanan">📊 Rekap Bulanan</button>
+            <button class="nav-tab" id="reportTab" onclick="switchTab('report')" disabled title="Hanya admin yang dapat mengakses rekap bulanan">📊 Rekap Bulanan (hanya admin)</button>
             <button class="nav-tab" id="adminTab" onclick="switchTab('admin')" style="display: none;">Admin Panel</button>
             <button class="nav-tab" id="loginTab" onclick="switchTab('login')">Login Admin</button>
         </div>
@@ -541,7 +541,7 @@
             <!-- Checklist Tab -->
             <div id="checklist" class="tab-content active">
                 <div class="auto-reset-info">
-                    <span>Dibuat oleh Kantor Pusat Ibnu Katsir | Reset otomatis setiap hari pukul 00:00 WIB</span>
+                    <span>Dibuat oleh Kantor Pusat Ibnu Katsir</span>
                 </div>
                 <div class="loading-spinner" id="loadingSpinner">
                     <div>Memuat data...</div>
@@ -922,7 +922,7 @@
                 return window.db.enableNetwork().then(() => {
                     console.log('✅ Firebase connected successfully');
                     isFirebaseConnected = true;
-                    updateStatusInfo('🟢 Firebase terhubung - Data tersinkron real-time');
+                    updateStatusInfo('🟢 Amal yang paling dicintai Allah adalah yang berkelanjutan meskipun sedikit');
                     return true;
                 }).catch(error => {
                     console.error('❌ Firebase connection test failed:', error);
