@@ -485,6 +485,16 @@
             font-size: 1.1em;
         }
 
+        .timezone-info {
+            background: #e8f4fd;
+            border: 1px solid #bee5eb;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 0.85em;
+            color: #0c5460;
+        }
+
         @media (max-width: 768px) {
             .nav-tabs {
                 flex-direction: column;
@@ -525,6 +535,7 @@
             <h1>Amal Yaumi Kantor Pusat</h1>
             <div class="date-info" id="currentDate"></div>
             <div class="status-info" id="statusInfo">🔄 Memuat aplikasi...</div>
+            <div class="timezone-info" id="timezoneInfo">⏰ Timezone: Jakarta (WIB) - Reset harian pukul 00:00 WIB</div>
         </div>
 
         <div class="nav-tabs">
@@ -541,7 +552,7 @@
             <!-- Checklist Tab -->
             <div id="checklist" class="tab-content active">
                 <div class="auto-reset-info">
-                    <span>Dibuat oleh Kantor Pusat Ibnu Katsir</span>
+                    <span>Dibuat oleh Kantor Pusat Ibnu Katsir - Reset otomatis setiap pukul 00:00 WIB</span>
                 </div>
                 <div class="loading-spinner" id="loadingSpinner">
                     <div>Memuat data...</div>
@@ -582,7 +593,7 @@
                             ">
                             </select>
                             <div style="font-size: 0.9em; color: #6c757d;">
-                                <small>💡 Bulan baru akan otomatis ditambahkan setiap pergantian bulan</small>
+                                <small>💡 Bulan baru akan otomatis ditambahkan setiap pergantian bulan (WIB)</small>
                             </div>
                         </div>
                     </div>
@@ -694,6 +705,7 @@
                         <li><strong>Menghapus Tugas:</strong> Klik tombol "Hapus" di samping nama tugas</li>
                         <li><strong>Rekap Bulanan:</strong> Akses khusus admin untuk melihat laporan performa pegawai</li>
                         <li><strong>⚠️ Peringatan:</strong> Menghapus pegawai atau tugas akan menghilangkan semua data checklist terkait</li>
+                        <li><strong>🕐 Reset Waktu:</strong> Checklist direset otomatis setiap pukul 00:00 WIB</li>
                     </ul>
                 </div>
             </div>
@@ -701,6 +713,43 @@
     </div>
 
     <script>
+        // Jakarta Timezone Utilities
+        const JAKARTA_TIMEZONE = 'Asia/Jakarta';
+        
+        function getJakartaDate() {
+            return new Date(new Date().toLocaleString("en-US", {timeZone: JAKARTA_TIMEZONE}));
+        }
+        
+        function getJakartaDateString() {
+            const jakartaDate = getJakartaDate();
+            return jakartaDate.toISOString().split("T")[0];
+        }
+        
+        function getJakartaCurrentMonthKey() {
+            const jakartaDate = getJakartaDate();
+            return `${jakartaDate.getFullYear()}-${String(jakartaDate.getMonth() + 1).padStart(2, '0')}`;
+        }
+        
+        function formatJakartaDate(date, options = {}) {
+            return date.toLocaleDateString('id-ID', { 
+                timeZone: JAKARTA_TIMEZONE,
+                ...options 
+            });
+        }
+        
+        function getJakartaMidnight() {
+            const jakartaDate = getJakartaDate();
+            const midnight = new Date(jakartaDate);
+            midnight.setHours(24, 0, 0, 0); // Next midnight in Jakarta
+            return midnight;
+        }
+        
+        function getTimeUntilJakartaMidnight() {
+            const now = getJakartaDate();
+            const midnight = getJakartaMidnight();
+            return midnight.getTime() - now.getTime();
+        }
+
         // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDdCvdJrthzS07BkAQagNAadWvV3PcNnDk",
@@ -739,6 +788,7 @@
         let unsubscribe = null;
         let isFirebaseConnected = false;
         let lastResetCheck = null;
+        let midnightTimeout = null;
 
         // Admin Access Control Functions
         function updateAdminAccess() {
@@ -786,14 +836,13 @@
             return true;
         }
 
-        // Utility Functions
+        // Utility Functions - Updated with Jakarta timezone
         function getTodayKey() {
-            return new Date().toISOString().split("T")[0];
+            return getJakartaDateString();
         }
 
         function getCurrentMonthKey() {
-            const today = new Date();
-            return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+            return getJakartaCurrentMonthKey();
         }
 
         function getSelectedMonthKey() {
@@ -803,12 +852,12 @@
 
         function getAvailableMonths() {
             const months = [];
-            const startDate = new Date('2025-06-01');
-            const currentDate = new Date();
+            const startDate = new Date('2025-06-01T00:00:00+07:00'); // Start in Jakarta timezone
+            const currentDate = getJakartaDate();
             
             while (startDate <= currentDate) {
                 const monthKey = `${startDate.getFullYear()}-${String(startDate.getMonth() + 1).padStart(2, '0')}`;
-                const monthName = startDate.toLocaleDateString('id-ID', { 
+                const monthName = formatJakartaDate(startDate, { 
                     year: 'numeric', 
                     month: 'long' 
                 });
@@ -831,10 +880,10 @@
             selector.innerHTML = '';
             
             if (availableMonths.length === 0) {
-                const currentMonth = new Date();
+                const currentMonth = getJakartaDate();
                 const fallbackMonth = {
                     key: `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}`,
-                    name: currentMonth.toLocaleDateString('id-ID', { year: 'numeric', month: 'long' })
+                    name: formatJakartaDate(currentMonth, { year: 'numeric', month: 'long' })
                 };
                 availableMonths.push(fallbackMonth);
             }
@@ -1224,8 +1273,8 @@
                     });
                     
                     return todayDocRef.set(initialData).then(() => {
-                        console.log('✅ Created new checklist document for today');
-                        showMessage('✅ Checklist hari ini siap digunakan');
+                        console.log('✅ Created new checklist document for today (Jakarta timezone)');
+                        showMessage('✅ Checklist hari ini siap digunakan (WIB)');
                     });
                 }
             }).catch(error => {
@@ -1240,7 +1289,7 @@
                     showLoading(false);
                     if (doc.exists) {
                         checklistData = doc.data();
-                        console.log('📡 Real-time data updated');
+                        console.log('📡 Real-time data updated (Jakarta timezone)');
                     } else {
                         initializeEmptyData();
                     }
@@ -1279,7 +1328,7 @@
             updateData[`${employee}.${item}`] = checked;
 
             todayDocRef.update(updateData).then(() => {
-                console.log(`✅ Updated ${employee} - ${item}: ${checked}`);
+                console.log(`✅ Updated ${employee} - ${item}: ${checked} (Jakarta timezone)`);
             }).catch(error => {
                 console.error("❌ Error updating checklist:", error);
                 showMessage("Gagal menyimpan perubahan - coba lagi", true);
@@ -1291,16 +1340,17 @@
             });
         }
 
-        // Reset Management
+        // Reset Management - Updated with Jakarta timezone
         function setupDailyReset() {
             lastResetCheck = getTodayKey();
             scheduleNextMidnightReset();
             
+            // Check every minute for date changes
             setInterval(() => {
                 const currentDate = getTodayKey();
                 
                 if (lastResetCheck && lastResetCheck !== currentDate) {
-                    console.log('🔄 Date changed detected, reinitializing checklist');
+                    console.log('🔄 Date changed detected (Jakarta timezone), reinitializing checklist');
                     performDailyReset();
                 }
                 
@@ -1309,24 +1359,24 @@
         }
 
         function scheduleNextMidnightReset() {
-            const now = new Date();
-            const tomorrow = new Date(now);
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            tomorrow.setHours(0, 0, 0, 0);
+            // Clear any existing timeout
+            if (midnightTimeout) {
+                clearTimeout(midnightTimeout);
+            }
             
-            const timeUntilMidnight = tomorrow.getTime() - now.getTime();
+            const timeUntilMidnight = getTimeUntilJakartaMidnight();
             
-            console.log(`⏰ Next reset scheduled in ${Math.round(timeUntilMidnight / 1000 / 60)} minutes (at midnight)`);
+            console.log(`⏰ Next reset scheduled in ${Math.round(timeUntilMidnight / 1000 / 60)} minutes (at midnight WIB)`);
             
-            setTimeout(() => {
-                console.log('🌙 Midnight reset triggered at exactly 00:00');
+            midnightTimeout = setTimeout(() => {
+                console.log('🌙 Midnight reset triggered at exactly 00:00 WIB');
                 performDailyReset();
-                scheduleNextMidnightReset();
+                scheduleNextMidnightReset(); // Schedule next midnight
             }, timeUntilMidnight);
         }
 
         function performDailyReset() {
-            console.log('🔄 Performing daily reset...');
+            console.log('🔄 Performing daily reset (Jakarta timezone)...');
             
             if (unsubscribe) {
                 unsubscribe();
@@ -1340,7 +1390,7 @@
             }
             
             updateCurrentDate();
-            showMessage('🌅 Checklist baru untuk hari ini telah dimuat (Reset pukul 00:00)');
+            showMessage('🌅 Checklist baru untuk hari ini telah dimuat (Reset pukul 00:00 WIB)');
             
             checkAndUpdateMonthSelector();
             lastResetCheck = getTodayKey();
@@ -1354,7 +1404,7 @@
                 const newOptionsCount = document.getElementById('monthSelector').options.length;
                 
                 if (newOptionsCount > oldOptionsCount) {
-                    const currentMonth = new Date().toLocaleDateString('id-ID', { 
+                    const currentMonth = formatJakartaDate(getJakartaDate(), { 
                         year: 'numeric', 
                         month: 'long' 
                     });
@@ -1432,7 +1482,7 @@
             try {
                 showLoading(true);
                 const selectedMonthKey = getSelectedMonthKey();
-                console.log(`📊 Generating report for: ${selectedMonthKey}`);
+                console.log(`📊 Generating report for: ${selectedMonthKey} (Jakarta timezone)`);
                 
                 await Promise.all([
                     generateSummaryStats(selectedMonthKey),
@@ -1441,7 +1491,7 @@
                 
                 const selectedMonthName = document.getElementById('monthSelector').selectedOptions[0]?.textContent;
                 if (selectedMonthName) {
-                    updateStatusInfo(`📊 Rekap ${selectedMonthName} berhasil dimuat`);
+                    updateStatusInfo(`📊 Rekap ${selectedMonthName} berhasil dimuat (WIB)`);
                 }
                 
             } catch (error) {
@@ -1459,7 +1509,173 @@
             const daysInMonth = getDaysInMonth(Number(year), Number(monthStr));
 
             try {
-                const monthlyData = await getMonthlyData(monthKey);
+                const monthlyData = {};
+            employees.forEach(employee => {
+                monthlyData[employee] = {};
+            });
+
+            snapshot.forEach(doc => {
+                const date = doc.id;
+                const data = doc.data();
+                
+                employees.forEach(employee => {
+                    if (data[employee]) {
+                        monthlyData[employee][date] = data[employee];
+                    }
+                });
+            });
+
+            return monthlyData;
+        }
+
+        // Tab Management
+        function switchTab(tabName) {
+            // Check admin access for report tab
+            if (tabName === 'report' && !checkReportAccess()) {
+                return;
+            }
+            
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            
+            // Find and activate the correct tab button
+            const tabButton = event?.target || document.querySelector(`[onclick="switchTab('${tabName}')"]`);
+            if (tabButton) {
+                tabButton.classList.add('active');
+            }
+            
+            if (tabName === 'report' && currentUser) {
+                setTimeout(() => {
+                    populateMonthSelector();
+                    generateReport();
+                }, 100);
+            }
+        }
+
+        // Date Management - Updated with Jakarta timezone
+        function updateCurrentDate() {
+            const jakartaDate = getJakartaDate();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                timeZone: JAKARTA_TIMEZONE
+            };
+            
+            const formattedDate = formatJakartaDate(jakartaDate, options);
+            const timeString = jakartaDate.toLocaleTimeString('id-ID', { 
+                timeZone: JAKARTA_TIMEZONE,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            
+            document.getElementById('currentDate').textContent = `${formattedDate} - ${timeString} WIB`;
+        }
+
+        // Application Initialization
+        async function startApplication() {
+            console.log('🚀 Starting Amal Yaumi application with Jakarta timezone...');
+            
+            updateCurrentDate();
+            lastResetCheck = getTodayKey();
+            
+            // Log current timezone info
+            const jakartaDate = getJakartaDate();
+            const utcDate = new Date();
+            console.log(`🕐 Current Jakarta time: ${jakartaDate.toLocaleString('id-ID', { timeZone: JAKARTA_TIMEZONE })}`);
+            console.log(`🕐 Current UTC time: ${utcDate.toISOString()}`);
+            console.log(`📅 Today's key (Jakarta): ${getTodayKey()}`);
+            
+            populateMonthSelector();
+            
+            const firebaseReady = await initializeFirebase();
+            
+            if (firebaseReady) {
+                await loadDynamicData();
+                initializeFirebaseListener();
+            } else {
+                showMessage('Berjalan dalam mode offline - data tidak akan tersinkron', true);
+                initializeEmptyData();
+                generateEmployeeCards();
+                showLoading(false);
+            }
+            
+            // Initialize admin access control
+            updateAdminAccess();
+            
+            setupDailyReset();
+            
+            // Update time every second for better UX
+            setInterval(updateCurrentDate, 1000);
+            
+            console.log('✅ Application initialized with Jakarta timezone and admin access control');
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(startApplication, 100);
+        });
+
+        window.addEventListener('beforeunload', function() {
+            if (unsubscribe) {
+                unsubscribe();
+            }
+            if (midnightTimeout) {
+                clearTimeout(midnightTimeout);
+            }
+        });
+
+        window.addEventListener('online', function() {
+            updateStatusInfo('🟢 Kembali online - mencoba menyambung ke Firebase...');
+            setTimeout(() => {
+                if (isFirebaseConnected) {
+                    initializeFirebaseListener();
+                }
+            }, 1000);
+        });
+
+        window.addEventListener('offline', function() {
+            updateStatusInfo('🔴 Tidak ada koneksi internet - mode offline', true);
+        });
+
+        // Debug function for timezone testing
+        function debugTimezone() {
+            const jakartaDate = getJakartaDate();
+            const utcDate = new Date();
+            const todayKey = getTodayKey();
+            const timeUntilMidnight = getTimeUntilJakartaMidnight();
+            
+            console.log('=== TIMEZONE DEBUG INFO ===');
+            console.log('Jakarta Date:', jakartaDate.toString());
+            console.log('UTC Date:', utcDate.toString());
+            console.log('Today Key (Jakarta):', todayKey);
+            console.log('Time until midnight (ms):', timeUntilMidnight);
+            console.log('Time until midnight (minutes):', Math.round(timeUntilMidnight / 1000 / 60));
+            console.log('Next midnight Jakarta:', getJakartaMidnight().toString());
+            console.log('===========================');
+            
+            return {
+                jakartaDate,
+                utcDate,
+                todayKey,
+                timeUntilMidnight: Math.round(timeUntilMidnight / 1000 / 60)
+            };
+        }
+
+        // Make debug function available globally for testing
+        window.debugTimezone = debugTimezone;
+    </script>
+</body>
+</html> await getMonthlyData(monthKey);
                 
                 let totalEmployees = employees.length;
                 let totalCompletionRate = 0;
@@ -1599,122 +1815,4 @@
                 .where(firebase.firestore.FieldPath.documentId(), '<=', `${monthKey}-${String(daysInMonth).padStart(2,'0')}`)
                 .get();
 
-            const monthlyData = {};
-            employees.forEach(employee => {
-                monthlyData[employee] = {};
-            });
-
-            snapshot.forEach(doc => {
-                const date = doc.id;
-                const data = doc.data();
-                
-                employees.forEach(employee => {
-                    if (data[employee]) {
-                        monthlyData[employee][date] = data[employee];
-                    }
-                });
-            });
-
-            return monthlyData;
-        }
-
-        // Tab Management
-        function switchTab(tabName) {
-            // Check admin access for report tab
-            if (tabName === 'report' && !checkReportAccess()) {
-                return;
-            }
-            
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            document.querySelectorAll('.nav-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            document.getElementById(tabName).classList.add('active');
-            
-            // Find and activate the correct tab button
-            const tabButton = event?.target || document.querySelector(`[onclick="switchTab('${tabName}')"]`);
-            if (tabButton) {
-                tabButton.classList.add('active');
-            }
-            
-            if (tabName === 'report' && currentUser) {
-                setTimeout(() => {
-                    populateMonthSelector();
-                    generateReport();
-                }, 100);
-            }
-        }
-
-        // Date Management
-        function updateCurrentDate() {
-            const now = new Date();
-            const options = { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-            };
-            document.getElementById('currentDate').textContent = 
-                now.toLocaleDateString('id-ID', options);
-        }
-
-        // Application Initialization
-        async function startApplication() {
-            console.log('🚀 Starting Amal Yaumi application...');
-            
-            updateCurrentDate();
-            lastResetCheck = getTodayKey();
-            
-            populateMonthSelector();
-            
-            const firebaseReady = await initializeFirebase();
-            
-            if (firebaseReady) {
-                await loadDynamicData();
-                initializeFirebaseListener();
-            } else {
-                showMessage('Berjalan dalam mode offline - data tidak akan tersinkron', true);
-                initializeEmptyData();
-                generateEmployeeCards();
-                showLoading(false);
-            }
-            
-            // Initialize admin access control
-            updateAdminAccess();
-            
-            setupDailyReset();
-            setInterval(updateCurrentDate, 60000);
-            
-            console.log('✅ Application initialized with admin access control');
-        }
-
-        // Event Listeners
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(startApplication, 100);
-        });
-
-        window.addEventListener('beforeunload', function() {
-            if (unsubscribe) {
-                unsubscribe();
-            }
-        });
-
-        window.addEventListener('online', function() {
-            updateStatusInfo('🟢 Kembali online - mencoba menyambung ke Firebase...');
-            setTimeout(() => {
-                if (isFirebaseConnected) {
-                    initializeFirebaseListener();
-                }
-            }, 1000);
-        });
-
-        window.addEventListener('offline', function() {
-            updateStatusInfo('🔴 Tidak ada koneksi internet - mode offline', true);
-        });
-    </script>
-</body>
-</html>
+            const monthlyData =
