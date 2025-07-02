@@ -738,16 +738,52 @@
         }
         
         function getJakartaMidnight() {
+            // Dapatkan tanggal Jakarta saat ini
             const jakartaDate = getJakartaDate();
-            const midnight = new Date(jakartaDate);
-            midnight.setHours(24, 0, 0, 0);
-            return midnight;
+            
+            // Buat midnight untuk hari berikutnya dalam Jakarta timezone
+            const jakartaDateString = jakartaDate.toLocaleDateString('en-CA', { 
+                timeZone: JAKARTA_TIMEZONE 
+            }); // Format: YYYY-MM-DD
+            
+            // Parse tanggal Jakarta dan tambah 1 hari untuk midnight berikutnya
+            const [year, month, day] = jakartaDateString.split('-').map(Number);
+            const nextDay = new Date(year, month - 1, day + 1); // month-1 karena JS month 0-based
+            
+            // Convert ke Jakarta timezone midnight
+            const jakartaMidnight = new Date(nextDay.toLocaleString('en-US', { 
+                timeZone: JAKARTA_TIMEZONE 
+            }));
+            
+            return jakartaMidnight;
         }
         
         function getTimeUntilJakartaMidnight() {
-            const now = getJakartaDate();
-            const midnight = getJakartaMidnight();
-            return midnight.getTime() - now.getTime();
+            const nowJakarta = getJakartaDate();
+            
+            // Cara yang lebih akurat: hitung midnight berdasarkan string tanggal Jakarta
+            const jakartaDateString = nowJakarta.toLocaleDateString('en-CA', { 
+                timeZone: JAKARTA_TIMEZONE 
+            });
+            
+            const jakartaTimeString = nowJakarta.toLocaleTimeString('en-GB', { 
+                timeZone: JAKARTA_TIMEZONE,
+                hour12: false 
+            });
+            
+            // Buat datetime string Jakarta dan parse sebagai Date
+            const jakartaDateTimeString = `${jakartaDateString}T${jakartaTimeString}`;
+            const jakartaDateTime = new Date(jakartaDateTimeString);
+            
+            // Hitung midnight hari berikutnya di Jakarta
+            const tomorrowJakarta = new Date(jakartaDateTime);
+            tomorrowJakarta.setDate(tomorrowJakarta.getDate() + 1);
+            tomorrowJakarta.setHours(0, 0, 0, 0);
+            
+            // Hitung selisih waktu
+            const timeDiff = tomorrowJakarta.getTime() - jakartaDateTime.getTime();
+            
+            return timeDiff;
         }
 
         // Firebase Configuration
@@ -1716,6 +1752,12 @@
         async function startApplication() {
             console.log('🚀 Starting Amal Yaumi application with Jakarta timezone...');
             
+            // Verifikasi timezone dulu
+            const timezoneCorrect = verifyTimezone();
+            if (!timezoneCorrect) {
+                updateStatusInfo('⚠️ Warning: Timezone detection issue - mungkin tidak reset tepat waktu', true);
+            }
+            
             updateCurrentDate();
             lastResetCheck = getTodayKey();
             
@@ -1724,6 +1766,12 @@
             console.log(`🕐 Current Jakarta time: ${jakartaDate.toLocaleString('id-ID', { timeZone: JAKARTA_TIMEZONE })}`);
             console.log(`🕐 Current UTC time: ${utcDate.toISOString()}`);
             console.log(`📅 Today's key (Jakarta): ${getTodayKey()}`);
+            
+            // Log waktu reset berikutnya
+            const timeUntilReset = getTimeUntilJakartaMidnight();
+            const resetTime = new Date(Date.now() + timeUntilReset);
+            console.log(`⏰ Next reset in: ${Math.round(timeUntilReset / 1000 / 60)} minutes`);
+            console.log(`⏰ Next reset at: ${resetTime.toLocaleString('id-ID', { timeZone: JAKARTA_TIMEZONE })}`);
             
             populateMonthSelector();
             
@@ -1744,6 +1792,12 @@
             setInterval(updateCurrentDate, 1000);
             
             console.log('✅ Application initialized with Jakarta timezone and admin access control');
+            
+            // Auto-run debug info setelah 2 detik
+            setTimeout(() => {
+                console.log('\n📊 Auto-generated timezone debug info:');
+                debugTimezone();
+            }, 2000);
         }
 
         // Event Listeners
@@ -1787,17 +1841,60 @@
             console.log('Time until midnight (ms):', timeUntilMidnight);
             console.log('Time until midnight (minutes):', Math.round(timeUntilMidnight / 1000 / 60));
             console.log('Next midnight Jakarta:', getJakartaMidnight().toString());
+            
+            // Verifikasi timezone
+            const jakartaTimeString = jakartaDate.toLocaleString('id-ID', { 
+                timeZone: JAKARTA_TIMEZONE,
+                year: 'numeric',
+                month: '2-digit', 
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                timeZoneName: 'short'
+            });
+            
+            console.log('Jakarta Time (formatted):', jakartaTimeString);
+            console.log('UTC Offset from Jakarta:', (jakartaDate.getTime() - utcDate.getTime()) / (1000 * 60 * 60), 'hours');
             console.log('===========================');
             
             return {
                 jakartaDate,
                 utcDate,
                 todayKey,
-                timeUntilMidnight: Math.round(timeUntilMidnight / 1000 / 60)
+                timeUntilMidnight: Math.round(timeUntilMidnight / 1000 / 60),
+                jakartaFormatted: jakartaTimeString,
+                isCorrectTimezone: jakartaTimeString.includes('WIB') || jakartaTimeString.includes('WITA')
             };
         }
 
+        // Fungsi untuk memverifikasi timezone setting
+        function verifyTimezone() {
+            const jakarta = getJakartaDate();
+            const utc = new Date();
+            
+            // Jakarta seharusnya UTC+7
+            const expectedOffset = 7 * 60; // 7 hours in minutes
+            const actualOffset = jakarta.getTimezoneOffset() - utc.getTimezoneOffset();
+            
+            console.log('🔍 TIMEZONE VERIFICATION:');
+            console.log('Expected Jakarta offset: UTC+7');
+            console.log('Actual offset detected:', actualOffset / 60, 'hours');
+            console.log('Jakarta time:', jakarta.toLocaleString('id-ID', { timeZone: JAKARTA_TIMEZONE }));
+            console.log('UTC time:', utc.toISOString());
+            
+            const isCorrect = Math.abs(actualOffset - expectedOffset) < 30; // tolerance 30 minutes
+            console.log('✅ Timezone correct:', isCorrect);
+            
+            if (!isCorrect) {
+                console.warn('⚠️ WARNING: Timezone might not be working correctly!');
+            }
+            
+            return isCorrect;
+        }
+
         window.debugTimezone = debugTimezone;
+        window.verifyTimezone = verifyTimezone;
     </script>
 </body>
 </html>
