@@ -8,6 +8,7 @@
     <!-- Firebase SDK -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-firestore-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-auth-compat.min.js"></script>
 
     <style>
         * {
@@ -80,10 +81,12 @@
             display: flex;
             background: #f8f9fa;
             border-bottom: 2px solid #e9ecef;
+            overflow-x: auto;
         }
 
         .nav-tab {
             flex: 1;
+            min-width: 120px;
             padding: 12px 15px;
             background: none;
             border: none;
@@ -92,6 +95,7 @@
             font-weight: 600;
             color: #6c757d;
             transition: all 0.3s ease;
+            white-space: nowrap;
         }
 
         @media (min-width: 768px) {
@@ -382,6 +386,63 @@
             display: block;
         }
 
+        /* Admin Styles */
+        .admin-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .admin-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+            margin-bottom: 5px;
+        }
+
         @media (max-width: 768px) {
             .nav-tabs {
                 flex-direction: column;
@@ -427,12 +488,15 @@
         <div class="nav-tabs">
             <button class="nav-tab active" onclick="switchTab('checklist')">Checklist Harian</button>
             <button class="nav-tab" onclick="switchTab('report')">Rekap Bulanan</button>
+            <button class="nav-tab" id="adminTab" onclick="switchTab('admin')" style="display: none;">Admin Panel</button>
+            <button class="nav-tab" id="loginTab" onclick="switchTab('login')">Login Admin</button>
         </div>
 
         <div class="content">
             <div class="error-message" id="errorMessage"></div>
             <div class="success-message" id="successMessage"></div>
             
+            <!-- Checklist Tab -->
             <div id="checklist" class="tab-content active">
                 <div class="auto-reset-info">
                     <span>Dibuat oleh Kantor Pusat Ibnu Katsir | Reset otomatis setiap hari pukul 00:00 WIB</span>
@@ -443,8 +507,8 @@
                 <div class="employee-grid" id="employeeGrid"></div>
             </div>
 
+            <!-- Report Tab -->
             <div id="report" class="tab-content">
-                <!-- Month Selector -->
                 <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 1px solid #e9ecef;">
                     <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
                         <label for="monthSelector" style="font-weight: 600; color: #2c3e50; font-size: 1.1em;">
@@ -461,7 +525,6 @@
                             cursor: pointer;
                             min-width: 200px;
                         ">
-                            <!-- Will be populated by JavaScript -->
                         </select>
                         <div style="font-size: 0.9em; color: #6c757d;">
                             <small>💡 Bulan baru akan otomatis ditambahkan setiap pergantian bulan</small>
@@ -489,6 +552,94 @@
                     </table>
                 </div>
             </div>
+
+            <!-- Login Tab -->
+            <div id="login" class="tab-content">
+                <div style="max-width: 400px; margin: 0 auto; padding: 20px;">
+                    <h2 style="text-align: center; margin-bottom: 20px; color: #2c3e50;">🔐 Login Admin</h2>
+                    <div class="admin-card">
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: 600;">Email Admin:</label>
+                            <input type="email" id="adminEmail" class="admin-input" placeholder="admin@amalyaumi.com">
+                        </div>
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: 600;">Password:</label>
+                            <input type="password" id="adminPassword" class="admin-input" placeholder="Masukkan password">
+                        </div>
+                        <button onclick="loginAdmin()" class="btn btn-primary" style="width: 100%; padding: 12px;">
+                            🚀 Login Admin
+                        </button>
+                        <div id="loginMessage" style="margin-top: 15px; text-align: center;"></div>
+                    </div>
+                    <div style="text-align: center; margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                        <small style="color: #6c757d;">
+                            💡 <strong>Petunjuk:</strong> Hanya admin yang memiliki akses untuk mengelola data pegawai dan tugas harian.
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Panel Tab -->
+            <div id="admin" class="tab-content">
+                <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <h2 style="color: #2c3e50;">⚙️ Admin Panel</h2>
+                    <button onclick="logoutAdmin()" class="btn btn-danger">
+                        🚪 Logout
+                    </button>
+                </div>
+                
+                <!-- Manage Employees Section -->
+                <div class="admin-card">
+                    <h3 style="margin-bottom: 20px; color: #2c3e50; border-bottom: 2px solid #ff6b35; padding-bottom: 10px;">
+                        🧑‍💼 Kelola Pegawai
+                    </h3>
+                    
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+                        <input type="text" id="newEmployeeName" placeholder="Nama pegawai baru (contoh: Ahmad)" 
+                               class="admin-input" style="flex: 1; min-width: 250px;">
+                        <button onclick="addEmployee()" class="btn btn-success" style="white-space: nowrap;">
+                            ➕ Tambah Pegawai
+                        </button>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                        <h4 style="margin-bottom: 10px; color: #2c3e50;">📋 Daftar Pegawai Saat Ini:</h4>
+                        <div id="employeeList" style="display: grid; gap: 8px;"></div>
+                    </div>
+                </div>
+                
+                <!-- Manage Tasks Section -->
+                <div class="admin-card">
+                    <h3 style="margin-bottom: 20px; color: #2c3e50; border-bottom: 2px solid #007bff; padding-bottom: 10px;">
+                        📋 Kelola Tugas Harian
+                    </h3>
+                    
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+                        <input type="text" id="newTaskName" placeholder="Tugas baru (contoh: Sholat Maghrib)" 
+                               class="admin-input" style="flex: 1; min-width: 250px;">
+                        <button onclick="addTask()" class="btn btn-primary" style="white-space: nowrap;">
+                            ➕ Tambah Tugas
+                        </button>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                        <h4 style="margin-bottom: 10px; color: #2c3e50;">✅ Daftar Tugas Saat Ini:</h4>
+                        <div id="taskList" style="display: grid; gap: 8px;"></div>
+                    </div>
+                </div>
+
+                <!-- Admin Instructions -->
+                <div style="background: #e7f3ff; border: 1px solid #b8daff; border-radius: 8px; padding: 15px; margin-top: 20px;">
+                    <h4 style="color: #004085; margin-bottom: 10px;">📖 Petunjuk Penggunaan Admin:</h4>
+                    <ul style="color: #004085; line-height: 1.6;">
+                        <li><strong>Menambah Pegawai:</strong> Ketik nama pegawai baru dan klik "Tambah Pegawai"</li>
+                        <li><strong>Menghapus Pegawai:</strong> Klik tombol "Hapus" di samping nama pegawai</li>
+                        <li><strong>Menambah Tugas:</strong> Ketik nama tugas baru dan klik "Tambah Tugas"</li>
+                        <li><strong>Menghapus Tugas:</strong> Klik tombol "Hapus" di samping nama tugas</li>
+                        <li><strong>⚠️ Peringatan:</strong> Menghapus pegawai atau tugas akan menghilangkan semua data checklist terkait</li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -504,14 +655,14 @@
         };
 
         // Application Data
-        const employees = [
+        let employees = [
             'Yuni', 'Didik', 'Budi', 'Riris', 'Rico',
             'Syafiq', 'Faruq', 'Maruf', 'Mamduh', 'Rendi',
             'Hammam', 'Sukris', 'Ibad', 'Faisal', 'Naim',
             'Abdullah', 'Pegawai'
         ];
 
-        const checklistItems = [
+        let checklistItems = [
             'Qiyamul Lail',
             'Shubuh Berjamaah',
             'Sedekah (utamakan shubuh)',
@@ -520,6 +671,11 @@
             'Doa untuk Ibka',
             'Istighfar & sholawat'
         ];
+
+        // Admin Variables
+        let currentUser = null;
+        let adminEmployees = [...employees];
+        let adminTasks = [...checklistItems];
 
         // Global variables
         let checklistData = {};
@@ -544,12 +700,9 @@
 
         function getAvailableMonths() {
             const months = [];
-            const startDate = new Date('2025-06-01'); // Start from June 2025
+            const startDate = new Date('2025-06-01');
             const currentDate = new Date();
             
-            console.log(`📅 Generating months from ${startDate.toDateString()} to ${currentDate.toDateString()}`);
-            
-            // Generate months from June 2025 to current month
             while (startDate <= currentDate) {
                 const monthKey = `${startDate.getFullYear()}-${String(startDate.getMonth() + 1).padStart(2, '0')}`;
                 const monthName = startDate.toLocaleDateString('id-ID', { 
@@ -558,33 +711,23 @@
                 });
                 
                 months.push({ key: monthKey, name: monthName });
-                
-                // Move to next month
                 startDate.setMonth(startDate.getMonth() + 1);
             }
             
-            console.log(`📅 Generated ${months.length} months:`, months.map(m => m.name));
-            
-            return months.reverse(); // Latest month first
+            return months.reverse();
         }
 
         function populateMonthSelector() {
             const selector = document.getElementById('monthSelector');
-            if (!selector) {
-                console.warn('Month selector not found, will try again later');
-                return;
-            }
+            if (!selector) return;
             
             const availableMonths = getAvailableMonths();
             const currentMonthKey = getCurrentMonthKey();
-            
-            // Store current selection
             const currentSelection = selector.value;
             
             selector.innerHTML = '';
             
             if (availableMonths.length === 0) {
-                // Fallback if no months generated
                 const currentMonth = new Date();
                 const fallbackMonth = {
                     key: `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}`,
@@ -598,7 +741,6 @@
                 option.value = month.key;
                 option.textContent = month.name;
                 
-                // Restore previous selection, or select current month by default
                 if ((currentSelection && month.key === currentSelection) || 
                     (!currentSelection && month.key === currentMonthKey)) {
                     option.selected = true;
@@ -606,9 +748,6 @@
                 
                 selector.appendChild(option);
             });
-            
-            console.log(`📅 Generated ${availableMonths.length} months for selector:`, 
-                       availableMonths.map(m => m.name));
         }
 
         function getDaysInMonth(year, month) {
@@ -661,7 +800,6 @@
                 }
                 window.db = firebase.firestore();
                 
-                // Test Firebase connection
                 return window.db.enableNetwork().then(() => {
                     console.log('✅ Firebase connected successfully');
                     isFirebaseConnected = true;
@@ -681,6 +819,271 @@
             }
         }
 
+        // Admin Authentication Functions
+        async function loginAdmin() {
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+            const messageEl = document.getElementById('loginMessage');
+            
+            if (!email || !password) {
+                messageEl.innerHTML = '<span style="color: #dc3545;">⚠️ Harap isi email dan password</span>';
+                return;
+            }
+            
+            try {
+                messageEl.innerHTML = '<span style="color: #007bff;">🔄 Memproses login...</span>';
+                
+                const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+                currentUser = userCredential.user;
+                
+                document.getElementById('adminTab').style.display = 'block';
+                document.getElementById('loginTab').style.display = 'none';
+                
+                switchTab('admin');
+                
+                await loadAdminData();
+                updateAdminUI();
+                
+                showMessage('✅ Login berhasil! Selamat datang Admin');
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                let errorMessage = '❌ Login gagal';
+                
+                if (error.code === 'auth/user-not-found') {
+                    errorMessage = '❌ Email tidak terdaftar';
+                } else if (error.code === 'auth/wrong-password') {
+                    errorMessage = '❌ Password salah';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage = '❌ Format email tidak valid';
+                }
+                
+                messageEl.innerHTML = `<span style="color: #dc3545;">${errorMessage}</span>`;
+            }
+        }
+
+        function logoutAdmin() {
+            firebase.auth().signOut().then(() => {
+                currentUser = null;
+                
+                document.getElementById('adminTab').style.display = 'none';
+                document.getElementById('loginTab').style.display = 'block';
+                
+                switchTab('checklist');
+                
+                showMessage('👋 Logout berhasil');
+                
+                document.getElementById('adminEmail').value = '';
+                document.getElementById('adminPassword').value = '';
+                document.getElementById('loginMessage').innerHTML = '';
+            });
+        }
+
+        // Admin Data Management
+        async function loadAdminData() {
+            try {
+                const employeesDoc = await window.db.collection('config').doc('employees').get();
+                if (employeesDoc.exists) {
+                    adminEmployees = employeesDoc.data().list || [...employees];
+                }
+                
+                const tasksDoc = await window.db.collection('config').doc('tasks').get();
+                if (tasksDoc.exists) {
+                    adminTasks = tasksDoc.data().list || [...checklistItems];
+                }
+                
+                console.log('✅ Admin data loaded');
+            } catch (error) {
+                console.error('Error loading admin data:', error);
+                showMessage('❌ Gagal memuat data admin', true);
+            }
+        }
+
+        async function loadDynamicData() {
+            try {
+                const employeesDoc = await window.db.collection('config').doc('employees').get();
+                if (employeesDoc.exists) {
+                    const dynamicEmployees = employeesDoc.data().list;
+                    if (dynamicEmployees && dynamicEmployees.length > 0) {
+                        employees.length = 0;
+                        employees.push(...dynamicEmployees);
+                        console.log('✅ Loaded employees:', employees);
+                    }
+                }
+                
+                const tasksDoc = await window.db.collection('config').doc('tasks').get();
+                if (tasksDoc.exists) {
+                    const dynamicTasks = tasksDoc.data().list;
+                    if (dynamicTasks && dynamicTasks.length > 0) {
+                        checklistItems.length = 0;
+                        checklistItems.push(...dynamicTasks);
+                        console.log('✅ Loaded tasks:', checklistItems);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading dynamic data:', error);
+                showMessage('⚠️ Gagal memuat konfigurasi - menggunakan data default', true);
+            }
+        }
+
+        async function saveEmployeesToFirebase() {
+            try {
+                await window.db.collection('config').doc('employees').set({
+                    list: adminEmployees,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                console.log('✅ Employees saved to Firebase');
+                return true;
+            } catch (error) {
+                console.error('Error saving employees:', error);
+                showMessage('❌ Gagal menyimpan data pegawai', true);
+                return false;
+            }
+        }
+
+        async function saveTasksToFirebase() {
+            try {
+                await window.db.collection('config').doc('tasks').set({
+                    list: adminTasks,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                console.log('✅ Tasks saved to Firebase');
+                return true;
+            } catch (error) {
+                console.error('Error saving tasks:', error);
+                showMessage('❌ Gagal menyimpan data tugas', true);
+                return false;
+            }
+        }
+
+        // Employee Management
+        async function addEmployee() {
+            const input = document.getElementById('newEmployeeName');
+            const name = input.value.trim();
+            
+            if (!name) {
+                showMessage('⚠️ Nama pegawai tidak boleh kosong', true);
+                return;
+            }
+            
+            if (adminEmployees.includes(name)) {
+                showMessage('⚠️ Pegawai sudah ada dalam daftar', true);
+                return;
+            }
+            
+            adminEmployees.push(name);
+            
+            if (await saveEmployeesToFirebase()) {
+                input.value = '';
+                updateAdminUI();
+                showMessage(`✅ Pegawai "${name}" berhasil ditambahkan`);
+                
+                employees.push(name);
+                generateEmployeeCards();
+            }
+        }
+
+        async function removeEmployee(name) {
+            if (confirm(`⚠️ Yakin ingin menghapus pegawai "${name}"?\n\nSemua data checklist pegawai ini akan hilang!`)) {
+                adminEmployees = adminEmployees.filter(emp => emp !== name);
+                
+                if (await saveEmployeesToFirebase()) {
+                    updateAdminUI();
+                    showMessage(`🗑️ Pegawai "${name}" berhasil dihapus`);
+                    
+                    const index = employees.indexOf(name);
+                    if (index > -1) {
+                        employees.splice(index, 1);
+                        generateEmployeeCards();
+                    }
+                }
+            }
+        }
+
+        // Task Management
+        async function addTask() {
+            const input = document.getElementById('newTaskName');
+            const task = input.value.trim();
+            
+            if (!task) {
+                showMessage('⚠️ Nama tugas tidak boleh kosong', true);
+                return;
+            }
+            
+            if (adminTasks.includes(task)) {
+                showMessage('⚠️ Tugas sudah ada dalam daftar', true);
+                return;
+            }
+            
+            adminTasks.push(task);
+            
+            if (await saveTasksToFirebase()) {
+                input.value = '';
+                updateAdminUI();
+                showMessage(`✅ Tugas "${task}" berhasil ditambahkan`);
+                
+                checklistItems.push(task);
+                generateEmployeeCards();
+            }
+        }
+
+        async function removeTask(task) {
+            if (confirm(`⚠️ Yakin ingin menghapus tugas "${task}"?\n\nSemua data checklist untuk tugas ini akan hilang!`)) {
+                adminTasks = adminTasks.filter(t => t !== task);
+                
+                if (await saveTasksToFirebase()) {
+                    updateAdminUI();
+                    showMessage(`🗑️ Tugas "${task}" berhasil dihapus`);
+                    
+                    const index = checklistItems.indexOf(task);
+                    if (index > -1) {
+                        checklistItems.splice(index, 1);
+                        generateEmployeeCards();
+                    }
+                }
+            }
+        }
+
+        // UI Update Functions
+        function updateAdminUI() {
+            updateEmployeeList();
+            updateTaskList();
+        }
+
+        function updateEmployeeList() {
+            const container = document.getElementById('employeeList');
+            if (adminEmployees.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #6c757d; padding: 20px;">Belum ada pegawai</p>';
+                return;
+            }
+            
+            container.innerHTML = adminEmployees.map(employee => `
+                <div class="list-item">
+                    <span style="font-weight: 500;">👤 ${employee}</span>
+                    <button onclick="removeEmployee('${employee}')" class="btn btn-danger" style="padding: 4px 8px; font-size: 0.8em;">
+                        🗑️ Hapus
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function updateTaskList() {
+            const container = document.getElementById('taskList');
+            if (adminTasks.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #6c757d; padding: 20px;">Belum ada tugas</p>';
+                return;
+            }
+            
+            container.innerHTML = adminTasks.map(task => `
+                <div class="list-item">
+                    <span style="font-weight: 500;">✅ ${task}</span>
+                    <button onclick="removeTask('${task}')" class="btn btn-danger" style="padding: 4px 8px; font-size: 0.8em;">
+                        🗑️ Hapus
+                    </button>
+                </div>
+            `).join('');
+        }
+
         function initializeFirebaseListener() {
             if (!window.db || !isFirebaseConnected) {
                 showMessage('Database tidak tersedia - menggunakan mode offline', true);
@@ -695,7 +1098,6 @@
             showLoading(true);
             initializeEmptyData();
 
-            // Create document if it doesn't exist
             todayDocRef.get().then(doc => {
                 if (!doc.exists) {
                     const initialData = {};
@@ -718,7 +1120,6 @@
                 generateEmployeeCards();
             });
 
-            // Set up real-time listener
             unsubscribe = todayDocRef.onSnapshot(
                 (doc) => {
                     showLoading(false);
@@ -759,7 +1160,6 @@
             const todayKey = getTodayKey();
             const todayDocRef = window.db.collection("checklist").doc(todayKey);
 
-            // Use dot notation that's compatible with Firestore
             const updateData = {};
             updateData[`${employee}.${item}`] = checked;
 
@@ -769,7 +1169,6 @@
                 console.error("❌ Error updating checklist:", error);
                 showMessage("Gagal menyimpan perubahan - coba lagi", true);
                 
-                // Revert UI change on error
                 const checkbox = document.querySelector(`input[data-employee="${employee}"][data-item="${item}"]`);
                 if (checkbox) {
                     checkbox.checked = !checked;
@@ -779,15 +1178,10 @@
 
         // Reset Management
         function setupDailyReset() {
-            // Set initial check
             lastResetCheck = getTodayKey();
-            
-            // Schedule exact midnight reset
             scheduleNextMidnightReset();
             
-            // Also check every minute as backup
             setInterval(() => {
-                const now = new Date();
                 const currentDate = getTodayKey();
                 
                 if (lastResetCheck && lastResetCheck !== currentDate) {
@@ -796,39 +1190,33 @@
                 }
                 
                 lastResetCheck = currentDate;
-            }, 60000); // Check every minute as backup
+            }, 60000);
         }
 
         function scheduleNextMidnightReset() {
             const now = new Date();
             const tomorrow = new Date(now);
             tomorrow.setDate(tomorrow.getDate() + 1);
-            tomorrow.setHours(0, 0, 0, 0); // Set to exactly 00:00:00
+            tomorrow.setHours(0, 0, 0, 0);
             
             const timeUntilMidnight = tomorrow.getTime() - now.getTime();
             
             console.log(`⏰ Next reset scheduled in ${Math.round(timeUntilMidnight / 1000 / 60)} minutes (at midnight)`);
             
-            // Schedule the reset for exactly midnight
             setTimeout(() => {
                 console.log('🌙 Midnight reset triggered at exactly 00:00');
                 performDailyReset();
-                
-                // Schedule the next midnight reset (24 hours later)
                 scheduleNextMidnightReset();
-                
             }, timeUntilMidnight);
         }
 
         function performDailyReset() {
             console.log('🔄 Performing daily reset...');
             
-            // Clean up old listener
             if (unsubscribe) {
                 unsubscribe();
             }
             
-            // Reinitialize for new day
             if (isFirebaseConnected) {
                 initializeFirebaseListener();
             } else {
@@ -839,22 +1227,17 @@
             updateCurrentDate();
             showMessage('🌅 Checklist baru untuk hari ini telah dimuat (Reset pukul 00:00)');
             
-            // Check if we need to add new month to selector
             checkAndUpdateMonthSelector();
-            
-            // Update last reset check
             lastResetCheck = getTodayKey();
         }
 
         function checkAndUpdateMonthSelector() {
-            // If we're currently on the report tab, update the month selector
             const reportTab = document.getElementById('report');
             if (reportTab && reportTab.classList.contains('active')) {
                 const oldOptionsCount = document.getElementById('monthSelector').options.length;
                 populateMonthSelector();
                 const newOptionsCount = document.getElementById('monthSelector').options.length;
                 
-                // If new month was added, show notification
                 if (newOptionsCount > oldOptionsCount) {
                     const currentMonth = new Date().toLocaleDateString('id-ID', { 
                         year: 'numeric', 
@@ -909,10 +1292,8 @@
         }
 
         function toggleChecklistItem(employee, item, checkbox) {
-            // Update Firebase
             updateChecklistItem(employee, item, checkbox.checked);
             
-            // Update local UI immediately for better UX
             const checklistItem = checkbox.closest('.checklist-item');
             if (checkbox.checked) {
                 checklistItem.classList.add('completed');
@@ -920,7 +1301,6 @@
                 checklistItem.classList.remove('completed');
             }
             
-            // Update progress badge
             const employeeCard = checklistItem.closest('.employee-card');
             const checkboxes = employeeCard.querySelectorAll('input[type="checkbox"]:checked');
             const progressBadge = employeeCard.querySelector('.progress-badge');
@@ -939,7 +1319,6 @@
                     generateReportTable(selectedMonthKey)
                 ]);
                 
-                // Update page title with selected month
                 const selectedMonthName = document.getElementById('monthSelector').selectedOptions[0]?.textContent;
                 if (selectedMonthName) {
                     updateStatusInfo(`📊 Rekap ${selectedMonthName} berhasil dimuat`);
@@ -1133,11 +1512,10 @@
             event.target.classList.add('active');
             
             if (tabName === 'report') {
-                // Ensure month selector is populated when switching to report tab
                 setTimeout(() => {
                     populateMonthSelector();
                     generateReport();
-                }, 100); // Small delay to ensure DOM is ready
+                }, 100);
             }
         }
 
@@ -1161,13 +1539,12 @@
             updateCurrentDate();
             lastResetCheck = getTodayKey();
             
-            // Initialize month selector early
             populateMonthSelector();
             
-            // Initialize Firebase
             const firebaseReady = await initializeFirebase();
             
             if (firebaseReady) {
+                await loadDynamicData();
                 initializeFirebaseListener();
             } else {
                 showMessage('Berjalan dalam mode offline - data tidak akan tersinkron', true);
@@ -1176,23 +1553,10 @@
                 showLoading(false);
             }
             
-            // Setup daily reset checker with exact midnight timing
             setupDailyReset();
-            
-            // Update date display every minute
             setInterval(updateCurrentDate, 60000);
             
             console.log('✅ Application initialized');
-            
-            // Debug: Log next reset time
-            const now = new Date();
-            const tomorrow = new Date(now);
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            tomorrow.setHours(0, 0, 0, 0);
-            const timeUntilMidnight = tomorrow.getTime() - now.getTime();
-            console.log(`🕐 Current time: ${now.toLocaleString('id-ID')}`);
-            console.log(`🕛 Next reset: ${tomorrow.toLocaleString('id-ID')}`);
-            console.log(`⏱️ Time until reset: ${Math.round(timeUntilMidnight / 1000 / 60)} minutes`);
         }
 
         // Event Listeners
@@ -1206,7 +1570,6 @@
             }
         });
 
-        // Handle online/offline status
         window.addEventListener('online', function() {
             updateStatusInfo('🟢 Kembali online - mencoba menyambung ke Firebase...');
             setTimeout(() => {
