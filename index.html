@@ -442,8 +442,8 @@
             color: white;
         }
 
-        .btn-danger {
-            background: #dc3545;
+        .btn-secondary {
+            background: #6c757d;
             color: white;
         }
 
@@ -554,6 +554,32 @@
                 <div class="auto-reset-info">
                     <span>Dibuat oleh Kantor Pusat Ibnu Katsir - Reset otomatis setiap pukul 00:00 WIB</span>
                 </div>
+                
+                <!-- Employee Navigation Dropdown -->
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e9ecef;">
+                    <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                        <label for="employeeNavigator" style="font-weight: 600; color: #2c3e50; font-size: 1.1em;">
+                            🧭 Navigasi Cepat:
+                        </label>
+                        <select id="employeeNavigator" onchange="navigateToEmployee()" style="
+                            padding: 8px 15px;
+                            border: 2px solid #e9ecef;
+                            border-radius: 8px;
+                            background: white;
+                            font-size: 1em;
+                            font-weight: 500;
+                            color: #2c3e50;
+                            cursor: pointer;
+                            min-width: 200px;
+                        ">
+                            <option value="">-- Pilih Pegawai --</option>
+                        </select>
+                        <div style="font-size: 0.9em; color: #6c757d;">
+                            <small>💡 Pilih nama untuk langsung menuju ke checklist pegawai tersebut</small>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="loading-spinner" id="loadingSpinner">
                     <div>Memuat data...</div>
                 </div>
@@ -1208,6 +1234,121 @@
                 
                 employees.push(name);
                 generateEmployeeCards();
+                updateEmployeeDropdown(); // Update dropdown
+            }
+        }
+
+        function editEmployee(index) {
+            const nameSpan = document.getElementById(`employee-name-${index}`);
+            const editInput = document.getElementById(`employee-edit-${index}`);
+            const editBtn = document.getElementById(`edit-btn-${index}`);
+            const saveBtn = document.getElementById(`save-btn-${index}`);
+            const cancelBtn = document.getElementById(`cancel-btn-${index}`);
+            
+            // Hide name, show input
+            nameSpan.style.display = 'none';
+            editInput.style.display = 'block';
+            editInput.focus();
+            editInput.select();
+            
+            // Hide edit button, show save/cancel
+            editBtn.style.display = 'none';
+            saveBtn.style.display = 'inline-block';
+            cancelBtn.style.display = 'inline-block';
+        }
+
+        async function saveEmployee(index) {
+            const editInput = document.getElementById(`employee-edit-${index}`);
+            const newName = editInput.value.trim();
+            const oldName = adminEmployees[index];
+            
+            if (!newName) {
+                showMessage('⚠️ Nama pegawai tidak boleh kosong', true);
+                return;
+            }
+            
+            if (newName === oldName) {
+                cancelEditEmployee(index);
+                return;
+            }
+            
+            // Check if new name already exists (excluding current)
+            if (adminEmployees.includes(newName) && newName !== oldName) {
+                showMessage('⚠️ Nama pegawai sudah ada dalam daftar', true);
+                return;
+            }
+            
+            // Update in admin array
+            adminEmployees[index] = newName;
+            
+            if (await saveEmployeesToFirebase()) {
+                // Update in main employees array
+                const mainIndex = employees.indexOf(oldName);
+                if (mainIndex > -1) {
+                    employees[mainIndex] = newName;
+                }
+                
+                updateAdminUI();
+                generateEmployeeCards();
+                updateEmployeeDropdown(); // Update dropdown
+                showMessage(`✅ Nama pegawai berhasil diubah dari "${oldName}" ke "${newName}"`);
+                
+                // Update checklist data with new name
+                await updateChecklistDataEmployeeName(oldName, newName);
+            } else {
+                // Revert if save failed
+                adminEmployees[index] = oldName;
+                updateAdminUI();
+            }
+        }
+
+        function cancelEditEmployee(index) {
+            const nameSpan = document.getElementById(`employee-name-${index}`);
+            const editInput = document.getElementById(`employee-edit-${index}`);
+            const editBtn = document.getElementById(`edit-btn-${index}`);
+            const saveBtn = document.getElementById(`save-btn-${index}`);
+            const cancelBtn = document.getElementById(`cancel-btn-${index}`);
+            
+            // Show name, hide input
+            nameSpan.style.display = 'block';
+            editInput.style.display = 'none';
+            
+            // Show edit button, hide save/cancel
+            editBtn.style.display = 'inline-block';
+            saveBtn.style.display = 'none';
+            cancelBtn.style.display = 'none';
+            
+            // Reset input value
+            editInput.value = adminEmployees[index];
+        }
+
+        // Function to update checklist data when employee name changes
+        async function updateChecklistDataEmployeeName(oldName, newName) {
+            if (!window.db || !isFirebaseConnected) return;
+            
+            try {
+                // Get all checklist documents
+                const snapshot = await window.db.collection("checklist").get();
+                
+                snapshot.forEach(async (doc) => {
+                    const data = doc.data();
+                    if (data[oldName]) {
+                        // Copy old data to new name
+                        const batch = window.db.batch();
+                        const docRef = window.db.collection("checklist").doc(doc.id);
+                        
+                        batch.update(docRef, {
+                            [newName]: data[oldName],
+                            [oldName]: firebase.firestore.FieldValue.delete()
+                        });
+                        
+                        await batch.commit();
+                    }
+                });
+                
+                console.log(`✅ Updated checklist data: ${oldName} → ${newName}`);
+            } catch (error) {
+                console.error('Error updating checklist data:', error);
             }
         }
 
@@ -1223,6 +1364,7 @@
                     if (index > -1) {
                         employees.splice(index, 1);
                         generateEmployeeCards();
+                        updateEmployeeDropdown(); // Update dropdown
                     }
                 }
             }
@@ -1296,12 +1438,33 @@
                 return;
             }
             
-            const html = adminEmployees.map(employee => `
+            const html = adminEmployees.map((employee, index) => `
                 <div class="list-item">
-                    <span style="font-weight: 500;">👤 ${employee}</span>
-                    <button onclick="removeEmployee('${employee}')" class="btn btn-danger" style="padding: 4px 8px; font-size: 0.8em;">
-                        🗑️ Hapus
-                    </button>
+                    <div style="display: flex; align-items: center; flex: 1;">
+                        <span id="employee-name-${index}" style="font-weight: 500; flex: 1;">👤 ${employee}</span>
+                        <input type="text" id="employee-edit-${index}" value="${employee}" style="
+                            display: none; 
+                            flex: 1; 
+                            padding: 4px 8px; 
+                            border: 2px solid #007bff; 
+                            border-radius: 4px; 
+                            font-weight: 500;
+                        ">
+                    </div>
+                    <div style="display: flex; gap: 5px;">
+                        <button id="edit-btn-${index}" onclick="editEmployee(${index})" class="btn btn-primary" style="padding: 4px 8px; font-size: 0.8em;">
+                            ✏️ Edit
+                        </button>
+                        <button id="save-btn-${index}" onclick="saveEmployee(${index})" class="btn btn-success" style="padding: 4px 8px; font-size: 0.8em; display: none;">
+                            💾 Simpan
+                        </button>
+                        <button id="cancel-btn-${index}" onclick="cancelEditEmployee(${index})" class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.8em; display: none; background: #6c757d;">
+                            ❌ Batal
+                        </button>
+                        <button onclick="removeEmployee('${employee.replace(/'/g, '\\\'')}')" class="btn btn-danger" style="padding: 4px 8px; font-size: 0.8em;">
+                            🗑️ Hapus
+                        </button>
+                    </div>
                 </div>
             `).join('');
             
@@ -1499,7 +1662,67 @@
             }
         }
 
-        // UI Generation Functions
+        // Employee Navigation Functions
+        function updateEmployeeDropdown() {
+            const dropdown = document.getElementById('employeeNavigator');
+            if (!dropdown) return;
+            
+            // Clear existing options except the first one
+            dropdown.innerHTML = '<option value="">-- Pilih Pegawai --</option>';
+            
+            // Add employees to dropdown
+            employees.forEach(employee => {
+                const option = document.createElement('option');
+                option.value = employee;
+                option.textContent = employee;
+                dropdown.appendChild(option);
+            });
+            
+            console.log('✅ Employee dropdown updated with', employees.length, 'employees');
+        }
+
+        function navigateToEmployee() {
+            const dropdown = document.getElementById('employeeNavigator');
+            const selectedEmployee = dropdown.value;
+            
+            if (!selectedEmployee) return;
+            
+            // Find the employee card
+            const employeeCards = document.querySelectorAll('.employee-card');
+            let targetCard = null;
+            
+            employeeCards.forEach(card => {
+                const employeeName = card.querySelector('.employee-name');
+                if (employeeName && employeeName.textContent.includes(selectedEmployee)) {
+                    targetCard = card;
+                }
+            });
+            
+            if (targetCard) {
+                // Smooth scroll to the target card
+                targetCard.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center',
+                    inline: 'nearest'
+                });
+                
+                // Add highlight effect
+                targetCard.style.transform = 'scale(1.02)';
+                targetCard.style.boxShadow = '0 8px 25px rgba(255, 107, 53, 0.3)';
+                targetCard.style.transition = 'all 0.3s ease';
+                
+                // Remove highlight after 2 seconds
+                setTimeout(() => {
+                    targetCard.style.transform = '';
+                    targetCard.style.boxShadow = '';
+                }, 2000);
+                
+                // Reset dropdown
+                dropdown.value = '';
+                
+                console.log(`🧭 Navigated to employee: ${selectedEmployee}`);
+            }
+        }
         function generateEmployeeCards() {
             const grid = document.getElementById("employeeGrid");
             grid.innerHTML = "";
