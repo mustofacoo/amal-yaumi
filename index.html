@@ -461,6 +461,53 @@
             border-radius: 6px;
             border: 1px solid #dee2e6;
             margin-bottom: 5px;
+            cursor: move;
+            transition: all 0.2s ease;
+        }
+
+        .list-item:hover {
+            background: #f8f9fa;
+            border-color: #007bff;
+        }
+
+        .list-item.dragging {
+            opacity: 0.5;
+            transform: rotate(3deg);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .list-item.drag-over {
+            border-color: #28a745;
+            background: #e8f5e8;
+            transform: translateY(-2px);
+        }
+
+        .drag-handle {
+            cursor: grab;
+            color: #6c757d;
+            margin-right: 8px;
+            font-size: 1.2em;
+        }
+
+        .drag-handle:hover {
+            color: #007bff;
+        }
+
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+
+        .employee-list-container {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px dashed transparent;
+            transition: all 0.3s ease;
+        }
+
+        .employee-list-container.drag-active {
+            border-color: #007bff;
+            background: #e7f3ff;
         }
 
         /* Access Restricted Message */
@@ -693,6 +740,12 @@
                         <button onclick="addEmployee()" class="btn btn-success" style="white-space: nowrap;">
                             ➕ Tambah Pegawai
                         </button>
+                    </div>
+                    
+                    <div style="background: #e8f4fd; padding: 10px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #bee5eb;">
+                        <small style="color: #0c5460;">
+                            <strong>💡 Tips:</strong> Seret ikon <code>⋮⋮</code> untuk mengubah urutan pegawai. Urutan ini akan mempengaruhi tampilan checklist dan dropdown navigasi.
+                        </small>
                     </div>
                     
                     <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
@@ -1255,6 +1308,17 @@
             editBtn.style.display = 'none';
             saveBtn.style.display = 'inline-block';
             cancelBtn.style.display = 'inline-block';
+            
+            // Add keyboard event listeners
+            editInput.onkeydown = function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    saveEmployee(index);
+                } else if (e.key === 'Escape') {
+                    e.preventDefault();
+                    cancelEditEmployee(index);
+                }
+            };
         }
 
         async function saveEmployee(index) {
@@ -1439,8 +1503,9 @@
             }
             
             const html = adminEmployees.map((employee, index) => `
-                <div class="list-item">
+                <div class="list-item" draggable="true" data-employee-index="${index}" data-employee-name="${employee}">
                     <div style="display: flex; align-items: center; flex: 1;">
+                        <span class="drag-handle">⋮⋮</span>
                         <span id="employee-name-${index}" style="font-weight: 500; flex: 1;">👤 ${employee}</span>
                         <input type="text" id="employee-edit-${index}" value="${employee}" style="
                             display: none; 
@@ -1469,6 +1534,10 @@
             `).join('');
             
             container.innerHTML = html;
+            
+            // Add drag and drop event listeners
+            initializeDragAndDrop();
+            
             console.log('✅ Employee list updated with', adminEmployees.length, 'employees');
         }
 
@@ -1499,7 +1568,155 @@
             console.log('✅ Task list updated with', adminTasks.length, 'tasks');
         }
 
-        function initializeFirebaseListener() {
+        // Drag and Drop Functions
+        function initializeDragAndDrop() {
+            const container = document.getElementById('employeeList');
+            if (!container) return;
+            
+            const listItems = container.querySelectorAll('.list-item[draggable="true"]');
+            
+            listItems.forEach(item => {
+                item.addEventListener('dragstart', handleDragStart);
+                item.addEventListener('dragend', handleDragEnd);
+                item.addEventListener('dragover', handleDragOver);
+                item.addEventListener('dragenter', handleDragEnter);
+                item.addEventListener('dragleave', handleDragLeave);
+                item.addEventListener('drop', handleDrop);
+            });
+            
+            // Add visual feedback for drag container
+            container.classList.add('employee-list-container');
+        }
+        
+        let draggedElement = null;
+        let draggedIndex = null;
+        
+        function handleDragStart(e) {
+            draggedElement = this;
+            draggedIndex = parseInt(this.dataset.employeeIndex);
+            
+            this.classList.add('dragging');
+            
+            // Set drag effect
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.outerHTML);
+            
+            // Add visual feedback to container
+            document.getElementById('employeeList').classList.add('drag-active');
+            
+            console.log('🎯 Drag started for:', this.dataset.employeeName);
+        }
+        
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+            
+            // Remove visual feedback from container
+            document.getElementById('employeeList').classList.remove('drag-active');
+            
+            // Clean up all drag-over classes
+            document.querySelectorAll('.list-item').forEach(item => {
+                item.classList.remove('drag-over');
+            });
+            
+            draggedElement = null;
+            draggedIndex = null;
+            
+            console.log('🎯 Drag ended');
+        }
+        
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault(); // Allows us to drop
+            }
+            
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+        
+        function handleDragEnter(e) {
+            if (this !== draggedElement) {
+                this.classList.add('drag-over');
+            }
+        }
+        
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+        
+        async function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation(); // Stops some browsers from redirecting
+            }
+            
+            if (draggedElement !== this) {
+                const targetIndex = parseInt(this.dataset.employeeIndex);
+                
+                console.log(`🔄 Moving employee from index ${draggedIndex} to ${targetIndex}`);
+                
+                // Reorder the array
+                const draggedEmployee = adminEmployees[draggedIndex];
+                const newOrder = [...adminEmployees];
+                
+                // Remove from old position
+                newOrder.splice(draggedIndex, 1);
+                
+                // Insert at new position
+                newOrder.splice(targetIndex, 0, draggedEmployee);
+                
+                // Update the array
+                adminEmployees = newOrder;
+                
+                // Update main employees array too
+                employees.length = 0;
+                employees.push(...adminEmployees);
+                
+                // Save to Firebase
+                if (await saveEmployeesToFirebase()) {
+                    updateAdminUI();
+                    generateEmployeeCards();
+                    updateEmployeeDropdown();
+                    showMessage(`✅ Urutan pegawai berhasil diubah - ${draggedEmployee} dipindah ke posisi ${targetIndex + 1}`);
+                } else {
+                    // Revert if save failed
+                    location.reload();
+                }
+            }
+            
+            return false;
+        }
+        
+        // Function to move employee up/down with buttons (alternative to drag-drop)
+        async function moveEmployeeUp(index) {
+            if (index === 0) return; // Already at top
+            
+            const temp = adminEmployees[index];
+            adminEmployees[index] = adminEmployees[index - 1];
+            adminEmployees[index - 1] = temp;
+            
+            await saveEmployeeOrder();
+        }
+        
+        async function moveEmployeeDown(index) {
+            if (index === adminEmployees.length - 1) return; // Already at bottom
+            
+            const temp = adminEmployees[index];
+            adminEmployees[index] = adminEmployees[index + 1];
+            adminEmployees[index + 1] = temp;
+            
+            await saveEmployeeOrder();
+        }
+        
+        async function saveEmployeeOrder() {
+            if (await saveEmployeesToFirebase()) {
+                employees.length = 0;
+                employees.push(...adminEmployees);
+                
+                updateAdminUI();
+                generateEmployeeCards();
+                updateEmployeeDropdown();
+                showMessage('✅ Urutan pegawai berhasil diubah');
+            }
+        }
             if (!window.db || !isFirebaseConnected) {
                 showMessage('Database tidak tersedia - menggunakan mode offline', true);
                 initializeEmptyData();
@@ -1665,7 +1882,10 @@
         // Employee Navigation Functions
         function updateEmployeeDropdown() {
             const dropdown = document.getElementById('employeeNavigator');
-            if (!dropdown) return;
+            if (!dropdown) {
+                console.warn('⚠️ Employee navigator dropdown not found');
+                return;
+            }
             
             // Clear existing options except the first one
             dropdown.innerHTML = '<option value="">-- Pilih Pegawai --</option>';
@@ -1678,7 +1898,7 @@
                 dropdown.appendChild(option);
             });
             
-            console.log('✅ Employee dropdown updated with', employees.length, 'employees');
+            console.log('✅ Employee dropdown updated with', employees.length, 'employees:', employees);
         }
 
         function navigateToEmployee() {
@@ -1687,18 +1907,14 @@
             
             if (!selectedEmployee) return;
             
-            // Find the employee card
-            const employeeCards = document.querySelectorAll('.employee-card');
-            let targetCard = null;
+            console.log('🧭 Attempting to navigate to employee:', selectedEmployee);
             
-            employeeCards.forEach(card => {
-                const employeeName = card.querySelector('.employee-name');
-                if (employeeName && employeeName.textContent.includes(selectedEmployee)) {
-                    targetCard = card;
-                }
-            });
+            // Find the employee card using data attribute (more reliable)
+            const targetCard = document.querySelector(`[data-employee-name="${selectedEmployee}"]`);
             
             if (targetCard) {
+                console.log('✅ Found target card for:', selectedEmployee);
+                
                 // Smooth scroll to the target card
                 targetCard.scrollIntoView({ 
                     behavior: 'smooth', 
@@ -1709,30 +1925,41 @@
                 // Add highlight effect
                 targetCard.style.transform = 'scale(1.02)';
                 targetCard.style.boxShadow = '0 8px 25px rgba(255, 107, 53, 0.3)';
+                targetCard.style.border = '2px solid #ff6b35';
                 targetCard.style.transition = 'all 0.3s ease';
                 
-                // Remove highlight after 2 seconds
+                // Show success message
+                showMessage(`🎯 Menuju ke checklist ${selectedEmployee}`, false);
+                
+                // Remove highlight after 3 seconds
                 setTimeout(() => {
                     targetCard.style.transform = '';
                     targetCard.style.boxShadow = '';
-                }, 2000);
+                    targetCard.style.border = '';
+                }, 3000);
                 
                 // Reset dropdown
                 dropdown.value = '';
                 
-                console.log(`🧭 Navigated to employee: ${selectedEmployee}`);
+                console.log(`🧭 Successfully navigated to employee: ${selectedEmployee}`);
+            } else {
+                console.error('❌ Target card not found for employee:', selectedEmployee);
+                showMessage(`❌ Tidak dapat menemukan card untuk ${selectedEmployee}`, true);
             }
         }
+        // UI Generation Functions
         function generateEmployeeCards() {
             const grid = document.getElementById("employeeGrid");
             grid.innerHTML = "";
 
-            employees.forEach(employee => {
+            employees.forEach((employee, employeeIndex) => {
                 const employeeData = checklistData[employee] || {};
                 const completed = checklistItems.filter(item => employeeData[item]).length;
                 
                 const card = document.createElement("div");
                 card.className = "employee-card";
+                card.id = `employee-card-${employeeIndex}`; // Add unique ID
+                card.setAttribute('data-employee-name', employee); // Add data attribute for easier targeting
                 
                 card.innerHTML = `
                     <div class="employee-name">
@@ -1763,6 +1990,9 @@
                 
                 grid.appendChild(card);
             });
+            
+            // Update dropdown after generating cards
+            updateEmployeeDropdown();
         }
 
         function toggleChecklistItem(employee, item, checkbox) {
@@ -2076,6 +2306,11 @@
             updateAdminAccess();
             setupDailyReset();
             setInterval(updateCurrentDate, 1000);
+            
+            // Initial dropdown update
+            setTimeout(() => {
+                updateEmployeeDropdown();
+            }, 500);
             
             console.log('✅ Application initialized with Jakarta timezone and admin access control');
             
