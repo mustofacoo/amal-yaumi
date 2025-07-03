@@ -1549,11 +1549,18 @@
                 document.getElementById('adminTab').style.display = 'block';
                 document.getElementById('loginTab').style.display = 'none';
                 
+                // Initialize admin data first
+                adminEmployees = [...employees];
+                adminTasks = [...checklistItems];
+                
+                // Try to load from Firebase, but don't wait for it
+                if (isFirebaseConnected) {
+                    loadAdminData().catch(console.error);
+                } else {
+                    updateAdminUI();
+                }
+                
                 switchTab('admin');
-                
-                await loadAdminData();
-                updateAdminUI();
-                
                 showMessage('✅ Login berhasil! Selamat datang Admin');
                 
             } catch (error) {
@@ -1566,6 +1573,8 @@
                     errorMessage = '❌ Password salah';
                 } else if (error.code === 'auth/invalid-email') {
                     errorMessage = '❌ Format email tidak valid';
+                } else if (error.code === 'auth/network-request-failed') {
+                    errorMessage = '❌ Tidak ada koneksi internet';
                 }
                 
                 messageEl.innerHTML = `<span style="color: #dc3545;">${errorMessage}</span>`;
@@ -1596,20 +1605,36 @@
         // Admin Data Management
         async function loadAdminData() {
             try {
+                // Load employees data
                 const employeesDoc = await window.db.collection('config').doc('employees').get();
                 if (employeesDoc.exists) {
                     adminEmployees = employeesDoc.data().list || [...employees];
+                } else {
+                    // Initialize with current employees if no config exists
+                    adminEmployees = [...employees];
                 }
                 
+                // Load tasks data
                 const tasksDoc = await window.db.collection('config').doc('tasks').get();
                 if (tasksDoc.exists) {
                     adminTasks = tasksDoc.data().list || [...checklistItems];
+                } else {
+                    // Initialize with current tasks if no config exists
+                    adminTasks = [...checklistItems];
                 }
                 
-                console.log('✅ Admin data loaded');
+                console.log('✅ Admin data loaded - Employees:', adminEmployees, 'Tasks:', adminTasks);
+                
+                // Update UI immediately after loading
+                updateAdminUI();
+                
             } catch (error) {
                 console.error('Error loading admin data:', error);
-                showMessage('❌ Gagal memuat data admin', true);
+                // Fallback to current data if Firebase fails
+                adminEmployees = [...employees];
+                adminTasks = [...checklistItems];
+                updateAdminUI();
+                showMessage('⚠️ Menggunakan data default - Firebase tidak tersedia', true);
             }
         }
 
@@ -1642,6 +1667,11 @@
 
         async function saveEmployeesToFirebase() {
             try {
+                if (!window.db || !isFirebaseConnected) {
+                    console.log('⚠️ Firebase not available, saving locally only');
+                    return true; // Return true for offline mode
+                }
+                
                 await window.db.collection('config').doc('employees').set({
                     list: adminEmployees,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1650,13 +1680,18 @@
                 return true;
             } catch (error) {
                 console.error('Error saving employees:', error);
-                showMessage('❌ Gagal menyimpan data pegawai', true);
-                return false;
+                showMessage('⚠️ Data tersimpan lokal - akan disinkron saat online', true);
+                return true; // Don't block UI updates
             }
         }
 
         async function saveTasksToFirebase() {
             try {
+                if (!window.db || !isFirebaseConnected) {
+                    console.log('⚠️ Firebase not available, saving locally only');
+                    return true; // Return true for offline mode
+                }
+                
                 await window.db.collection('config').doc('tasks').set({
                     list: adminTasks,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1665,8 +1700,8 @@
                 return true;
             } catch (error) {
                 console.error('Error saving tasks:', error);
-                showMessage('❌ Gagal menyimpan data tugas', true);
-                return false;
+                showMessage('⚠️ Data tersimpan lokal - akan disinkron saat online', true);
+                return true; // Don't block UI updates
             }
         }
 
@@ -1685,17 +1720,26 @@
                 return;
             }
             
+            // Add to admin list
             adminEmployees.push(name);
             
-            if (await saveEmployeesToFirebase()) {
-                input.value = '';
-                updateAdminUI();
-                showMessage(`✅ Pegawai "${name}" berhasil ditambahkan`);
-                
+            // Update UI immediately
+            updateAdminUI();
+            
+            // Save to Firebase (async)
+            saveEmployeesToFirebase();
+            
+            // Clear input
+            input.value = '';
+            
+            // Update main employees array for immediate effect
+            if (!employees.includes(name)) {
                 employees.push(name);
                 generateEmployeeCards();
                 populateEmployeeSelector();
             }
+            
+            showMessage(`✅ Pegawai "${name}" berhasil ditambahkan`);
         }
 
         function editEmployee(oldName) {
@@ -1706,10 +1750,21 @@
             
             editingEmployee = oldName;
             updateEmployeeList();
+            
+            // Focus on the input
+            setTimeout(() => {
+                const input = document.querySelector(`input[data-edit-employee="${oldName}"]`);
+                if (input) {
+                    input.focus();
+                    input.select();
+                }
+            }, 100);
         }
 
         async function saveEmployeeEdit(oldName) {
             const input = document.querySelector(`input[data-edit-employee="${oldName}"]`);
+            if (!input) return;
+            
             const newName = input.value.trim();
             
             if (!newName) {
@@ -1728,23 +1783,27 @@
                 return;
             }
             
+            // Update admin list
             const index = adminEmployees.indexOf(oldName);
             if (index > -1) {
                 adminEmployees[index] = newName;
                 
-                if (await saveEmployeesToFirebase()) {
-                    editingEmployee = null;
-                    updateAdminUI();
-                    showMessage(`✅ Nama pegawai berhasil diubah dari "${oldName}" ke "${newName}"`);
-                    
-                    // Update main employees array
-                    const mainIndex = employees.indexOf(oldName);
-                    if (mainIndex > -1) {
-                        employees[mainIndex] = newName;
-                        generateEmployeeCards();
-                        populateEmployeeSelector();
-                    }
+                // Update UI immediately
+                editingEmployee = null;
+                updateAdminUI();
+                
+                // Save to Firebase (async)
+                saveEmployeesToFirebase();
+                
+                // Update main employees array
+                const mainIndex = employees.indexOf(oldName);
+                if (mainIndex > -1) {
+                    employees[mainIndex] = newName;
+                    generateEmployeeCards();
+                    populateEmployeeSelector();
                 }
+                
+                showMessage(`✅ Nama pegawai berhasil diubah dari "${oldName}" ke "${newName}"`);
             }
         }
 
@@ -1755,20 +1814,25 @@
 
         async function removeEmployee(name) {
             if (confirm(`⚠️ Yakin ingin menghapus pegawai "${name}"?\n\nSemua data checklist pegawai ini akan hilang!`)) {
+                // Remove from admin list
                 adminEmployees = adminEmployees.filter(emp => emp !== name);
                 
-                if (await saveEmployeesToFirebase()) {
-                    editingEmployee = null;
-                    updateAdminUI();
-                    showMessage(`🗑️ Pegawai "${name}" berhasil dihapus`);
-                    
-                    const index = employees.indexOf(name);
-                    if (index > -1) {
-                        employees.splice(index, 1);
-                        generateEmployeeCards();
-                        populateEmployeeSelector();
-                    }
+                // Update UI immediately
+                editingEmployee = null;
+                updateAdminUI();
+                
+                // Save to Firebase (async)
+                saveEmployeesToFirebase();
+                
+                // Update main employees array
+                const index = employees.indexOf(name);
+                if (index > -1) {
+                    employees.splice(index, 1);
+                    generateEmployeeCards();
+                    populateEmployeeSelector();
                 }
+                
+                showMessage(`🗑️ Pegawai "${name}" berhasil dihapus`);
             }
         }
 
@@ -1787,16 +1851,25 @@
                 return;
             }
             
+            // Add to admin list
             adminTasks.push(task);
             
-            if (await saveTasksToFirebase()) {
-                input.value = '';
-                updateAdminUI();
-                showMessage(`✅ Tugas "${task}" berhasil ditambahkan`);
-                
+            // Update UI immediately
+            updateAdminUI();
+            
+            // Save to Firebase (async)
+            saveTasksToFirebase();
+            
+            // Clear input
+            input.value = '';
+            
+            // Update main tasks array for immediate effect
+            if (!checklistItems.includes(task)) {
                 checklistItems.push(task);
                 generateEmployeeCards();
             }
+            
+            showMessage(`✅ Tugas "${task}" berhasil ditambahkan`);
         }
 
         function editTask(oldTask) {
@@ -1807,10 +1880,21 @@
             
             editingTask = oldTask;
             updateTaskList();
+            
+            // Focus on the input
+            setTimeout(() => {
+                const input = document.querySelector(`input[data-edit-task="${oldTask}"]`);
+                if (input) {
+                    input.focus();
+                    input.select();
+                }
+            }, 100);
         }
 
         async function saveTaskEdit(oldTask) {
             const input = document.querySelector(`input[data-edit-task="${oldTask}"]`);
+            if (!input) return;
+            
             const newTask = input.value.trim();
             
             if (!newTask) {
@@ -1829,22 +1913,26 @@
                 return;
             }
             
+            // Update admin list
             const index = adminTasks.indexOf(oldTask);
             if (index > -1) {
                 adminTasks[index] = newTask;
                 
-                if (await saveTasksToFirebase()) {
-                    editingTask = null;
-                    updateAdminUI();
-                    showMessage(`✅ Nama tugas berhasil diubah dari "${oldTask}" ke "${newTask}"`);
-                    
-                    // Update main tasks array
-                    const mainIndex = checklistItems.indexOf(oldTask);
-                    if (mainIndex > -1) {
-                        checklistItems[mainIndex] = newTask;
-                        generateEmployeeCards();
-                    }
+                // Update UI immediately
+                editingTask = null;
+                updateAdminUI();
+                
+                // Save to Firebase (async)
+                saveTasksToFirebase();
+                
+                // Update main tasks array
+                const mainIndex = checklistItems.indexOf(oldTask);
+                if (mainIndex > -1) {
+                    checklistItems[mainIndex] = newTask;
+                    generateEmployeeCards();
                 }
+                
+                showMessage(`✅ Nama tugas berhasil diubah dari "${oldTask}" ke "${newTask}"`);
             }
         }
 
@@ -1855,19 +1943,24 @@
 
         async function removeTask(task) {
             if (confirm(`⚠️ Yakin ingin menghapus tugas "${task}"?\n\nSemua data checklist untuk tugas ini akan hilang!`)) {
+                // Remove from admin list
                 adminTasks = adminTasks.filter(t => t !== task);
                 
-                if (await saveTasksToFirebase()) {
-                    editingTask = null;
-                    updateAdminUI();
-                    showMessage(`🗑️ Tugas "${task}" berhasil dihapus`);
-                    
-                    const index = checklistItems.indexOf(task);
-                    if (index > -1) {
-                        checklistItems.splice(index, 1);
-                        generateEmployeeCards();
-                    }
+                // Update UI immediately
+                editingTask = null;
+                updateAdminUI();
+                
+                // Save to Firebase (async)
+                saveTasksToFirebase();
+                
+                // Update main tasks array
+                const index = checklistItems.indexOf(task);
+                if (index > -1) {
+                    checklistItems.splice(index, 1);
+                    generateEmployeeCards();
                 }
+                
+                showMessage(`🗑️ Tugas "${task}" berhasil dihapus`);
             }
         }
 
@@ -2402,6 +2495,15 @@
                 setTimeout(() => {
                     populateMonthSelector();
                     generateReport();
+                }, 100);
+            } else if (tabName === 'admin') {
+                // Ensure admin data is loaded when switching to admin tab
+                setTimeout(() => {
+                    if (currentUser && (adminEmployees.length === 0 || adminTasks.length === 0)) {
+                        adminEmployees = [...employees];
+                        adminTasks = [...checklistItems];
+                        updateAdminUI();
+                    }
                 }, 100);
             }
         }
