@@ -779,9 +779,11 @@
                     <h4 style="color: #004085; margin-bottom: 10px;">📖 Petunjuk Penggunaan Admin:</h4>
                     <ul style="color: #004085; line-height: 1.6;">
                         <li><strong>Menambah Pegawai:</strong> Ketik nama pegawai baru dan klik "Tambah Pegawai"</li>
-                        <li><strong>Menghapus Pegawai:</strong> Klik tombol "Hapus" di samping nama pegawai</li>
+                        <li><strong>Edit Nama:</strong> Klik "✏️ Edit" untuk mengubah nama pegawai (Enter = simpan, Escape = batal)</li>
+                        <li><strong>Mengurutkan Pegawai:</strong> Seret ikon "⋮⋮" untuk mengubah urutan tampilan pegawai</li>
+                        <li><strong>Menghapus Pegawai:</strong> Klik tombol "🗑️ Hapus" di samping nama pegawai</li>
                         <li><strong>Menambah Tugas:</strong> Ketik nama tugas baru dan klik "Tambah Tugas"</li>
-                        <li><strong>Menghapus Tugas:</strong> Klik tombol "Hapus" di samping nama tugas</li>
+                        <li><strong>Menghapus Tugas:</strong> Klik tombol "🗑️ Hapus" di samping nama tugas</li>
                         <li><strong>Rekap Bulanan:</strong> Akses khusus admin untuk melihat laporan performa pegawai</li>
                         <li><strong>⚠️ Peringatan:</strong> Menghapus pegawai atau tugas akan menghilangkan semua data checklist terkait</li>
                         <li><strong>🕐 Reset Waktu:</strong> Checklist direset otomatis setiap pukul 00:00 WIB</li>
@@ -1883,29 +1885,55 @@
         function updateEmployeeDropdown() {
             const dropdown = document.getElementById('employeeNavigator');
             if (!dropdown) {
-                console.warn('⚠️ Employee navigator dropdown not found');
+                console.warn('⚠️ Employee navigator dropdown not found - might be on different tab');
                 return;
             }
+            
+            console.log('🧭 Updating employee dropdown...');
+            console.log('👥 Available employees:', employees);
             
             // Clear existing options except the first one
             dropdown.innerHTML = '<option value="">-- Pilih Pegawai --</option>';
             
+            // Check if we have employees
+            if (!employees || employees.length === 0) {
+                const option = document.createElement('option');
+                option.value = '';
+                option.textContent = '(Belum ada pegawai)';
+                option.disabled = true;
+                dropdown.appendChild(option);
+                console.log('⚠️ No employees available for dropdown');
+                return;
+            }
+            
             // Add employees to dropdown
             employees.forEach(employee => {
-                const option = document.createElement('option');
-                option.value = employee;
-                option.textContent = employee;
-                dropdown.appendChild(option);
+                try {
+                    const option = document.createElement('option');
+                    option.value = employee;
+                    option.textContent = employee;
+                    dropdown.appendChild(option);
+                } catch (error) {
+                    console.error(`❌ Error adding employee ${employee} to dropdown:`, error);
+                }
             });
             
-            console.log('✅ Employee dropdown updated with', employees.length, 'employees:', employees);
+            console.log('✅ Employee dropdown updated with', employees.length, 'employees');
         }
 
         function navigateToEmployee() {
             const dropdown = document.getElementById('employeeNavigator');
+            if (!dropdown) {
+                console.error('❌ Dropdown not found');
+                return;
+            }
+            
             const selectedEmployee = dropdown.value;
             
-            if (!selectedEmployee) return;
+            if (!selectedEmployee) {
+                console.log('ℹ️ No employee selected');
+                return;
+            }
             
             console.log('🧭 Attempting to navigate to employee:', selectedEmployee);
             
@@ -1945,54 +1973,90 @@
             } else {
                 console.error('❌ Target card not found for employee:', selectedEmployee);
                 showMessage(`❌ Tidak dapat menemukan card untuk ${selectedEmployee}`, true);
+                
+                // Debug: list all available cards
+                const allCards = document.querySelectorAll('[data-employee-name]');
+                console.log('🔍 Available cards:', Array.from(allCards).map(card => card.getAttribute('data-employee-name')));
             }
         }
         // UI Generation Functions
         function generateEmployeeCards() {
             const grid = document.getElementById("employeeGrid");
+            if (!grid) {
+                console.error('❌ Employee grid container not found');
+                return;
+            }
+            
+            console.log('🎨 Generating employee cards...');
+            console.log('👥 Employees:', employees);
+            console.log('📋 Checklist items:', checklistItems);
+            console.log('💾 Checklist data:', checklistData);
+            
+            // Clear existing content
             grid.innerHTML = "";
-
-            employees.forEach((employee, employeeIndex) => {
-                const employeeData = checklistData[employee] || {};
-                const completed = checklistItems.filter(item => employeeData[item]).length;
-                
-                const card = document.createElement("div");
-                card.className = "employee-card";
-                card.id = `employee-card-${employeeIndex}`; // Add unique ID
-                card.setAttribute('data-employee-name', employee); // Add data attribute for easier targeting
-                
-                card.innerHTML = `
-                    <div class="employee-name">
-                        ${employee}
-                        <span class="progress-badge">${completed}/${checklistItems.length}</span>
-                    </div>
-                    <div class="checklist-items">
-                        ${checklistItems.map((item, index) => {
-                            const isChecked = employeeData[item] || false;
-                            const checkboxId = `${employee}-${index}`;
-                            
-                            return `
-                                <div class="checklist-item ${isChecked ? 'completed' : ''}">
-                                    <input 
-                                        type="checkbox" 
-                                        id="${checkboxId}" 
-                                        data-employee="${employee}"
-                                        data-item="${item}"
-                                        ${isChecked ? 'checked' : ''} 
-                                        onchange="toggleChecklistItem('${employee}', '${item}', this)"
-                                    />
-                                    <label for="${checkboxId}">${item}</label>
-                                </div>
-                            `;
-                        }).join('')}
+            
+            // Check if we have employees
+            if (!employees || employees.length === 0) {
+                grid.innerHTML = `
+                    <div style="text-align: center; padding: 40px; background: #f8f9fa; border-radius: 12px; grid-column: 1 / -1;">
+                        <h3 style="color: #6c757d; margin-bottom: 10px;">👥 Belum Ada Pegawai</h3>
+                        <p style="color: #6c757d;">Admin perlu menambahkan pegawai terlebih dahulu</p>
                     </div>
                 `;
-                
-                grid.appendChild(card);
+                showLoading(false);
+                return;
+            }
+
+            employees.forEach((employee, employeeIndex) => {
+                try {
+                    const employeeData = checklistData[employee] || {};
+                    const completed = checklistItems.filter(item => employeeData[item]).length;
+                    
+                    const card = document.createElement("div");
+                    card.className = "employee-card";
+                    card.id = `employee-card-${employeeIndex}`;
+                    card.setAttribute('data-employee-name', employee);
+                    
+                    card.innerHTML = `
+                        <div class="employee-name">
+                            ${employee}
+                            <span class="progress-badge">${completed}/${checklistItems.length}</span>
+                        </div>
+                        <div class="checklist-items">
+                            ${checklistItems.map((item, index) => {
+                                const isChecked = employeeData[item] || false;
+                                const checkboxId = `${employee.replace(/[^a-zA-Z0-9]/g, '_')}-${index}`;
+                                
+                                return `
+                                    <div class="checklist-item ${isChecked ? 'completed' : ''}">
+                                        <input 
+                                            type="checkbox" 
+                                            id="${checkboxId}" 
+                                            data-employee="${employee}"
+                                            data-item="${item}"
+                                            ${isChecked ? 'checked' : ''} 
+                                            onchange="toggleChecklistItem('${employee.replace(/'/g, '\\\')}', '${item.replace(/'/g, '\\\')}', this)"
+                                        />
+                                        <label for="${checkboxId}">${item}</label>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    `;
+                    
+                    grid.appendChild(card);
+                } catch (error) {
+                    console.error(`❌ Error generating card for employee ${employee}:`, error);
+                }
             });
             
             // Update dropdown after generating cards
-            updateEmployeeDropdown();
+            setTimeout(() => {
+                updateEmployeeDropdown();
+            }, 100);
+            
+            showLoading(false);
+            console.log(`✅ Generated ${employees.length} employee cards`);
         }
 
         function toggleChecklistItem(employee, item, checkbox) {
@@ -2323,6 +2387,22 @@
 
         // Event Listeners
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('📄 DOM Content Loaded');
+            
+            // Add immediate fallback if startup takes too long
+            setTimeout(() => {
+                const loadingSpinner = document.getElementById('loadingSpinner');
+                if (loadingSpinner && loadingSpinner.classList.contains('show')) {
+                    console.warn('⚠️ Startup taking too long, forcing fallback...');
+                    updateStatusInfo('⚠️ Memuat data default...', true);
+                    
+                    // Force load with default data
+                    initializeEmptyData();
+                    generateEmployeeCards();
+                    showLoading(false);
+                }
+            }, 10000); // 10 second timeout
+            
             setTimeout(startApplication, 100);
         });
 
@@ -2430,6 +2510,34 @@
             if (currentUser) {
                 updateAdminUI();
             }
+        };
+        
+        // Debug function untuk aplikasi umum
+        window.debugApp = function() {
+            console.log('=== APPLICATION DEBUG INFO ===');
+            console.log('Employees:', employees);
+            console.log('Checklist Items:', checklistItems);
+            console.log('Checklist Data:', checklistData);
+            console.log('Firebase Connected:', isFirebaseConnected);
+            console.log('Current User:', currentUser);
+            console.log('Employee Grid:', document.getElementById('employeeGrid'));
+            console.log('Employee Navigator:', document.getElementById('employeeNavigator'));
+            console.log('Loading Spinner:', document.getElementById('loadingSpinner'));
+            console.log('===============================');
+            
+            // Force regenerate cards
+            generateEmployeeCards();
+            updateEmployeeDropdown();
+        };
+        
+        // Quick fix function
+        window.forceLoad = function() {
+            console.log('🔧 Force loading application...');
+            showLoading(false);
+            initializeEmptyData();
+            generateEmployeeCards();
+            updateEmployeeDropdown();
+            updateStatusInfo('🔧 Data dimuat secara manual');
         };
     </script>
 </body>
