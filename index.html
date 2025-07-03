@@ -535,7 +535,7 @@
             <h1>Amal Yaumi Kantor Pusat</h1>
             <div class="date-info" id="currentDate"></div>
             <div class="status-info" id="statusInfo">🔄 Memuat aplikasi...</div>
-            <div class="timezone-info" id="timezoneInfo">Kebiasaan akan membentuk karakter, dan karakter dapat menentukan kesuksesan</div>
+            <div class="timezone-info" id="timezoneInfo">⏰ Timezone: Jakarta (WIB) - Reset harian pukul 00:00 WIB</div>
         </div>
 
         <div class="nav-tabs">
@@ -552,7 +552,7 @@
             <!-- Checklist Tab -->
             <div id="checklist" class="tab-content active">
                 <div class="auto-reset-info">
-                    <span>Dibuat oleh Kantor Pusat Ibnu Katsir</span>
+                    <span>Dibuat oleh Kantor Pusat Ibnu Katsir - Reset otomatis setiap pukul 00:00 WIB</span>
                 </div>
                 <div class="loading-spinner" id="loadingSpinner">
                     <div>Memuat data...</div>
@@ -798,29 +798,11 @@
 
         // Application Data
         let employees = [
-    'Buhasanuddin',
-    'Agus Rohmawan',
-    'Syukri Nursalim',
-    'Hari Setyawan',
-    'Taufik',
-    'Akhmad Qusyaeri',
-    'Yunita Damayanti Alaina',
-    'Rendy Febriyan Ghofuri',
-    'Isma Alfian Fauzi',
-    'Ricko Yanuar Romadhon',
-    'Setija Budi Adi Pranoto',
-    'Ahmad Faisal Firmansyah',
-    'Isnafiyah Nur Adzkiyah',
-    'Muhammad Mustofa Syafiq',
-    'Mamduh Nuruddin',
-    'Abdulloh',
-    'Didik Suhartono',
-    'Hammam Iqomatuddin',
-    'Ibad Abdulloh',
-    'M. Sukris Budiantoro',
-    'Nur Na\'imah',
-    'Umar Farouq'
-];
+            'Yuni', 'Didik', 'Budi', 'Riris', 'Rico',
+            'Syafiq', 'Faruq', 'Maruf', 'Mamduh', 'Rendi',
+            'Hammam', 'Sukris', 'Ibad', 'Faisal', 'Naim',
+            'Abdullah', 'Pegawai'
+        ];
 
         let checklistItems = [
             'Qiyamul Lail',
@@ -1012,10 +994,19 @@
                         console.log('👤 Admin logged in:', user.email);
                         document.getElementById('adminTab').style.display = 'block';
                         document.getElementById('loginTab').style.display = 'none';
+                        
+                        // Load admin data saat login berhasil
+                        loadAdminData().then(() => {
+                            updateAdminUI();
+                        });
                     } else {
                         console.log('👤 No admin logged in');
                         document.getElementById('adminTab').style.display = 'none';
                         document.getElementById('loginTab').style.display = 'block';
+                        
+                        // Reset admin data saat logout
+                        adminEmployees = [...employees];
+                        adminTasks = [...checklistItems];
                     }
                 });
                 
@@ -1056,8 +1047,12 @@
                 currentUser = userCredential.user;
                 
                 await loadAdminData();
-                updateAdminUI();
                 updateAdminAccess();
+                
+                // Pastikan UI ter-update setelah data dimuat
+                setTimeout(() => {
+                    updateAdminUI();
+                }, 100);
                 
                 switchTab('admin');
                 
@@ -1097,20 +1092,38 @@
         // Admin Data Management
         async function loadAdminData() {
             try {
+                console.log('🔄 Loading admin data...');
+                
+                // Load employees
                 const employeesDoc = await window.db.collection('config').doc('employees').get();
-                if (employeesDoc.exists) {
-                    adminEmployees = employeesDoc.data().list || [...employees];
+                if (employeesDoc.exists && employeesDoc.data().list) {
+                    adminEmployees = employeesDoc.data().list;
+                    console.log('✅ Loaded admin employees:', adminEmployees);
+                } else {
+                    // Jika tidak ada di Firebase, gunakan default
+                    adminEmployees = [...employees];
+                    console.log('📋 Using default employees:', adminEmployees);
                 }
                 
+                // Load tasks
                 const tasksDoc = await window.db.collection('config').doc('tasks').get();
-                if (tasksDoc.exists) {
-                    adminTasks = tasksDoc.data().list || [...checklistItems];
+                if (tasksDoc.exists && tasksDoc.data().list) {
+                    adminTasks = tasksDoc.data().list;
+                    console.log('✅ Loaded admin tasks:', adminTasks);
+                } else {
+                    // Jika tidak ada di Firebase, gunakan default
+                    adminTasks = [...checklistItems];
+                    console.log('📋 Using default tasks:', adminTasks);
                 }
                 
-                console.log('✅ Admin data loaded');
+                console.log('✅ Admin data loaded successfully');
+                
             } catch (error) {
-                console.error('Error loading admin data:', error);
-                showMessage('❌ Gagal memuat data admin', true);
+                console.error('❌ Error loading admin data:', error);
+                // Fallback ke data default
+                adminEmployees = [...employees];
+                adminTasks = [...checklistItems];
+                showMessage('⚠️ Gagal memuat data admin - menggunakan data default', true);
             }
         }
 
@@ -1261,18 +1274,29 @@
 
         // UI Update Functions
         function updateAdminUI() {
+            console.log('🔄 Updating admin UI...');
+            console.log('Admin employees:', adminEmployees);
+            console.log('Admin tasks:', adminTasks);
+            
             updateEmployeeList();
             updateTaskList();
         }
 
         function updateEmployeeList() {
             const container = document.getElementById('employeeList');
-            if (adminEmployees.length === 0) {
+            if (!container) {
+                console.error('❌ Employee list container not found');
+                return;
+            }
+            
+            console.log('📋 Updating employee list with:', adminEmployees);
+            
+            if (!adminEmployees || adminEmployees.length === 0) {
                 container.innerHTML = '<p style="text-align: center; color: #6c757d; padding: 20px;">Belum ada pegawai</p>';
                 return;
             }
             
-            container.innerHTML = adminEmployees.map(employee => `
+            const html = adminEmployees.map(employee => `
                 <div class="list-item">
                     <span style="font-weight: 500;">👤 ${employee}</span>
                     <button onclick="removeEmployee('${employee}')" class="btn btn-danger" style="padding: 4px 8px; font-size: 0.8em;">
@@ -1280,23 +1304,36 @@
                     </button>
                 </div>
             `).join('');
+            
+            container.innerHTML = html;
+            console.log('✅ Employee list updated with', adminEmployees.length, 'employees');
         }
 
         function updateTaskList() {
             const container = document.getElementById('taskList');
-            if (adminTasks.length === 0) {
+            if (!container) {
+                console.error('❌ Task list container not found');
+                return;
+            }
+            
+            console.log('📋 Updating task list with:', adminTasks);
+            
+            if (!adminTasks || adminTasks.length === 0) {
                 container.innerHTML = '<p style="text-align: center; color: #6c757d; padding: 20px;">Belum ada tugas</p>';
                 return;
             }
             
-            container.innerHTML = adminTasks.map(task => `
+            const html = adminTasks.map(task => `
                 <div class="list-item">
                     <span style="font-weight: 500;">✅ ${task}</span>
-                    <button onclick="removeTask('${task}')" class="btn btn-danger" style="padding: 4px 8px; font-size: 0.8em;">
+                    <button onclick="removeTask('${task.replace(/'/g, '\\\'')}')" class="btn btn-danger" style="padding: 4px 8px; font-size: 0.8em;">
                         🗑️ Hapus
                     </button>
                 </div>
             `).join('');
+            
+            container.innerHTML = html;
+            console.log('✅ Task list updated with', adminTasks.length, 'tasks');
         }
 
         function initializeFirebaseListener() {
@@ -1736,6 +1773,14 @@
                 tabButton.classList.add('active');
             }
             
+            // Special handling for admin tab
+            if (tabName === 'admin' && currentUser) {
+                setTimeout(() => {
+                    console.log('🔄 Refreshing admin UI on tab switch...');
+                    updateAdminUI();
+                }, 100);
+            }
+            
             if (tabName === 'report' && currentUser) {
                 setTimeout(() => {
                     populateMonthSelector();
@@ -1913,6 +1958,21 @@
 
         window.debugTimezone = debugTimezone;
         window.verifyTimezone = verifyTimezone;
+        
+        // Debug functions untuk admin
+        window.debugAdmin = function() {
+            console.log('=== ADMIN DEBUG INFO ===');
+            console.log('Current User:', currentUser);
+            console.log('Admin Employees:', adminEmployees);
+            console.log('Admin Tasks:', adminTasks);
+            console.log('Employee List Container:', document.getElementById('employeeList'));
+            console.log('Task List Container:', document.getElementById('taskList'));
+            console.log('========================');
+            
+            if (currentUser) {
+                updateAdminUI();
+            }
+        };
     </script>
 </body>
 </html>
