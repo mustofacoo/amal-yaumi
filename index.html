@@ -21,7 +21,13 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
             min-height: 100vh;
-            padding: 10px;
+            padding: 8px;
+        }
+
+        @media (min-width: 576px) {
+            body {
+                padding: 12px;
+            }
         }
 
         @media (min-width: 768px) {
@@ -31,18 +37,24 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             background: white;
-            border-radius: 15px;
+            border-radius: 12px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             overflow: hidden;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                border-radius: 15px;
+            }
         }
 
         .header {
             background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
             color: white;
-            padding: 20px;
+            padding: 15px;
             text-align: center;
         }
 
@@ -53,9 +65,16 @@
         }
 
         .header h1 {
-            font-size: 1.8em;
-            margin-bottom: 10px;
+            font-size: 1.5em;
+            margin-bottom: 8px;
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        @media (min-width: 576px) {
+            .header h1 {
+                font-size: 1.8em;
+                margin-bottom: 10px;
+            }
         }
 
         @media (min-width: 768px) {
@@ -65,16 +84,31 @@
         }
 
         .date-info {
-            font-size: 1.1em;
+            font-size: 0.95em;
             opacity: 0.9;
+        }
+
+        @media (min-width: 576px) {
+            .date-info {
+                font-size: 1.1em;
+            }
         }
 
         .status-info {
             background: rgba(255,255,255,0.1);
-            padding: 10px;
-            border-radius: 8px;
-            margin-top: 10px;
-            font-size: 0.9em;
+            padding: 8px;
+            border-radius: 6px;
+            margin-top: 8px;
+            font-size: 0.8em;
+        }
+
+        @media (min-width: 576px) {
+            .status-info {
+                padding: 10px;
+                border-radius: 8px;
+                margin-top: 10px;
+                font-size: 0.9em;
+            }
         }
 
         .nav-tabs {
@@ -82,20 +116,38 @@
             background: #f8f9fa;
             border-bottom: 2px solid #e9ecef;
             overflow-x: auto;
+            scrollbar-width: thin;
+        }
+
+        .nav-tabs::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .nav-tabs::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 2px;
         }
 
         .nav-tab {
             flex: 1;
-            min-width: 120px;
-            padding: 12px 15px;
+            min-width: 100px;
+            padding: 10px 8px;
             background: none;
             border: none;
             cursor: pointer;
-            font-size: 1em;
+            font-size: 0.85em;
             font-weight: 600;
             color: #6c757d;
             transition: all 0.3s ease;
             white-space: nowrap;
+        }
+
+        @media (min-width: 576px) {
+            .nav-tab {
+                min-width: 120px;
+                padding: 12px 12px;
+                font-size: 0.95em;
+            }
         }
 
         @media (min-width: 768px) {
@@ -116,7 +168,13 @@
         }
 
         .content {
-            padding: 15px;
+            padding: 12px;
+        }
+
+        @media (min-width: 576px) {
+            .content {
+                padding: 20px;
+            }
         }
 
         @media (min-width: 768px) {
@@ -133,28 +191,98 @@
             display: block;
         }
 
+        /* Quick Navigation Dropdown */
+        .quick-nav {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .quick-nav-label {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        @media (min-width: 576px) {
+            .quick-nav-label {
+                font-size: 1.1em;
+            }
+        }
+
+        .quick-nav select {
+            width: 100%;
+            padding: 10px 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            background: white;
+            font-size: 1em;
+            font-weight: 500;
+            color: #2c3e50;
+            cursor: pointer;
+        }
+
+        @media (min-width: 576px) {
+            .quick-nav select {
+                padding: 12px 15px;
+            }
+        }
+
+        .quick-nav select:focus {
+            outline: none;
+            border-color: #ff6b35;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+
         .employee-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 15px;
+            gap: 12px;
             margin-bottom: 20px;
+        }
+
+        @media (min-width: 576px) {
+            .employee-grid {
+                gap: 15px;
+            }
         }
 
         @media (min-width: 768px) {
             .employee-grid {
-                grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
                 gap: 20px;
                 margin-bottom: 30px;
             }
         }
 
+        @media (min-width: 1200px) {
+            .employee-grid {
+                grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            }
+        }
+
         .employee-card {
             background: white;
-            border-radius: 12px;
-            padding: 15px;
+            border-radius: 10px;
+            padding: 12px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.2s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
             border-left: 4px solid #ff6b35;
+            scroll-margin-top: 100px;
+        }
+
+        @media (min-width: 576px) {
+            .employee-card {
+                padding: 15px;
+                border-radius: 12px;
+            }
         }
 
         @media (min-width: 768px) {
@@ -165,56 +293,119 @@
 
         .employee-card:hover {
             transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .employee-card.highlighted {
+            border-left: 6px solid #28a745;
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.2);
+            transform: scale(1.02);
         }
 
         .employee-name {
-            font-size: 1.3em;
+            font-size: 1.1em;
             font-weight: bold;
             color: #2c3e50;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        @media (min-width: 576px) {
+            .employee-name {
+                font-size: 1.2em;
+                margin-bottom: 15px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .employee-name {
+                font-size: 1.3em;
+                flex-wrap: nowrap;
+            }
         }
 
         .progress-badge {
             background: #ff6b35;
             color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.9em;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        @media (min-width: 576px) {
+            .progress-badge {
+                padding: 4px 12px;
+                border-radius: 20px;
+                font-size: 0.9em;
+            }
         }
 
         .checklist-items {
             display: grid;
-            gap: 8px;
+            gap: 6px;
+        }
+
+        @media (min-width: 576px) {
+            .checklist-items {
+                gap: 8px;
+            }
         }
 
         .checklist-item {
             display: flex;
             align-items: center;
             padding: 8px;
-            background: white;
-            border-radius: 8px;
+            background: #fafafa;
+            border-radius: 6px;
             border: 1px solid #e9ecef;
             transition: all 0.2s ease;
         }
 
+        @media (min-width: 576px) {
+            .checklist-item {
+                padding: 10px;
+                border-radius: 8px;
+            }
+        }
+
         .checklist-item:hover {
             border-color: #ff6b35;
+            background: white;
         }
 
         .checklist-item input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            margin-right: 12px;
+            width: 16px;
+            height: 16px;
+            margin-right: 10px;
             cursor: pointer;
+            transform: scale(1.1);
+        }
+
+        @media (min-width: 576px) {
+            .checklist-item input[type="checkbox"] {
+                width: 18px;
+                height: 18px;
+                margin-right: 12px;
+            }
         }
 
         .checklist-item label {
             cursor: pointer;
             flex: 1;
             font-weight: 500;
+            font-size: 0.9em;
+            line-height: 1.3;
+        }
+
+        @media (min-width: 576px) {
+            .checklist-item label {
+                font-size: 1em;
+            }
         }
 
         .checklist-item.completed {
@@ -230,13 +421,14 @@
         .summary-stats {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 15px;
+            gap: 12px;
             margin-bottom: 20px;
         }
 
         @media (min-width: 480px) {
             .summary-stats {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
             }
         }
 
@@ -251,9 +443,16 @@
         .stat-card {
             background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
             color: white;
-            padding: 20px;
-            border-radius: 12px;
+            padding: 15px;
+            border-radius: 10px;
             text-align: center;
+        }
+
+        @media (min-width: 576px) {
+            .stat-card {
+                padding: 20px;
+                border-radius: 12px;
+            }
         }
 
         @media (min-width: 768px) {
@@ -263,35 +462,77 @@
         }
 
         .stat-number {
-            font-size: 2.5em;
+            font-size: 2em;
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
+        }
+
+        @media (min-width: 576px) {
+            .stat-number {
+                font-size: 2.2em;
+                margin-bottom: 5px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .stat-number {
+                font-size: 2.5em;
+            }
         }
 
         .stat-label {
-            font-size: 1.1em;
+            font-size: 0.95em;
             opacity: 0.9;
+            line-height: 1.2;
+        }
+
+        @media (min-width: 576px) {
+            .stat-label {
+                font-size: 1em;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .stat-label {
+                font-size: 1.1em;
+            }
         }
 
         .report-table {
             background: white;
-            border-radius: 12px;
+            border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        @media (min-width: 576px) {
+            .report-table {
+                border-radius: 12px;
+            }
         }
 
         .report-table table {
             width: 100%;
             border-collapse: collapse;
+            min-width: 800px;
         }
 
         .report-table th {
             background: #2c3e50;
             color: white;
-            padding: 12px 8px;
+            padding: 8px 6px;
             text-align: left;
             font-weight: 600;
-            font-size: 0.9em;
+            font-size: 0.8em;
+            white-space: nowrap;
+        }
+
+        @media (min-width: 576px) {
+            .report-table th {
+                padding: 10px 8px;
+                font-size: 0.85em;
+            }
         }
 
         @media (min-width: 768px) {
@@ -302,9 +543,16 @@
         }
 
         .report-table td {
-            padding: 8px;
+            padding: 6px;
             border-bottom: 1px solid #e9ecef;
-            font-size: 0.85em;
+            font-size: 0.75em;
+        }
+
+        @media (min-width: 576px) {
+            .report-table td {
+                padding: 8px;
+                font-size: 0.8em;
+            }
         }
 
         @media (min-width: 768px) {
@@ -320,11 +568,25 @@
 
         .percentage-bar {
             width: 100%;
-            height: 20px;
+            height: 15px;
             background: #e9ecef;
-            border-radius: 10px;
+            border-radius: 8px;
             overflow: hidden;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
+        }
+
+        @media (min-width: 576px) {
+            .percentage-bar {
+                height: 18px;
+                border-radius: 10px;
+                margin-bottom: 4px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .percentage-bar {
+                height: 20px;
+            }
         }
 
         .percentage-fill {
@@ -337,17 +599,34 @@
             background: #fff3cd;
             border: 1px solid #ffeaa7;
             border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
+            padding: 12px;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
-            font-size: 0.9em;
+            font-size: 0.85em;
+            line-height: 1.4;
+        }
+
+        @media (min-width: 576px) {
+            .auto-reset-info {
+                padding: 15px;
+                margin-bottom: 20px;
+                font-size: 0.9em;
+            }
         }
 
         .auto-reset-info::before {
             content: "⏰";
-            font-size: 1.5em;
-            margin-right: 10px;
+            font-size: 1.3em;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+
+        @media (min-width: 576px) {
+            .auto-reset-info::before {
+                font-size: 1.5em;
+                margin-right: 10px;
+            }
         }
 
         .loading-spinner {
@@ -389,27 +668,59 @@
         /* Admin Styles */
         .admin-card {
             background: white;
-            padding: 20px;
-            border-radius: 12px;
+            padding: 15px;
+            border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+        }
+
+        @media (min-width: 576px) {
+            .admin-card {
+                padding: 20px;
+                border-radius: 12px;
+                margin-bottom: 20px;
+            }
         }
 
         .admin-input {
             width: 100%;
-            padding: 10px;
+            padding: 8px 12px;
             border: 2px solid #e9ecef;
-            border-radius: 8px;
-            font-size: 1em;
+            border-radius: 6px;
+            font-size: 0.95em;
+            transition: border-color 0.2s ease;
+        }
+
+        @media (min-width: 576px) {
+            .admin-input {
+                padding: 10px 15px;
+                border-radius: 8px;
+                font-size: 1em;
+            }
+        }
+
+        .admin-input:focus {
+            outline: none;
+            border-color: #ff6b35;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
         }
 
         .btn {
-            padding: 10px 20px;
+            padding: 8px 16px;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.2s ease;
+            font-size: 0.9em;
+        }
+
+        @media (min-width: 576px) {
+            .btn {
+                padding: 10px 20px;
+                border-radius: 8px;
+                font-size: 1em;
+            }
         }
 
         .btn-primary {
@@ -427,53 +738,377 @@
             color: white;
         }
 
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
         .btn:hover {
             opacity: 0.9;
             transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
 
         .list-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 12px;
+            padding: 10px 12px;
             background: white;
             border-radius: 6px;
             border: 1px solid #dee2e6;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
+            transition: all 0.2s ease;
         }
 
-        @media (max-width: 768px) {
-            .nav-tabs {
-                flex-direction: column;
+        @media (min-width: 576px) {
+            .list-item {
+                padding: 12px 15px;
+                border-radius: 8px;
+                margin-bottom: 8px;
             }
-            
-            .summary-stats {
-                grid-template-columns: 1fr;
+        }
+
+        .list-item:hover {
+            border-color: #ff6b35;
+            background: #f8f9fa;
+        }
+
+        .list-item-content {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        .list-item-name {
+            font-weight: 500;
+            color: #2c3e50;
+            font-size: 0.95em;
+        }
+
+        @media (min-width: 576px) {
+            .list-item-name {
+                font-size: 1em;
             }
-            
-            .report-table {
-                overflow-x: auto;
-            }
-            
-            .report-table table {
-                min-width: 800px;
-            }
-            
-            .employee-name {
-                font-size: 1.1em;
-                flex-direction: column;
-                align-items: flex-start;
+        }
+
+        .list-item-actions {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        @media (min-width: 576px) {
+            .list-item-actions {
                 gap: 8px;
             }
-            
-            .checklist-item {
-                padding: 12px 8px;
+        }
+
+        .btn-sm {
+            padding: 4px 8px;
+            font-size: 0.75em;
+            border-radius: 4px;
+        }
+
+        @media (min-width: 576px) {
+            .btn-sm {
+                padding: 6px 10px;
+                font-size: 0.8em;
+                border-radius: 6px;
             }
-            
-            .checklist-item label {
-                font-size: 0.95em;
+        }
+
+        /* Edit Mode Styles */
+        .edit-input {
+            border: 2px solid #007bff !important;
+            background: #f8f9ff !important;
+        }
+
+        .month-selector-container {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+        }
+
+        @media (min-width: 576px) {
+            .month-selector-container {
+                padding: 20px;
+                border-radius: 12px;
+                margin-bottom: 25px;
             }
+        }
+
+        .month-selector-flex {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        @media (min-width: 576px) {
+            .month-selector-flex {
+                gap: 15px;
+            }
+        }
+
+        .month-selector-label {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1em;
+            white-space: nowrap;
+        }
+
+        @media (min-width: 576px) {
+            .month-selector-label {
+                font-size: 1.1em;
+            }
+        }
+
+        .month-selector-select {
+            padding: 8px 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            background: white;
+            font-size: 0.95em;
+            font-weight: 500;
+            color: #2c3e50;
+            cursor: pointer;
+            min-width: 180px;
+        }
+
+        @media (min-width: 576px) {
+            .month-selector-select {
+                padding: 8px 15px;
+                border-radius: 8px;
+                font-size: 1em;
+                min-width: 200px;
+            }
+        }
+
+        .month-selector-hint {
+            font-size: 0.8em;
+            color: #6c757d;
+            flex-basis: 100%;
+            margin-top: 5px;
+        }
+
+        @media (min-width: 768px) {
+            .month-selector-hint {
+                flex-basis: auto;
+                margin-top: 0;
+                font-size: 0.9em;
+            }
+        }
+
+        /* Responsive Table */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table-responsive::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 4px;
+        }
+
+        /* Login responsive */
+        .login-container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        @media (min-width: 576px) {
+            .login-container {
+                padding: 20px;
+            }
+        }
+
+        .login-title {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            font-size: 1.5em;
+        }
+
+        @media (min-width: 576px) {
+            .login-title {
+                margin-bottom: 20px;
+                font-size: 1.8em;
+            }
+        }
+
+        /* Admin panel responsive */
+        .admin-header {
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        @media (min-width: 576px) {
+            .admin-header {
+                margin-bottom: 20px;
+            }
+        }
+
+        .admin-title {
+            color: #2c3e50;
+            font-size: 1.3em;
+        }
+
+        @media (min-width: 576px) {
+            .admin-title {
+                font-size: 1.5em;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .admin-title {
+                font-size: 1.8em;
+            }
+        }
+
+        .admin-section-title {
+            margin-bottom: 15px;
+            color: #2c3e50;
+            border-bottom: 2px solid #ff6b35;
+            padding-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        @media (min-width: 576px) {
+            .admin-section-title {
+                margin-bottom: 20px;
+                padding-bottom: 10px;
+                font-size: 1.2em;
+            }
+        }
+
+        .admin-input-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        @media (min-width: 576px) {
+            .admin-input-group {
+                gap: 10px;
+                margin-bottom: 15px;
+            }
+        }
+
+        .admin-input-flex {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .admin-button-nowrap {
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .admin-list-container {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 6px;
+        }
+
+        @media (min-width: 576px) {
+            .admin-list-container {
+                padding: 15px;
+                border-radius: 8px;
+            }
+        }
+
+        .admin-list-title {
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-size: 1em;
+        }
+
+        @media (min-width: 576px) {
+            .admin-list-title {
+                margin-bottom: 10px;
+                font-size: 1.1em;
+            }
+        }
+
+        .admin-instructions {
+            background: #e7f3ff;
+            border: 1px solid #b8daff;
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 15px;
+        }
+
+        @media (min-width: 576px) {
+            .admin-instructions {
+                border-radius: 8px;
+                padding: 15px;
+                margin-top: 20px;
+            }
+        }
+
+        .admin-instructions h4 {
+            color: #004085;
+            margin-bottom: 8px;
+            font-size: 1em;
+        }
+
+        @media (min-width: 576px) {
+            .admin-instructions h4 {
+                margin-bottom: 10px;
+                font-size: 1.1em;
+            }
+        }
+
+        .admin-instructions ul {
+            color: #004085;
+            line-height: 1.5;
+            padding-left: 20px;
+        }
+
+        @media (min-width: 576px) {
+            .admin-instructions ul {
+                line-height: 1.6;
+            }
+        }
+
+        .admin-instructions li {
+            margin-bottom: 4px;
+            font-size: 0.9em;
+        }
+
+        @media (min-width: 576px) {
+            .admin-instructions li {
+                margin-bottom: 5px;
+                font-size: 1em;
+            }
+        }
+
+        /* Highlight animation */
+        @keyframes highlight {
+            0% { background-color: #fff3e0; }
+            50% { background-color: #ffecb3; }
+            100% { background-color: #fff3e0; }
+        }
+
+        .employee-card.highlight-animation {
+            animation: highlight 1s ease-in-out;
         }
     </style>
 </head>
@@ -501,6 +1136,17 @@
                 <div class="auto-reset-info">
                     <span>Dibuat oleh Kantor Pusat Ibnu Katsir | Reset otomatis setiap hari pukul 00:00 WIB</span>
                 </div>
+                
+                <!-- Quick Navigation -->
+                <div class="quick-nav">
+                    <div class="quick-nav-label">
+                        🔍 Navigasi Cepat ke Pegawai:
+                    </div>
+                    <select id="employeeSelector" onchange="navigateToEmployee()">
+                        <option value="">-- Pilih Pegawai --</option>
+                    </select>
+                </div>
+                
                 <div class="loading-spinner" id="loadingSpinner">
                     <div>Memuat data...</div>
                 </div>
@@ -509,54 +1155,46 @@
 
             <!-- Report Tab -->
             <div id="report" class="tab-content">
-                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 1px solid #e9ecef;">
-                    <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
-                        <label for="monthSelector" style="font-weight: 600; color: #2c3e50; font-size: 1.1em;">
+                <div class="month-selector-container">
+                    <div class="month-selector-flex">
+                        <label for="monthSelector" class="month-selector-label">
                             📅 Pilih Bulan Rekap:
                         </label>
-                        <select id="monthSelector" onchange="generateReport()" style="
-                            padding: 8px 15px;
-                            border: 2px solid #e9ecef;
-                            border-radius: 8px;
-                            background: white;
-                            font-size: 1em;
-                            font-weight: 500;
-                            color: #2c3e50;
-                            cursor: pointer;
-                            min-width: 200px;
-                        ">
+                        <select id="monthSelector" onchange="generateReport()" class="month-selector-select">
                         </select>
-                        <div style="font-size: 0.9em; color: #6c757d;">
+                        <div class="month-selector-hint">
                             <small>💡 Bulan baru akan otomatis ditambahkan setiap pergantian bulan</small>
                         </div>
                     </div>
                 </div>
                 
                 <div class="summary-stats" id="summaryStats"></div>
-                <div class="report-table">
-                    <table id="reportTable">
-                        <thead>
-                            <tr>
-                                <th>Nama Pegawai</th>
-                                <th>Qiyamul Lail</th>
-                                <th>Shubuh berjamaah</th>
-                                <th>Sedekah</th>
-                                <th>Sholat Dhuha</th>
-                                <th>Silaturahim</th>
-                                <th>Doa untuk Ibka</th>
-                                <th>Istighfar & Sholawat</th>
-                                <th>Rata‑rata</th>
-                            </tr>
-                        </thead>
-                        <tbody id="reportBody"></tbody>
-                    </table>
+                <div class="table-responsive">
+                    <div class="report-table">
+                        <table id="reportTable">
+                            <thead>
+                                <tr>
+                                    <th>Nama Pegawai</th>
+                                    <th>Qiyamul Lail</th>
+                                    <th>Shubuh berjamaah</th>
+                                    <th>Sedekah</th>
+                                    <th>Sholat Dhuha</th>
+                                    <th>Silaturahim</th>
+                                    <th>Doa untuk Ibka</th>
+                                    <th>Istighfar & Sholawat</th>
+                                    <th>Rata‑rata</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reportBody"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
             <!-- Login Tab -->
             <div id="login" class="tab-content">
-                <div style="max-width: 400px; margin: 0 auto; padding: 20px;">
-                    <h2 style="text-align: center; margin-bottom: 20px; color: #2c3e50;">🔐 Login Admin</h2>
+                <div class="login-container">
+                    <h2 class="login-title">🔐 Login Admin</h2>
                     <div class="admin-card">
                         <div style="margin-bottom: 15px;">
                             <label style="display: block; margin-bottom: 5px; font-weight: 600;">Email Admin:</label>
@@ -581,8 +1219,8 @@
 
             <!-- Admin Panel Tab -->
             <div id="admin" class="tab-content">
-                <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                    <h2 style="color: #2c3e50;">⚙️ Admin Panel</h2>
+                <div class="admin-header">
+                    <h2 class="admin-title">⚙️ Admin Panel</h2>
                     <button onclick="logoutAdmin()" class="btn btn-danger">
                         🚪 Logout
                     </button>
@@ -590,51 +1228,53 @@
                 
                 <!-- Manage Employees Section -->
                 <div class="admin-card">
-                    <h3 style="margin-bottom: 20px; color: #2c3e50; border-bottom: 2px solid #ff6b35; padding-bottom: 10px;">
+                    <h3 class="admin-section-title">
                         🧑‍💼 Kelola Pegawai
                     </h3>
                     
-                    <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+                    <div class="admin-input-group">
                         <input type="text" id="newEmployeeName" placeholder="Nama pegawai baru (contoh: Ahmad)" 
-                               class="admin-input" style="flex: 1; min-width: 250px;">
-                        <button onclick="addEmployee()" class="btn btn-success" style="white-space: nowrap;">
+                               class="admin-input admin-input-flex">
+                        <button onclick="addEmployee()" class="btn btn-success admin-button-nowrap">
                             ➕ Tambah Pegawai
                         </button>
                     </div>
                     
-                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
-                        <h4 style="margin-bottom: 10px; color: #2c3e50;">📋 Daftar Pegawai Saat Ini:</h4>
+                    <div class="admin-list-container">
+                        <h4 class="admin-list-title">📋 Daftar Pegawai Saat Ini:</h4>
                         <div id="employeeList" style="display: grid; gap: 8px;"></div>
                     </div>
                 </div>
                 
                 <!-- Manage Tasks Section -->
                 <div class="admin-card">
-                    <h3 style="margin-bottom: 20px; color: #2c3e50; border-bottom: 2px solid #007bff; padding-bottom: 10px;">
+                    <h3 class="admin-section-title" style="border-bottom-color: #007bff;">
                         📋 Kelola Tugas Harian
                     </h3>
                     
-                    <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+                    <div class="admin-input-group">
                         <input type="text" id="newTaskName" placeholder="Tugas baru (contoh: Sholat Maghrib)" 
-                               class="admin-input" style="flex: 1; min-width: 250px;">
-                        <button onclick="addTask()" class="btn btn-primary" style="white-space: nowrap;">
+                               class="admin-input admin-input-flex">
+                        <button onclick="addTask()" class="btn btn-primary admin-button-nowrap">
                             ➕ Tambah Tugas
                         </button>
                     </div>
                     
-                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
-                        <h4 style="margin-bottom: 10px; color: #2c3e50;">✅ Daftar Tugas Saat Ini:</h4>
+                    <div class="admin-list-container">
+                        <h4 class="admin-list-title">✅ Daftar Tugas Saat Ini:</h4>
                         <div id="taskList" style="display: grid; gap: 8px;"></div>
                     </div>
                 </div>
 
                 <!-- Admin Instructions -->
-                <div style="background: #e7f3ff; border: 1px solid #b8daff; border-radius: 8px; padding: 15px; margin-top: 20px;">
-                    <h4 style="color: #004085; margin-bottom: 10px;">📖 Petunjuk Penggunaan Admin:</h4>
-                    <ul style="color: #004085; line-height: 1.6;">
+                <div class="admin-instructions">
+                    <h4>📖 Petunjuk Penggunaan Admin:</h4>
+                    <ul>
                         <li><strong>Menambah Pegawai:</strong> Ketik nama pegawai baru dan klik "Tambah Pegawai"</li>
+                        <li><strong>Mengedit Pegawai:</strong> Klik tombol "Edit" di samping nama pegawai, ubah nama, lalu klik "Simpan"</li>
                         <li><strong>Menghapus Pegawai:</strong> Klik tombol "Hapus" di samping nama pegawai</li>
                         <li><strong>Menambah Tugas:</strong> Ketik nama tugas baru dan klik "Tambah Tugas"</li>
+                        <li><strong>Mengedit Tugas:</strong> Klik tombol "Edit" di samping nama tugas, ubah nama, lalu klik "Simpan"</li>
                         <li><strong>Menghapus Tugas:</strong> Klik tombol "Hapus" di samping nama tugas</li>
                         <li><strong>⚠️ Peringatan:</strong> Menghapus pegawai atau tugas akan menghilangkan semua data checklist terkait</li>
                     </ul>
@@ -682,6 +1322,10 @@
         let unsubscribe = null;
         let isFirebaseConnected = false;
         let lastResetCheck = null;
+
+        // Edit mode tracking
+        let editingEmployee = null;
+        let editingTask = null;
 
         // Utility Functions
         function getTodayKey() {
@@ -792,6 +1436,72 @@
             }
         }
 
+        // Quick Navigation Functions
+        function populateEmployeeSelector() {
+            const selector = document.getElementById('employeeSelector');
+            if (!selector) return;
+            
+            // Sort employees alphabetically
+            const sortedEmployees = [...employees].sort((a, b) => a.localeCompare(b, 'id'));
+            
+            selector.innerHTML = '<option value="">-- Pilih Pegawai --</option>';
+            
+            sortedEmployees.forEach(employee => {
+                const option = document.createElement('option');
+                option.value = employee;
+                option.textContent = employee;
+                selector.appendChild(option);
+            });
+        }
+
+        function navigateToEmployee() {
+            const selector = document.getElementById('employeeSelector');
+            const selectedEmployee = selector.value;
+            
+            if (!selectedEmployee) return;
+            
+            // Find the employee card
+            const employeeCards = document.querySelectorAll('.employee-card');
+            let targetCard = null;
+            
+            employeeCards.forEach(card => {
+                const nameElement = card.querySelector('.employee-name');
+                if (nameElement && nameElement.textContent.includes(selectedEmployee)) {
+                    targetCard = card;
+                }
+            });
+            
+            if (targetCard) {
+                // Remove previous highlights
+                employeeCards.forEach(card => {
+                    card.classList.remove('highlighted', 'highlight-animation');
+                });
+                
+                // Scroll to the card
+                targetCard.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+                
+                // Highlight the card
+                setTimeout(() => {
+                    targetCard.classList.add('highlighted', 'highlight-animation');
+                    
+                    // Remove highlight after animation
+                    setTimeout(() => {
+                        targetCard.classList.remove('highlight-animation');
+                    }, 1000);
+                    
+                    setTimeout(() => {
+                        targetCard.classList.remove('highlighted');
+                    }, 3000);
+                }, 100);
+            }
+            
+            // Reset selector
+            selector.selectedIndex = 0;
+        }
+
         // Firebase Functions
         function initializeFirebase() {
             try {
@@ -865,6 +1575,10 @@
         function logoutAdmin() {
             firebase.auth().signOut().then(() => {
                 currentUser = null;
+                
+                // Reset edit modes
+                editingEmployee = null;
+                editingTask = null;
                 
                 document.getElementById('adminTab').style.display = 'none';
                 document.getElementById('loginTab').style.display = 'block';
@@ -980,7 +1694,63 @@
                 
                 employees.push(name);
                 generateEmployeeCards();
+                populateEmployeeSelector();
             }
+        }
+
+        function editEmployee(oldName) {
+            if (editingEmployee) {
+                showMessage('⚠️ Selesaikan edit yang sedang berlangsung terlebih dahulu', true);
+                return;
+            }
+            
+            editingEmployee = oldName;
+            updateEmployeeList();
+        }
+
+        async function saveEmployeeEdit(oldName) {
+            const input = document.querySelector(`input[data-edit-employee="${oldName}"]`);
+            const newName = input.value.trim();
+            
+            if (!newName) {
+                showMessage('⚠️ Nama pegawai tidak boleh kosong', true);
+                return;
+            }
+            
+            if (newName === oldName) {
+                editingEmployee = null;
+                updateEmployeeList();
+                return;
+            }
+            
+            if (adminEmployees.includes(newName)) {
+                showMessage('⚠️ Nama pegawai sudah ada dalam daftar', true);
+                return;
+            }
+            
+            const index = adminEmployees.indexOf(oldName);
+            if (index > -1) {
+                adminEmployees[index] = newName;
+                
+                if (await saveEmployeesToFirebase()) {
+                    editingEmployee = null;
+                    updateAdminUI();
+                    showMessage(`✅ Nama pegawai berhasil diubah dari "${oldName}" ke "${newName}"`);
+                    
+                    // Update main employees array
+                    const mainIndex = employees.indexOf(oldName);
+                    if (mainIndex > -1) {
+                        employees[mainIndex] = newName;
+                        generateEmployeeCards();
+                        populateEmployeeSelector();
+                    }
+                }
+            }
+        }
+
+        function cancelEmployeeEdit() {
+            editingEmployee = null;
+            updateEmployeeList();
         }
 
         async function removeEmployee(name) {
@@ -988,6 +1758,7 @@
                 adminEmployees = adminEmployees.filter(emp => emp !== name);
                 
                 if (await saveEmployeesToFirebase()) {
+                    editingEmployee = null;
                     updateAdminUI();
                     showMessage(`🗑️ Pegawai "${name}" berhasil dihapus`);
                     
@@ -995,6 +1766,7 @@
                     if (index > -1) {
                         employees.splice(index, 1);
                         generateEmployeeCards();
+                        populateEmployeeSelector();
                     }
                 }
             }
@@ -1027,11 +1799,66 @@
             }
         }
 
+        function editTask(oldTask) {
+            if (editingTask) {
+                showMessage('⚠️ Selesaikan edit yang sedang berlangsung terlebih dahulu', true);
+                return;
+            }
+            
+            editingTask = oldTask;
+            updateTaskList();
+        }
+
+        async function saveTaskEdit(oldTask) {
+            const input = document.querySelector(`input[data-edit-task="${oldTask}"]`);
+            const newTask = input.value.trim();
+            
+            if (!newTask) {
+                showMessage('⚠️ Nama tugas tidak boleh kosong', true);
+                return;
+            }
+            
+            if (newTask === oldTask) {
+                editingTask = null;
+                updateTaskList();
+                return;
+            }
+            
+            if (adminTasks.includes(newTask)) {
+                showMessage('⚠️ Nama tugas sudah ada dalam daftar', true);
+                return;
+            }
+            
+            const index = adminTasks.indexOf(oldTask);
+            if (index > -1) {
+                adminTasks[index] = newTask;
+                
+                if (await saveTasksToFirebase()) {
+                    editingTask = null;
+                    updateAdminUI();
+                    showMessage(`✅ Nama tugas berhasil diubah dari "${oldTask}" ke "${newTask}"`);
+                    
+                    // Update main tasks array
+                    const mainIndex = checklistItems.indexOf(oldTask);
+                    if (mainIndex > -1) {
+                        checklistItems[mainIndex] = newTask;
+                        generateEmployeeCards();
+                    }
+                }
+            }
+        }
+
+        function cancelTaskEdit() {
+            editingTask = null;
+            updateTaskList();
+        }
+
         async function removeTask(task) {
             if (confirm(`⚠️ Yakin ingin menghapus tugas "${task}"?\n\nSemua data checklist untuk tugas ini akan hilang!`)) {
                 adminTasks = adminTasks.filter(t => t !== task);
                 
                 if (await saveTasksToFirebase()) {
+                    editingTask = null;
                     updateAdminUI();
                     showMessage(`🗑️ Tugas "${task}" berhasil dihapus`);
                     
@@ -1057,14 +1884,42 @@
                 return;
             }
             
-            container.innerHTML = adminEmployees.map(employee => `
-                <div class="list-item">
-                    <span style="font-weight: 500;">👤 ${employee}</span>
-                    <button onclick="removeEmployee('${employee}')" class="btn btn-danger" style="padding: 4px 8px; font-size: 0.8em;">
-                        🗑️ Hapus
-                    </button>
-                </div>
-            `).join('');
+            container.innerHTML = adminEmployees.map(employee => {
+                if (editingEmployee === employee) {
+                    return `
+                        <div class="list-item">
+                            <div class="list-item-content">
+                                <input type="text" value="${employee}" class="admin-input edit-input" 
+                                       data-edit-employee="${employee}" style="margin: 0;">
+                            </div>
+                            <div class="list-item-actions">
+                                <button onclick="saveEmployeeEdit('${employee}')" class="btn btn-success btn-sm">
+                                    💾 Simpan
+                                </button>
+                                <button onclick="cancelEmployeeEdit()" class="btn btn-warning btn-sm">
+                                    ❌ Batal
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="list-item">
+                            <div class="list-item-content">
+                                <span class="list-item-name">👤 ${employee}</span>
+                            </div>
+                            <div class="list-item-actions">
+                                <button onclick="editEmployee('${employee}')" class="btn btn-warning btn-sm">
+                                    ✏️ Edit
+                                </button>
+                                <button onclick="removeEmployee('${employee}')" class="btn btn-danger btn-sm">
+                                    🗑️ Hapus
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+            }).join('');
         }
 
         function updateTaskList() {
@@ -1074,14 +1929,42 @@
                 return;
             }
             
-            container.innerHTML = adminTasks.map(task => `
-                <div class="list-item">
-                    <span style="font-weight: 500;">✅ ${task}</span>
-                    <button onclick="removeTask('${task}')" class="btn btn-danger" style="padding: 4px 8px; font-size: 0.8em;">
-                        🗑️ Hapus
-                    </button>
-                </div>
-            `).join('');
+            container.innerHTML = adminTasks.map(task => {
+                if (editingTask === task) {
+                    return `
+                        <div class="list-item">
+                            <div class="list-item-content">
+                                <input type="text" value="${task}" class="admin-input edit-input" 
+                                       data-edit-task="${task}" style="margin: 0;">
+                            </div>
+                            <div class="list-item-actions">
+                                <button onclick="saveTaskEdit('${task}')" class="btn btn-success btn-sm">
+                                    💾 Simpan
+                                </button>
+                                <button onclick="cancelTaskEdit()" class="btn btn-warning btn-sm">
+                                    ❌ Batal
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="list-item">
+                            <div class="list-item-content">
+                                <span class="list-item-name">✅ ${task}</span>
+                            </div>
+                            <div class="list-item-actions">
+                                <button onclick="editTask('${task}')" class="btn btn-warning btn-sm">
+                                    ✏️ Edit
+                                </button>
+                                <button onclick="removeTask('${task}')" class="btn btn-danger btn-sm">
+                                    🗑️ Hapus
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+            }).join('');
         }
 
         function initializeFirebaseListener() {
@@ -1130,6 +2013,7 @@
                         initializeEmptyData();
                     }
                     generateEmployeeCards();
+                    populateEmployeeSelector();
                 },
                 (error) => {
                     console.error("❌ Error listening to document:", error);
@@ -1137,6 +2021,7 @@
                     showLoading(false);
                     initializeEmptyData();
                     generateEmployeeCards();
+                    populateEmployeeSelector();
                 }
             );
         }
@@ -1222,6 +2107,7 @@
             } else {
                 initializeEmptyData();
                 generateEmployeeCards();
+                populateEmployeeSelector();
             }
             
             updateCurrentDate();
@@ -1259,6 +2145,7 @@
                 
                 const card = document.createElement("div");
                 card.className = "employee-card";
+                card.id = `employee-${employee.replace(/\s+/g, '-')}`;
                 
                 card.innerHTML = `
                     <div class="employee-name">
@@ -1550,6 +2437,7 @@
                 showMessage('Berjalan dalam mode offline - data tidak akan tersinkron', true);
                 initializeEmptyData();
                 generateEmployeeCards();
+                populateEmployeeSelector();
                 showLoading(false);
             }
             
@@ -1581,6 +2469,36 @@
 
         window.addEventListener('offline', function() {
             updateStatusInfo('🔴 Tidak ada koneksi internet - mode offline', true);
+        });
+
+        // Handle input events for better UX
+        document.addEventListener('keydown', function(e) {
+            // Enter key to save edits
+            if (e.key === 'Enter') {
+                if (editingEmployee) {
+                    const input = document.querySelector(`input[data-edit-employee="${editingEmployee}"]`);
+                    if (input && document.activeElement === input) {
+                        saveEmployeeEdit(editingEmployee);
+                    }
+                }
+                
+                if (editingTask) {
+                    const input = document.querySelector(`input[data-edit-task="${editingTask}"]`);
+                    if (input && document.activeElement === input) {
+                        saveTaskEdit(editingTask);
+                    }
+                }
+            }
+            
+            // Escape key to cancel edits
+            if (e.key === 'Escape') {
+                if (editingEmployee) {
+                    cancelEmployeeEdit();
+                }
+                if (editingTask) {
+                    cancelTaskEdit();
+                }
+            }
         });
     </script>
 </body>
