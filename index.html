@@ -636,146 +636,26 @@
         <div class="header">
             <h1>Amal Yaumi Kantor Pusat</h1>
             <div class="date-info" id="currentDate"></div>
-            <div class="status-info" id="statusInfo">🔄 Memuat aplikasi...</div>
+            <div class="status-info" id="statusInfo"></div>
         </div>
 
-        <div class="nav-tabs">
-            <button class="nav-tab active" onclick="switchTab('checklist')">Checklist Harian</button>
-            <button class="nav-tab" id="reportTab" onclick="switchTab('report')" style="display: none;">Rekap Bulanan</button>
-            <button class="nav-tab" id="adminTab" onclick="switchTab('admin')" style="display: none;">Admin Panel</button>
-            <button class="nav-tab" id="loginTab" onclick="switchTab('login')">Login Admin</button>
-        </div>
+        <div class="nav-tabs" id="navTabs"></div>
 
         <div class="content">
             <div class="error-message" id="errorMessage"></div>
             <div class="success-message" id="successMessage"></div>
             
             <!-- Checklist Tab -->
-            <div id="checklist" class="tab-content active">
-                <div class="auto-reset-info">
-                    <span>Dibuat oleh Kantor Pusat Ibnu Katsir | Reset otomatis setiap hari pukul 00:00 WIB</span>
-                </div>
-                
-                <div class="quick-nav">
-                    <div class="quick-nav-label">🔍 Navigasi Cepat ke Pegawai:</div>
-                    <select id="employeeSelector" onchange="navigateToEmployee()">
-                        <option value="">-- Pilih Pegawai --</option>
-                    </select>
-                </div>
-                
-                <div class="loading-spinner" id="loadingSpinner">
-                    <div>Memuat data...</div>
-                </div>
-                <div class="employee-grid" id="employeeGrid"></div>
-            </div>
+            <div id="checklist" class="tab-content"></div>
 
             <!-- Report Tab -->
-            <div id="report" class="tab-content">
-                <div class="month-selector-container">
-                    <div class="month-selector-flex">
-                        <label for="monthSelector" class="month-selector-label">📅 Pilih Bulan Rekap:</label>
-                        <select id="monthSelector" onchange="generateReport()" class="month-selector-select"></select>
-                        <div class="month-selector-hint">
-                            <small>💡 Bulan baru akan otomatis ditambahkan setiap pergantian bulan</small>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="summary-stats" id="summaryStats"></div>
-                <div class="table-responsive">
-                    <div class="report-table">
-                        <table id="reportTable">
-                            <thead>
-                                <tr>
-                                    <th>Nama Pegawai</th>
-                                    <th>Qiyamul Lail</th>
-                                    <th>Shubuh berjamaah</th>
-                                    <th>Sedekah</th>
-                                    <th>Sholat Dhuha</th>
-                                    <th>Silaturahim</th>
-                                    <th>Doa untuk Ibka</th>
-                                    <th>Istighfar & Sholawat</th>
-                                    <th>Rata‑rata</th>
-                                </tr>
-                            </thead>
-                            <tbody id="reportBody"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+            <div id="report" class="tab-content"></div>
 
             <!-- Login Tab -->
-            <div id="login" class="tab-content">
-                <div class="login-container">
-                    <h2 class="login-title">🔐 Login Admin</h2>
-                    <div class="admin-card">
-                        <div style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 5px; font-weight: 600;">Email Admin:</label>
-                            <input type="email" id="adminEmail" class="admin-input" placeholder="admin@amalyaumi.com">
-                        </div>
-                        <div style="margin-bottom: 20px;">
-                            <label style="display: block; margin-bottom: 5px; font-weight: 600;">Password:</label>
-                            <input type="password" id="adminPassword" class="admin-input" placeholder="Masukkan password">
-                        </div>
-                        <button onclick="loginAdmin()" class="btn btn-primary" style="width: 100%; padding: 12px;">
-                            🚀 Login Admin
-                        </button>
-                        <div id="loginMessage" style="margin-top: 15px; text-align: center;"></div>
-                    </div>
-                    <div style="text-align: center; margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
-                        <small style="color: #6c757d;">
-                            💡 <strong>Petunjuk:</strong> Hanya admin yang memiliki akses untuk mengelola data pegawai dan tugas harian.
-                        </small>
-                    </div>
-                </div>
-            </div>
+            <div id="login" class="tab-content"></div>
 
             <!-- Admin Panel Tab -->
-            <div id="admin" class="tab-content">
-                <div class="admin-header">
-                    <h2 class="admin-title">⚙️ Admin Panel</h2>
-                    <button onclick="logoutAdmin()" class="btn btn-danger">🚪 Logout</button>
-                </div>
-                
-                <div class="admin-card">
-                    <h3 class="admin-section-title">🧑‍💼 Kelola Pegawai</h3>
-                    <div class="admin-input-group">
-                        <input type="text" id="newEmployeeName" placeholder="Nama pegawai baru (contoh: Ahmad)" 
-                               class="admin-input admin-input-flex">
-                        <button onclick="addEmployee()" class="btn btn-success admin-button-nowrap">➕ Tambah Pegawai</button>
-                    </div>
-                    <div class="admin-list-container">
-                        <h4 class="admin-list-title">📋 Daftar Pegawai Saat Ini:</h4>
-                        <div id="employeeList" style="display: grid; gap: 8px;"></div>
-                    </div>
-                </div>
-                
-                <div class="admin-card">
-                    <h3 class="admin-section-title" style="border-bottom-color: #007bff;">📋 Kelola Tugas Harian</h3>
-                    <div class="admin-input-group">
-                        <input type="text" id="newTaskName" placeholder="Tugas baru (contoh: Sholat Maghrib)" 
-                               class="admin-input admin-input-flex">
-                        <button onclick="addTask()" class="btn btn-primary admin-button-nowrap">➕ Tambah Tugas</button>
-                    </div>
-                    <div class="admin-list-container">
-                        <h4 class="admin-list-title">✅ Daftar Tugas Saat Ini:</h4>
-                        <div id="taskList" style="display: grid; gap: 8px;"></div>
-                    </div>
-                </div>
-
-                <div class="admin-instructions">
-                    <h4>📖 Petunjuk Penggunaan Admin:</h4>
-                    <ul>
-                        <li><strong>Menambah Pegawai:</strong> Ketik nama pegawai baru dan klik "Tambah Pegawai"</li>
-                        <li><strong>Mengedit Pegawai:</strong> Klik tombol "Edit" di samping nama pegawai, ubah nama, lalu klik "Simpan"</li>
-                        <li><strong>Menghapus Pegawai:</strong> Klik tombol "Hapus" di samping nama pegawai</li>
-                        <li><strong>Menambah Tugas:</strong> Ketik nama tugas baru dan klik "Tambah Tugas"</li>
-                        <li><strong>Mengedit Tugas:</strong> Klik tombol "Edit" di samping nama tugas, ubah nama, lalu klik "Simpan"</li>
-                        <li><strong>Menghapus Tugas:</strong> Klik tombol "Hapus" di samping nama tugas</li>
-                        <li><strong>⚠️ Peringatan:</strong> Menghapus pegawai atau tugas akan menghilangkan semua data checklist terkait</li>
-                    </ul>
-                </div>
-            </div>
+            <div id="admin" class="tab-content"></div>
         </div>
     </div>
 
@@ -1769,6 +1649,143 @@
             });
         }
 
+        // Initialize UI
+        function initializeUI() {
+            // Initialize Nav Tabs
+            const navTabs = document.getElementById('navTabs');
+            navTabs.innerHTML = `
+                <button class="nav-tab active" id="checklistTab" onclick="switchTab('checklist')">Checklist Harian</button>
+                <button class="nav-tab" id="reportTab" onclick="switchTab('report')" style="display: none;">Rekap Bulanan</button>
+                <button class="nav-tab" id="adminTab" onclick="switchTab('admin')" style="display: none;">Admin Panel</button>
+                <button class="nav-tab" id="loginTab" onclick="switchTab('login')">Login Admin</button>
+            `;
+
+            // Initialize Checklist Tab
+            const checklistTab = document.getElementById('checklist');
+            checklistTab.innerHTML = `
+                <div class="auto-reset-info">
+                    <span>Rasulullah dawuh, "Amal yang paling Allah cintai adalah yang berkelanjutan sekalipun jumlahnya sedikit"</span>
+                </div>
+                <div class="quick-nav">
+                    <div class="quick-nav-label">🔍 Cari nama dengan cepat</div>
+                    <select id="employeeSelector" onchange="navigateToEmployee()">
+                        <option value="">-- Pilih Pegawai --</option>
+                    </select>
+                </div>
+                <div class="loading-spinner" id="loadingSpinner">
+                    <div>Memuat data...</div>
+                </div>
+                <div class="employee-grid" id="employeeGrid"></div>
+            `;
+
+            // Initialize Report Tab
+            const reportTab = document.getElementById('report');
+            reportTab.innerHTML = `
+                <div class="month-selector-container">
+                    <div class="month-selector-flex">
+                        <label for="monthSelector" class="month-selector-label">📅 Pilih Bulan Rekap:</label>
+                        <select id="monthSelector" onchange="generateReport()" class="month-selector-select"></select>
+                        <div class="month-selector-hint">
+                            <small>💡 Bulan baru akan otomatis ditambahkan setiap pergantian bulan</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="summary-stats" id="summaryStats"></div>
+                <div class="table-responsive">
+                    <div class="report-table">
+                        <table id="reportTable">
+                            <thead>
+                                <tr>
+                                    <th>Nama Pegawai</th>
+                                    <th>Qiyamul Lail</th>
+                                    <th>Shubuh berjamaah</th>
+                                    <th>Sedekah</th>
+                                    <th>Sholat Dhuha</th>
+                                    <th>Silaturahim</th>
+                                    <th>Doa untuk Ibka</th>
+                                    <th>Istighfar & Sholawat</th>
+                                    <th>Rata‑rata</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reportBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+
+            // Initialize Login Tab
+            const loginTab = document.getElementById('login');
+            loginTab.innerHTML = `
+                <div class="login-container">
+                    <h2 class="login-title">🔐 Login Admin</h2>
+                    <div class="admin-card">
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: 600;">Email Admin:</label>
+                            <input type="email" id="adminEmail" class="admin-input" placeholder="admin@amalyaumi.com">
+                        </div>
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: 600;">Password:</label>
+                            <input type="password" id="adminPassword" class="admin-input" placeholder="Masukkan password">
+                        </div>
+                        <button onclick="loginAdmin()" class="btn btn-primary" style="width: 100%; padding: 12px;">
+                            🚀 Login Admin
+                        </button>
+                        <div id="loginMessage" style="margin-top: 15px; text-align: center;"></div>
+                    </div>
+                    <div style="text-align: center; margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                        <small style="color: #6c757d;">
+                            💡 <strong>Petunjuk:</strong> Hanya admin yang memiliki akses untuk mengelola data pegawai dan tugas harian.
+                        </small>
+                    </div>
+                </div>
+            `;
+
+            // Initialize Admin Tab
+            const adminTab = document.getElementById('admin');
+            adminTab.innerHTML = `
+                <div class="admin-header">
+                    <h2 class="admin-title">⚙️ Admin Panel</h2>
+                    <button onclick="logoutAdmin()" class="btn btn-danger">🚪 Logout</button>
+                </div>
+                <div class="admin-card">
+                    <h3 class="admin-section-title">🧑‍💼 Kelola Pegawai</h3>
+                    <div class="admin-input-group">
+                        <input type="text" id="newEmployeeName" placeholder="Nama pegawai baru (contoh: Ahmad)" 
+                               class="admin-input admin-input-flex">
+                        <button onclick="addEmployee()" class="btn btn-success admin-button-nowrap">➕ Tambah Pegawai</button>
+                    </div>
+                    <div class="admin-list-container">
+                        <h4 class="admin-list-title">📋 Daftar Pegawai Saat Ini:</h4>
+                        <div id="employeeList" style="display: grid; gap: 8px;"></div>
+                    </div>
+                </div>
+                <div class="admin-card">
+                    <h3 class="admin-section-title" style="border-bottom-color: #007bff;">📋 Kelola Tugas Harian</h3>
+                    <div class="admin-input-group">
+                        <input type="text" id="newTaskName" placeholder="Tugas baru (contoh: Sholat Maghrib)" 
+                               class="admin-input admin-input-flex">
+                        <button onclick="addTask()" class="btn btn-primary admin-button-nowrap">➕ Tambah Tugas</button>
+                    </div>
+                    <div class="admin-list-container">
+                        <h4 class="admin-list-title">✅ Daftar Tugas Saat Ini:</h4>
+                        <div id="taskList" style="display: grid; gap: 8px;"></div>
+                    </div>
+                </div>
+                <div class="admin-instructions">
+                    <h4>📖 Petunjuk Penggunaan Admin:</h4>
+                    <ul>
+                        <li><strong>Menambah Pegawai:</strong> Ketik nama pegawai baru dan klik "Tambah Pegawai"</li>
+                        <li><strong>Mengedit Pegawai:</strong> Klik tombol "Edit" di samping nama pegawai, ubah nama, lalu klik "Simpan"</li>
+                        <li><strong>Menghapus Pegawai:</strong> Klik tombol "Hapus" di samping nama pegawai</li>
+                        <li><strong>Menambah Tugas:</strong> Ketik nama tugas baru dan klik "Tambah Tugas"</li>
+                        <li><strong>Mengedit Tugas:</strong> Klik tombol "Edit" di samping nama tugas, ubah nama, lalu klik "Simpan"</li>
+                        <li><strong>Menghapus Tugas:</strong> Klik tombol "Hapus" di samping nama tugas</li>
+                        <li><strong>⚠️ Peringatan:</strong> Menghapus pegawai atau tugas akan menghilangkan semua data checklist terkait</li>
+                    </ul>
+                </div>
+            `;
+        }
+
         // Initialize App
         function initializeApp() {
             const dateEl = document.getElementById('currentDate');
@@ -1781,11 +1798,8 @@
                 });
             }
 
-            const loginTab = document.getElementById('loginTab');
-            if (loginTab) {
-                loginTab.style.display = 'block';
-            }
-
+            updateStatusInfo('🔄 Memuat aplikasi...');
+            initializeUI();
             initializeFirebase();
             switchTab('checklist');
             populateEmployeeSelector();
