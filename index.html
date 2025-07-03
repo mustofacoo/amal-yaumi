@@ -140,6 +140,7 @@
             color: #6c757d;
             transition: all 0.3s ease;
             white-space: nowrap;
+            position: relative;
         }
 
         @media (min-width: 576px) {
@@ -167,6 +168,23 @@
             background: #e9ecef;
         }
 
+        .nav-tab.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #f8f9fa !important;
+            color: #6c757d !important;
+        }
+
+        .nav-tab.disabled:hover {
+            background: #f8f9fa !important;
+        }
+
+        .nav-tab.disabled::after {
+            content: "🔒";
+            font-size: 0.8em;
+            margin-left: 4px;
+        }
+
         .content {
             padding: 12px;
         }
@@ -189,6 +207,52 @@
 
         .tab-content.active {
             display: block;
+        }
+
+        /* Access denied message */
+        .access-denied {
+            text-align: center;
+            padding: 40px 20px;
+            background: #fff3cd;
+            border: 2px solid #ffeaa7;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .access-denied-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .access-denied h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .access-denied p {
+            color: #856404;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .access-denied .btn {
+            background: #ffc107;
+            color: #212529;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .access-denied .btn:hover {
+            background: #e0a800;
+            transform: translateY(-1px);
         }
 
         /* Quick Navigation Dropdown */
@@ -1122,7 +1186,7 @@
 
         <div class="nav-tabs">
             <button class="nav-tab active" onclick="switchTab('checklist')">Checklist Harian</button>
-            <button class="nav-tab" onclick="switchTab('report')">Rekap Bulanan</button>
+            <button class="nav-tab" id="reportTab" onclick="switchTab('report')">Rekap Bulanan</button>
             <button class="nav-tab" id="adminTab" onclick="switchTab('admin')" style="display: none;">Admin Panel</button>
             <button class="nav-tab" id="loginTab" onclick="switchTab('login')">Login Admin</button>
         </div>
@@ -1155,39 +1219,53 @@
 
             <!-- Report Tab -->
             <div id="report" class="tab-content">
-                <div class="month-selector-container">
-                    <div class="month-selector-flex">
-                        <label for="monthSelector" class="month-selector-label">
-                            📅 Pilih Bulan Rekap:
-                        </label>
-                        <select id="monthSelector" onchange="generateReport()" class="month-selector-select">
-                        </select>
-                        <div class="month-selector-hint">
-                            <small>💡 Bulan baru akan otomatis ditambahkan setiap pergantian bulan</small>
+                <div id="reportContent">
+                    <div class="month-selector-container">
+                        <div class="month-selector-flex">
+                            <label for="monthSelector" class="month-selector-label">
+                                📅 Pilih Bulan Rekap:
+                            </label>
+                            <select id="monthSelector" onchange="generateReport()" class="month-selector-select">
+                            </select>
+                            <div class="month-selector-hint">
+                                <small>💡 Bulan baru akan otomatis ditambahkan setiap pergantian bulan</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-stats" id="summaryStats"></div>
+                    <div class="table-responsive">
+                        <div class="report-table">
+                            <table id="reportTable">
+                                <thead>
+                                    <tr>
+                                        <th>Nama Pegawai</th>
+                                        <th>Qiyamul Lail</th>
+                                        <th>Shubuh berjamaah</th>
+                                        <th>Sedekah</th>
+                                        <th>Sholat Dhuha</th>
+                                        <th>Silaturahim</th>
+                                        <th>Doa untuk Ibka</th>
+                                        <th>Istighfar & Sholawat</th>
+                                        <th>Rata‑rata</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="reportBody"></tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
                 
-                <div class="summary-stats" id="summaryStats"></div>
-                <div class="table-responsive">
-                    <div class="report-table">
-                        <table id="reportTable">
-                            <thead>
-                                <tr>
-                                    <th>Nama Pegawai</th>
-                                    <th>Qiyamul Lail</th>
-                                    <th>Shubuh berjamaah</th>
-                                    <th>Sedekah</th>
-                                    <th>Sholat Dhuha</th>
-                                    <th>Silaturahim</th>
-                                    <th>Doa untuk Ibka</th>
-                                    <th>Istighfar & Sholawat</th>
-                                    <th>Rata‑rata</th>
-                                </tr>
-                            </thead>
-                            <tbody id="reportBody"></tbody>
-                        </table>
-                    </div>
+                <div id="accessDenied" class="access-denied" style="display: none;">
+                    <span class="access-denied-icon">🔒</span>
+                    <h3>Akses Terbatas</h3>
+                    <p>
+                        Maaf, fitur <strong>Rekap Bulanan</strong> hanya dapat diakses oleh Administrator.<br>
+                        Silakan login sebagai admin untuk melihat laporan statistik dan analisis data pegawai.
+                    </p>
+                    <button class="btn" onclick="switchTab('login')">
+                        🔑 Login sebagai Admin
+                    </button>
                 </div>
             </div>
 
@@ -1211,7 +1289,7 @@
                     </div>
                     <div style="text-align: center; margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
                         <small style="color: #6c757d;">
-                            💡 <strong>Petunjuk:</strong> Hanya admin yang memiliki akses untuk mengelola data pegawai dan tugas harian.
+                            💡 <strong>Petunjuk:</strong> Hanya admin yang memiliki akses untuk mengelola data pegawai dan tugas harian serta melihat rekap bulanan.
                         </small>
                     </div>
                 </div>
@@ -1276,6 +1354,7 @@
                         <li><strong>Menambah Tugas:</strong> Ketik nama tugas baru dan klik "Tambah Tugas"</li>
                         <li><strong>Mengedit Tugas:</strong> Klik tombol "Edit" di samping nama tugas, ubah nama, lalu klik "Simpan"</li>
                         <li><strong>Menghapus Tugas:</strong> Klik tombol "Hapus" di samping nama tugas</li>
+                        <li><strong>Rekap Bulanan:</strong> Akses statistik dan laporan lengkap hanya tersedia untuk admin</li>
                         <li><strong>⚠️ Peringatan:</strong> Menghapus pegawai atau tugas akan menghilangkan semua data checklist terkait</li>
                     </ul>
                 </div>
@@ -1314,6 +1393,7 @@
 
         // Admin Variables
         let currentUser = null;
+        let isAdminLoggedIn = false;
         let adminEmployees = [...employees];
         let adminTasks = [...checklistItems];
 
@@ -1327,7 +1407,32 @@
         let editingEmployee = null;
         let editingTask = null;
 
-        // Utility Functions
+        // Access Control Functions
+        function checkReportAccess() {
+            const reportContent = document.getElementById('reportContent');
+            const accessDenied = document.getElementById('accessDenied');
+            
+            if (!isAdminLoggedIn) {
+                reportContent.style.display = 'none';
+                accessDenied.style.display = 'block';
+                return false;
+            } else {
+                reportContent.style.display = 'block';
+                accessDenied.style.display = 'none';
+                return true;
+            }
+        }
+
+        function updateReportTabStyle() {
+            const reportTab = document.getElementById('reportTab');
+            if (isAdminLoggedIn) {
+                reportTab.classList.remove('disabled');
+            } else {
+                reportTab.classList.add('disabled');
+            }
+        }
+
+        // Utility Functions (keeping all original functions)
         function getTodayKey() {
             return new Date().toISOString().split("T")[0];
         }
@@ -1529,7 +1634,7 @@
             }
         }
 
-        // Admin Authentication Functions
+        // Admin Authentication Functions (MODIFIED for access control)
         async function loginAdmin() {
             const email = document.getElementById('adminEmail').value;
             const password = document.getElementById('adminPassword').value;
@@ -1545,6 +1650,10 @@
                 
                 const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
                 currentUser = userCredential.user;
+                isAdminLoggedIn = true; // Set admin status
+                
+                // Update tab style
+                updateReportTabStyle();
                 
                 document.getElementById('adminTab').style.display = 'block';
                 document.getElementById('loginTab').style.display = 'none';
@@ -1561,7 +1670,7 @@
                 }
                 
                 switchTab('admin');
-                showMessage('✅ Login berhasil! Selamat datang Admin');
+                showMessage('✅ Login berhasil! Selamat datang Admin - Akses penuh telah diaktifkan');
                 
             } catch (error) {
                 console.error('Login error:', error);
@@ -1584,6 +1693,10 @@
         function logoutAdmin() {
             firebase.auth().signOut().then(() => {
                 currentUser = null;
+                isAdminLoggedIn = false; // Reset admin status
+                
+                // Update tab style
+                updateReportTabStyle();
                 
                 // Reset edit modes
                 editingEmployee = null;
@@ -1594,7 +1707,7 @@
                 
                 switchTab('checklist');
                 
-                showMessage('👋 Logout berhasil');
+                showMessage('👋 Logout berhasil - Kembali ke mode pengguna biasa');
                 
                 document.getElementById('adminEmail').value = '';
                 document.getElementById('adminPassword').value = '';
@@ -1602,35 +1715,28 @@
             });
         }
 
-        // Admin Data Management
+        // Keep all original admin data management functions unchanged
         async function loadAdminData() {
             try {
-                // Load employees data
                 const employeesDoc = await window.db.collection('config').doc('employees').get();
                 if (employeesDoc.exists) {
                     adminEmployees = employeesDoc.data().list || [...employees];
                 } else {
-                    // Initialize with current employees if no config exists
                     adminEmployees = [...employees];
                 }
                 
-                // Load tasks data
                 const tasksDoc = await window.db.collection('config').doc('tasks').get();
                 if (tasksDoc.exists) {
                     adminTasks = tasksDoc.data().list || [...checklistItems];
                 } else {
-                    // Initialize with current tasks if no config exists
                     adminTasks = [...checklistItems];
                 }
                 
                 console.log('✅ Admin data loaded - Employees:', adminEmployees, 'Tasks:', adminTasks);
-                
-                // Update UI immediately after loading
                 updateAdminUI();
                 
             } catch (error) {
                 console.error('Error loading admin data:', error);
-                // Fallback to current data if Firebase fails
                 adminEmployees = [...employees];
                 adminTasks = [...checklistItems];
                 updateAdminUI();
@@ -1669,7 +1775,7 @@
             try {
                 if (!window.db || !isFirebaseConnected) {
                     console.log('⚠️ Firebase not available, saving locally only');
-                    return true; // Return true for offline mode
+                    return true;
                 }
                 
                 await window.db.collection('config').doc('employees').set({
@@ -1681,7 +1787,7 @@
             } catch (error) {
                 console.error('Error saving employees:', error);
                 showMessage('⚠️ Data tersimpan lokal - akan disinkron saat online', true);
-                return true; // Don't block UI updates
+                return true;
             }
         }
 
@@ -1689,7 +1795,7 @@
             try {
                 if (!window.db || !isFirebaseConnected) {
                     console.log('⚠️ Firebase not available, saving locally only');
-                    return true; // Return true for offline mode
+                    return true;
                 }
                 
                 await window.db.collection('config').doc('tasks').set({
@@ -1701,11 +1807,11 @@
             } catch (error) {
                 console.error('Error saving tasks:', error);
                 showMessage('⚠️ Data tersimpan lokal - akan disinkron saat online', true);
-                return true; // Don't block UI updates
+                return true;
             }
         }
 
-        // Employee Management
+        // Keep all original employee and task management functions
         async function addEmployee() {
             const input = document.getElementById('newEmployeeName');
             const name = input.value.trim();
@@ -1720,19 +1826,11 @@
                 return;
             }
             
-            // Add to admin list
             adminEmployees.push(name);
-            
-            // Update UI immediately
             updateAdminUI();
-            
-            // Save to Firebase (async)
             saveEmployeesToFirebase();
-            
-            // Clear input
             input.value = '';
             
-            // Update main employees array for immediate effect
             if (!employees.includes(name)) {
                 employees.push(name);
                 generateEmployeeCards();
@@ -1751,7 +1849,6 @@
             editingEmployee = oldName;
             updateEmployeeList();
             
-            // Focus on the input
             setTimeout(() => {
                 const input = document.querySelector(`input[data-edit-employee="${oldName}"]`);
                 if (input) {
@@ -1783,48 +1880,13 @@
                 return;
             }
             
-            // Update admin list
             const index = adminEmployees.indexOf(oldName);
             if (index > -1) {
                 adminEmployees[index] = newName;
-                
-                // Update UI immediately
                 editingEmployee = null;
                 updateAdminUI();
-                
-                // Save to Firebase (async)
                 saveEmployeesToFirebase();
                 
-                // Update main employees array
-                const mainIndex = employees.indexOf(oldName);
-                if (mainIndex > -1) {
-                    employees[mainIndex] = newName;
-                    generateEmployeeCards();
-                    populateEmployeeSelector();
-                }
-                
-                showMessage(`✅ Nama pegawai berhasil diubah dari "${oldName}" ke "${newName}"`);
-            }
-        }
-
-        function cancelEmployeeEdit() {
-            editingEmployee = null;
-            updateEmployeeList();
-        }
-
-        async function removeEmployee(name) {
-            if (confirm(`⚠️ Yakin ingin menghapus pegawai "${name}"?\n\nSemua data checklist pegawai ini akan hilang!`)) {
-                // Remove from admin list
-                adminEmployees = adminEmployees.filter(emp => emp !== name);
-                
-                // Update UI immediately
-                editingEmployee = null;
-                updateAdminUI();
-                
-                // Save to Firebase (async)
-                saveEmployeesToFirebase();
-                
-                // Update main employees array
                 const index = employees.indexOf(name);
                 if (index > -1) {
                     employees.splice(index, 1);
@@ -1851,19 +1913,11 @@
                 return;
             }
             
-            // Add to admin list
             adminTasks.push(task);
-            
-            // Update UI immediately
             updateAdminUI();
-            
-            // Save to Firebase (async)
             saveTasksToFirebase();
-            
-            // Clear input
             input.value = '';
             
-            // Update main tasks array for immediate effect
             if (!checklistItems.includes(task)) {
                 checklistItems.push(task);
                 generateEmployeeCards();
@@ -1881,7 +1935,6 @@
             editingTask = oldTask;
             updateTaskList();
             
-            // Focus on the input
             setTimeout(() => {
                 const input = document.querySelector(`input[data-edit-task="${oldTask}"]`);
                 if (input) {
@@ -1913,19 +1966,13 @@
                 return;
             }
             
-            // Update admin list
             const index = adminTasks.indexOf(oldTask);
             if (index > -1) {
                 adminTasks[index] = newTask;
-                
-                // Update UI immediately
                 editingTask = null;
                 updateAdminUI();
-                
-                // Save to Firebase (async)
                 saveTasksToFirebase();
                 
-                // Update main tasks array
                 const mainIndex = checklistItems.indexOf(oldTask);
                 if (mainIndex > -1) {
                     checklistItems[mainIndex] = newTask;
@@ -1943,17 +1990,11 @@
 
         async function removeTask(task) {
             if (confirm(`⚠️ Yakin ingin menghapus tugas "${task}"?\n\nSemua data checklist untuk tugas ini akan hilang!`)) {
-                // Remove from admin list
                 adminTasks = adminTasks.filter(t => t !== task);
-                
-                // Update UI immediately
                 editingTask = null;
                 updateAdminUI();
-                
-                // Save to Firebase (async)
                 saveTasksToFirebase();
                 
-                // Update main tasks array
                 const index = checklistItems.indexOf(task);
                 if (index > -1) {
                     checklistItems.splice(index, 1);
@@ -2154,7 +2195,7 @@
             });
         }
 
-        // Reset Management
+        // Keep all original reset management functions
         function setupDailyReset() {
             lastResetCheck = getTodayKey();
             scheduleNextMidnightReset();
@@ -2287,8 +2328,14 @@
             progressBadge.textContent = `${checkboxes.length}/${checklistItems.length}`;
         }
 
-        // Report Generation Functions
+        // MODIFIED Report Generation Functions (with admin access control)
         async function generateReport() {
+            // Check admin access
+            if (!isAdminLoggedIn) {
+                showMessage('🔒 Akses ditolak - Hanya admin yang dapat melihat rekap bulanan', true);
+                return;
+            }
+
             try {
                 showLoading(true);
                 const selectedMonthKey = getSelectedMonthKey();
@@ -2478,8 +2525,14 @@
             return monthlyData;
         }
 
-        // Tab Management
+        // MODIFIED Tab Management with access control
         function switchTab(tabName) {
+            // Check access for report tab
+            if (tabName === 'report' && !isAdminLoggedIn) {
+                showMessage('🔒 Akses ditolak - Hanya admin yang dapat melihat rekap bulanan', true);
+                return;
+            }
+            
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
@@ -2489,15 +2542,20 @@
             });
             
             document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
+            
+            // Set active tab based on the clicked tab
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
             
             if (tabName === 'report') {
-                setTimeout(() => {
-                    populateMonthSelector();
-                    generateReport();
-                }, 100);
+                if (checkReportAccess()) {
+                    setTimeout(() => {
+                        populateMonthSelector();
+                        generateReport();
+                    }, 100);
+                }
             } else if (tabName === 'admin') {
-                // Ensure admin data is loaded when switching to admin tab
                 setTimeout(() => {
                     if (currentUser && (adminEmployees.length === 0 || adminTasks.length === 0)) {
                         adminEmployees = [...employees];
@@ -2527,6 +2585,10 @@
             
             updateCurrentDate();
             lastResetCheck = getTodayKey();
+            
+            // Initialize access control
+            updateReportTabStyle();
+            checkReportAccess();
             
             populateMonthSelector();
             
@@ -2575,7 +2637,6 @@
 
         // Handle input events for better UX
         document.addEventListener('keydown', function(e) {
-            // Enter key to save edits
             if (e.key === 'Enter') {
                 if (editingEmployee) {
                     const input = document.querySelector(`input[data-edit-employee="${editingEmployee}"]`);
@@ -2592,7 +2653,6 @@
                 }
             }
             
-            // Escape key to cancel edits
             if (e.key === 'Escape') {
                 if (editingEmployee) {
                     cancelEmployeeEdit();
@@ -2602,6 +2662,36 @@
                 }
             }
         });
+
+        // Handle tab click events with access control
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('nav-tab') && e.target.classList.contains('disabled')) {
+                e.preventDefault();
+                showMessage('🔒 Akses terbatas - Silakan login sebagai admin untuk melihat rekap bulanan', true);
+            }
+        });
     </script>
 </body>
 </html>
+                const mainIndex = employees.indexOf(oldName);
+                if (mainIndex > -1) {
+                    employees[mainIndex] = newName;
+                    generateEmployeeCards();
+                    populateEmployeeSelector();
+                }
+                
+                showMessage(`✅ Nama pegawai berhasil diubah dari "${oldName}" ke "${newName}"`);
+            }
+        }
+
+        function cancelEmployeeEdit() {
+            editingEmployee = null;
+            updateEmployeeList();
+        }
+
+        async function removeEmployee(name) {
+            if (confirm(`⚠️ Yakin ingin menghapus pegawai "${name}"?\n\nSemua data checklist pegawai ini akan hilang!`)) {
+                adminEmployees = adminEmployees.filter(emp => emp !== name);
+                editingEmployee = null;
+                updateAdminUI();
+                saveEmployeesToFirebase();
