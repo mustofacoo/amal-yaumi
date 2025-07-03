@@ -24,8 +24,17 @@
             padding: 8px;
         }
 
-        @media (min-width: 576px) { body { padding: 12px; } }
-        @media (min-width: 768px) { body { padding: 20px; } }
+        @media (min-width: 576px) {
+            body {
+                padding: 12px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
+            }
+        }
 
         .container {
             max-width: 1400px;
@@ -36,7 +45,11 @@
             overflow: hidden;
         }
 
-        @media (min-width: 768px) { .container { border-radius: 15px; } }
+        @media (min-width: 768px) {
+            .container {
+                border-radius: 15px;
+            }
+        }
 
         .header {
             background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
@@ -45,7 +58,11 @@
             text-align: center;
         }
 
-        @media (min-width: 768px) { .header { padding: 30px; } }
+        @media (min-width: 768px) {
+            .header {
+                padding: 30px;
+            }
+        }
 
         .header h1 {
             font-size: 1.5em;
@@ -53,15 +70,29 @@
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
-        @media (min-width: 576px) { .header h1 { font-size: 1.8em; margin-bottom: 10px; } }
-        @media (min-width: 768px) { .header h1 { font-size: 2.5em; } }
+        @media (min-width: 576px) {
+            .header h1 {
+                font-size: 1.8em;
+                margin-bottom: 10px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .header h1 {
+                font-size: 2.5em;
+            }
+        }
 
         .date-info {
             font-size: 0.95em;
             opacity: 0.9;
         }
 
-        @media (min-width: 576px) { .date-info { font-size: 1.1em; } }
+        @media (min-width: 576px) {
+            .date-info {
+                font-size: 1.1em;
+            }
+        }
 
         .status-info {
             background: rgba(255,255,255,0.1);
@@ -72,7 +103,12 @@
         }
 
         @media (min-width: 576px) {
-            .status-info { padding: 10px; border-radius: 8px; margin-top: 10px; font-size: 0.9em; }
+            .status-info {
+                padding: 10px;
+                border-radius: 8px;
+                margin-top: 10px;
+                font-size: 0.9em;
+            }
         }
 
         .nav-tabs {
@@ -83,8 +119,14 @@
             scrollbar-width: thin;
         }
 
-        .nav-tabs::-webkit-scrollbar { height: 4px; }
-        .nav-tabs::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+        .nav-tabs::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .nav-tabs::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 2px;
+        }
 
         .nav-tab {
             flex: 1;
@@ -98,14 +140,22 @@
             color: #6c757d;
             transition: all 0.3s ease;
             white-space: nowrap;
+            position: relative;
         }
 
         @media (min-width: 576px) {
-            .nav-tab { min-width: 120px; padding: 12px 12px; font-size: 0.95em; }
+            .nav-tab {
+                min-width: 120px;
+                padding: 12px 12px;
+                font-size: 0.95em;
+            }
         }
 
         @media (min-width: 768px) {
-            .nav-tab { padding: 15px 20px; font-size: 1.1em; }
+            .nav-tab {
+                padding: 15px 20px;
+                font-size: 1.1em;
+            }
         }
 
         .nav-tab.active {
@@ -114,15 +164,98 @@
             border-bottom: 3px solid #ff6b35;
         }
 
-        .nav-tab:hover { background: #e9ecef; }
+        .nav-tab:hover {
+            background: #e9ecef;
+        }
 
-        .content { padding: 12px; }
-        @media (min-width: 576px) { .content { padding: 20px; } }
-        @media (min-width: 768px) { .content { padding: 30px; } }
+        .nav-tab.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #f8f9fa !important;
+            color: #6c757d !important;
+        }
 
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        .nav-tab.disabled:hover {
+            background: #f8f9fa !important;
+        }
 
+        .nav-tab.disabled::after {
+            content: "🔒";
+            font-size: 0.8em;
+            margin-left: 4px;
+        }
+
+        .content {
+            padding: 12px;
+        }
+
+        @media (min-width: 576px) {
+            .content {
+                padding: 20px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .content {
+                padding: 30px;
+            }
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Access denied message */
+        .access-denied {
+            text-align: center;
+            padding: 40px 20px;
+            background: #fff3cd;
+            border: 2px solid #ffeaa7;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .access-denied-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .access-denied h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .access-denied p {
+            color: #856404;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .access-denied .btn {
+            background: #ffc107;
+            color: #212529;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .access-denied .btn:hover {
+            background: #e0a800;
+            transform: translateY(-1px);
+        }
+
+        /* Quick Navigation Dropdown */
         .quick-nav {
             background: #f8f9fa;
             border: 2px solid #e9ecef;
@@ -142,7 +275,11 @@
             gap: 8px;
         }
 
-        @media (min-width: 576px) { .quick-nav-label { font-size: 1.1em; } }
+        @media (min-width: 576px) {
+            .quick-nav-label {
+                font-size: 1.1em;
+            }
+        }
 
         .quick-nav select {
             width: 100%;
@@ -156,7 +293,11 @@
             cursor: pointer;
         }
 
-        @media (min-width: 576px) { .quick-nav select { padding: 12px 15px; } }
+        @media (min-width: 576px) {
+            .quick-nav select {
+                padding: 12px 15px;
+            }
+        }
 
         .quick-nav select:focus {
             outline: none;
@@ -171,12 +312,24 @@
             margin-bottom: 20px;
         }
 
-        @media (min-width: 576px) { .employee-grid { gap: 15px; } }
-        @media (min-width: 768px) {
-            .employee-grid { grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        @media (min-width: 576px) {
+            .employee-grid {
+                gap: 15px;
+            }
         }
+
+        @media (min-width: 768px) {
+            .employee-grid {
+                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+                gap: 20px;
+                margin-bottom: 30px;
+            }
+        }
+
         @media (min-width: 1200px) {
-            .employee-grid { grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); }
+            .employee-grid {
+                grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            }
         }
 
         .employee-card {
@@ -189,8 +342,18 @@
             scroll-margin-top: 100px;
         }
 
-        @media (min-width: 576px) { .employee-card { padding: 15px; border-radius: 12px; } }
-        @media (min-width: 768px) { .employee-card { padding: 20px; } }
+        @media (min-width: 576px) {
+            .employee-card {
+                padding: 15px;
+                border-radius: 12px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .employee-card {
+                padding: 20px;
+            }
+        }
 
         .employee-card:hover {
             transform: translateY(-2px);
@@ -208,14 +371,54 @@
             font-weight: bold;
             color: #2c3e50;
             margin-bottom: 12px;
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
-        @media (min-width: 576px) { .employee-name { font-size: 1.2em; margin-bottom: 15px; } }
-        @media (min-width: 768px) { .employee-name { font-size: 1.3em; } }
+        @media (min-width: 576px) {
+            .employee-name {
+                font-size: 1.2em;
+                margin-bottom: 15px;
+            }
+        }
 
-        .checklist-items { display: grid; gap: 6px; }
-        @media (min-width: 576px) { .checklist-items { gap: 8px; } }
+        @media (min-width: 768px) {
+            .employee-name {
+                font-size: 1.3em;
+                flex-wrap: nowrap;
+            }
+        }
+
+        .progress-badge {
+            background: #ff6b35;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        @media (min-width: 576px) {
+            .progress-badge {
+                padding: 4px 12px;
+                border-radius: 20px;
+                font-size: 0.9em;
+            }
+        }
+
+        .checklist-items {
+            display: grid;
+            gap: 6px;
+        }
+
+        @media (min-width: 576px) {
+            .checklist-items {
+                gap: 8px;
+            }
+        }
 
         .checklist-item {
             display: flex;
@@ -227,7 +430,12 @@
             transition: all 0.2s ease;
         }
 
-        @media (min-width: 576px) { .checklist-item { padding: 10px; border-radius: 8px; } }
+        @media (min-width: 576px) {
+            .checklist-item {
+                padding: 10px;
+                border-radius: 8px;
+            }
+        }
 
         .checklist-item:hover {
             border-color: #ff6b35;
@@ -243,7 +451,11 @@
         }
 
         @media (min-width: 576px) {
-            .checklist-item input[type="checkbox"] { width: 18px; height: 18px; margin-right: 12px; }
+            .checklist-item input[type="checkbox"] {
+                width: 18px;
+                height: 18px;
+                margin-right: 12px;
+            }
         }
 
         .checklist-item label {
@@ -254,7 +466,11 @@
             line-height: 1.3;
         }
 
-        @media (min-width: 576px) { .checklist-item label { font-size: 1em; } }
+        @media (min-width: 576px) {
+            .checklist-item label {
+                font-size: 1em;
+            }
+        }
 
         .checklist-item.completed {
             background: #fff3e0;
@@ -273,8 +489,20 @@
             margin-bottom: 20px;
         }
 
-        @media (min-width: 480px) { .summary-stats { grid-template-columns: repeat(2, 1fr); gap: 15px; } }
-        @media (min-width: 768px) { .summary-stats { grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; } }
+        @media (min-width: 480px) {
+            .summary-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .summary-stats {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 20px;
+                margin-bottom: 30px;
+            }
+        }
 
         .stat-card {
             background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
@@ -284,8 +512,18 @@
             text-align: center;
         }
 
-        @media (min-width: 576px) { .stat-card { padding: 20px; border-radius: 12px; } }
-        @media (min-width: 768px) { .stat-card { padding: 25px; } }
+        @media (min-width: 576px) {
+            .stat-card {
+                padding: 20px;
+                border-radius: 12px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .stat-card {
+                padding: 25px;
+            }
+        }
 
         .stat-number {
             font-size: 2em;
@@ -293,8 +531,18 @@
             margin-bottom: 4px;
         }
 
-        @media (min-width: 576px) { .stat-number { font-size: 2.2em; margin-bottom: 5px; } }
-        @media (min-width: 768px) { .stat-number { font-size: 2.5em; } }
+        @media (min-width: 576px) {
+            .stat-number {
+                font-size: 2.2em;
+                margin-bottom: 5px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .stat-number {
+                font-size: 2.5em;
+            }
+        }
 
         .stat-label {
             font-size: 0.95em;
@@ -302,8 +550,17 @@
             line-height: 1.2;
         }
 
-        @media (min-width: 576px) { .stat-label { font-size: 1em; } }
-        @media (min-width: 768px) { .stat-label { font-size: 1.1em; } }
+        @media (min-width: 576px) {
+            .stat-label {
+                font-size: 1em;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .stat-label {
+                font-size: 1.1em;
+            }
+        }
 
         .report-table {
             background: white;
@@ -313,7 +570,11 @@
             overflow-x: auto;
         }
 
-        @media (min-width: 576px) { .report-table { border-radius: 12px; } }
+        @media (min-width: 576px) {
+            .report-table {
+                border-radius: 12px;
+            }
+        }
 
         .report-table table {
             width: 100%;
@@ -331,8 +592,19 @@
             white-space: nowrap;
         }
 
-        @media (min-width: 576px) { .report-table th { padding: 10px 8px; font-size: 0.85em; } }
-        @media (min-width: 768px) { .report-table th { padding: 15px; font-size: 1em; } }
+        @media (min-width: 576px) {
+            .report-table th {
+                padding: 10px 8px;
+                font-size: 0.85em;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .report-table th {
+                padding: 15px;
+                font-size: 1em;
+            }
+        }
 
         .report-table td {
             padding: 6px;
@@ -340,10 +612,23 @@
             font-size: 0.75em;
         }
 
-        @media (min-width: 576px) { .report-table td { padding: 8px; font-size: 0.8em; } }
-        @media (min-width: 768px) { .report-table td { padding: 12px 15px; font-size: 1em; } }
+        @media (min-width: 576px) {
+            .report-table td {
+                padding: 8px;
+                font-size: 0.8em;
+            }
+        }
 
-        .report-table tr:hover { background: #f8f9fa; }
+        @media (min-width: 768px) {
+            .report-table td {
+                padding: 12px 15px;
+                font-size: 1em;
+            }
+        }
+
+        .report-table tr:hover {
+            background: #f8f9fa;
+        }
 
         .percentage-bar {
             width: 100%;
@@ -354,8 +639,19 @@
             margin-bottom: 3px;
         }
 
-        @media (min-width: 576px) { .percentage-bar { height: 18px; border-radius: 10px; margin-bottom: 4px; } }
-        @media (min-width: 768px) { .percentage-bar { height: 20px; } }
+        @media (min-width: 576px) {
+            .percentage-bar {
+                height: 18px;
+                border-radius: 10px;
+                margin-bottom: 4px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .percentage-bar {
+                height: 20px;
+            }
+        }
 
         .percentage-fill {
             height: 100%;
@@ -376,7 +672,11 @@
         }
 
         @media (min-width: 576px) {
-            .auto-reset-info { padding: 15px; margin-bottom: 20px; font-size: 0.9em; }
+            .auto-reset-info {
+                padding: 15px;
+                margin-bottom: 20px;
+                font-size: 0.9em;
+            }
         }
 
         .auto-reset-info::before {
@@ -386,7 +686,12 @@
             flex-shrink: 0;
         }
 
-        @media (min-width: 576px) { .auto-reset-info::before { font-size: 1.5em; margin-right: 10px; } }
+        @media (min-width: 576px) {
+            .auto-reset-info::before {
+                font-size: 1.5em;
+                margin-right: 10px;
+            }
+        }
 
         .loading-spinner {
             display: none;
@@ -394,7 +699,9 @@
             padding: 20px;
         }
 
-        .loading-spinner.show { display: block; }
+        .loading-spinner.show {
+            display: block;
+        }
 
         .error-message {
             background: #f8d7da;
@@ -405,7 +712,9 @@
             display: none;
         }
 
-        .error-message.show { display: block; }
+        .error-message.show {
+            display: block;
+        }
 
         .success-message {
             background: #d1edff;
@@ -416,8 +725,11 @@
             display: none;
         }
 
-        .success-message.show { display: block; }
+        .success-message.show {
+            display: block;
+        }
 
+        /* Admin Styles */
         .admin-card {
             background: white;
             padding: 15px;
@@ -426,7 +738,13 @@
             margin-bottom: 15px;
         }
 
-        @media (min-width: 576px) { .admin-card { padding: 20px; border-radius: 12px; margin-bottom: 20px; } }
+        @media (min-width: 576px) {
+            .admin-card {
+                padding: 20px;
+                border-radius: 12px;
+                margin-bottom: 20px;
+            }
+        }
 
         .admin-input {
             width: 100%;
@@ -437,7 +755,13 @@
             transition: border-color 0.2s ease;
         }
 
-        @media (min-width: 576px) { .admin-input { padding: 10px 15px; border-radius: 8px; font-size: 1em; } }
+        @media (min-width: 576px) {
+            .admin-input {
+                padding: 10px 15px;
+                border-radius: 8px;
+                font-size: 1em;
+            }
+        }
 
         .admin-input:focus {
             outline: none;
@@ -455,15 +779,44 @@
             font-size: 0.9em;
         }
 
-        @media (min-width: 576px) { .btn { padding: 10px 20px; border-radius: 8px; font-size: 1em; } }
+        @media (min-width: 576px) {
+            .btn {
+                padding: 10px 20px;
+                border-radius: 8px;
+                font-size: 1em;
+            }
+        }
 
-        .btn-primary { background: #007bff; color: white; }
-        .btn-success { background: #28a745; color: white; }
-        .btn-danger { background: #dc3545; color: white; }
-        .btn-warning { background: #ffc107; color: #212529; }
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
 
-        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
-        .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
 
         .list-item {
             display: flex;
@@ -477,21 +830,67 @@
             transition: all 0.2s ease;
         }
 
-        @media (min-width: 576px) { .list-item { padding: 12px 15px; border-radius: 8px; margin-bottom: 8px; } }
+        @media (min-width: 576px) {
+            .list-item {
+                padding: 12px 15px;
+                border-radius: 8px;
+                margin-bottom: 8px;
+            }
+        }
 
-        .list-item:hover { border-color: #ff6b35; background: #f8f9fa; }
+        .list-item:hover {
+            border-color: #ff6b35;
+            background: #f8f9fa;
+        }
 
-        .list-item-content { flex: 1; margin-right: 10px; }
-        .list-item-name { font-weight: 500; color: #2c3e50; font-size: 0.95em; }
-        @media (min-width: 576px) { .list-item-name { font-size: 1em; } }
+        .list-item-content {
+            flex: 1;
+            margin-right: 10px;
+        }
 
-        .list-item-actions { display: flex; gap: 6px; flex-shrink: 0; }
-        @media (min-width: 576px) { .list-item-actions { gap: 8px; } }
+        .list-item-name {
+            font-weight: 500;
+            color: #2c3e50;
+            font-size: 0.95em;
+        }
 
-        .btn-sm { padding: 4px 8px; font-size: 0.75em; border-radius: 4px; }
-        @media (min-width: 576px) { .btn-sm { padding: 6px 10px; font-size: 0.8em; border-radius: 6px; } }
+        @media (min-width: 576px) {
+            .list-item-name {
+                font-size: 1em;
+            }
+        }
 
-        .edit-input { border: 2px solid #007bff !important; background: #f8f9ff !important; }
+        .list-item-actions {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        @media (min-width: 576px) {
+            .list-item-actions {
+                gap: 8px;
+            }
+        }
+
+        .btn-sm {
+            padding: 4px 8px;
+            font-size: 0.75em;
+            border-radius: 4px;
+        }
+
+        @media (min-width: 576px) {
+            .btn-sm {
+                padding: 6px 10px;
+                font-size: 0.8em;
+                border-radius: 6px;
+            }
+        }
+
+        /* Edit Mode Styles */
+        .edit-input {
+            border: 2px solid #007bff !important;
+            background: #f8f9ff !important;
+        }
 
         .month-selector-container {
             background: #f8f9fa;
@@ -501,7 +900,13 @@
             border: 1px solid #e9ecef;
         }
 
-        @media (min-width: 576px) { .month-selector-container { padding: 20px; border-radius: 12px; margin-bottom: 25px; } }
+        @media (min-width: 576px) {
+            .month-selector-container {
+                padding: 20px;
+                border-radius: 12px;
+                margin-bottom: 25px;
+            }
+        }
 
         .month-selector-flex {
             display: flex;
@@ -510,7 +915,11 @@
             flex-wrap: wrap;
         }
 
-        @media (min-width: 576px) { .month-selector-flex { gap: 15px; } }
+        @media (min-width: 576px) {
+            .month-selector-flex {
+                gap: 15px;
+            }
+        }
 
         .month-selector-label {
             font-weight: 600;
@@ -519,7 +928,11 @@
             white-space: nowrap;
         }
 
-        @media (min-width: 576px) { .month-selector-label { font-size: 1.1em; } }
+        @media (min-width: 576px) {
+            .month-selector-label {
+                font-size: 1.1em;
+            }
+        }
 
         .month-selector-select {
             padding: 8px 12px;
@@ -533,7 +946,14 @@
             min-width: 180px;
         }
 
-        @media (min-width: 576px) { .month-selector-select { padding: 8px 15px; border-radius: 8px; font-size: 1em; min-width: 200px; } }
+        @media (min-width: 576px) {
+            .month-selector-select {
+                padding: 8px 15px;
+                border-radius: 8px;
+                font-size: 1em;
+                min-width: 200px;
+            }
+        }
 
         .month-selector-hint {
             font-size: 0.8em;
@@ -542,14 +962,41 @@
             margin-top: 5px;
         }
 
-        @media (min-width: 768px) { .month-selector-hint { flex-basis: auto; margin-top: 0; font-size: 0.9em; } }
+        @media (min-width: 768px) {
+            .month-selector-hint {
+                flex-basis: auto;
+                margin-top: 0;
+                font-size: 0.9em;
+            }
+        }
 
-        .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        .table-responsive::-webkit-scrollbar { height: 8px; }
-        .table-responsive::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+        /* Responsive Table */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
 
-        .login-container { max-width: 400px; margin: 0 auto; padding: 15px; }
-        @media (min-width: 576px) { .login-container { padding: 20px; } }
+        .table-responsive::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 4px;
+        }
+
+        /* Login responsive */
+        .login-container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        @media (min-width: 576px) {
+            .login-container {
+                padding: 20px;
+            }
+        }
 
         .login-title {
             text-align: center;
@@ -558,8 +1005,14 @@
             font-size: 1.5em;
         }
 
-        @media (min-width: 576px) { .login-title { margin-bottom: 20px; font-size: 1.8em; } }
+        @media (min-width: 576px) {
+            .login-title {
+                margin-bottom: 20px;
+                font-size: 1.8em;
+            }
+        }
 
+        /* Admin panel responsive */
         .admin-header {
             margin-bottom: 15px;
             display: flex;
@@ -569,11 +1022,28 @@
             gap: 10px;
         }
 
-        @media (min-width: 576px) { .admin-header { margin-bottom: 20px; } }
+        @media (min-width: 576px) {
+            .admin-header {
+                margin-bottom: 20px;
+            }
+        }
 
-        .admin-title { color: #2c3e50; font-size: 1.3em; }
-        @media (min-width: 576px) { .admin-title { font-size: 1.5em; } }
-        @media (min-width: 768px) { .admin-title { font-size: 1.8em; } }
+        .admin-title {
+            color: #2c3e50;
+            font-size: 1.3em;
+        }
+
+        @media (min-width: 576px) {
+            .admin-title {
+                font-size: 1.5em;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .admin-title {
+                font-size: 1.8em;
+            }
+        }
 
         .admin-section-title {
             margin-bottom: 15px;
@@ -583,7 +1053,13 @@
             font-size: 1.1em;
         }
 
-        @media (min-width: 576px) { .admin-section-title { margin-bottom: 20px; padding-bottom: 10px; font-size: 1.2em; } }
+        @media (min-width: 576px) {
+            .admin-section-title {
+                margin-bottom: 20px;
+                padding-bottom: 10px;
+                font-size: 1.2em;
+            }
+        }
 
         .admin-input-group {
             display: flex;
@@ -592,16 +1068,48 @@
             flex-wrap: wrap;
         }
 
-        @media (min-width: 576px) { .admin-input-group { gap: 10px; margin-bottom: 15px; } }
+        @media (min-width: 576px) {
+            .admin-input-group {
+                gap: 10px;
+                margin-bottom: 15px;
+            }
+        }
 
-        .admin-input-flex { flex: 1; min-width: 200px; }
-        .admin-button-nowrap { white-space: nowrap; flex-shrink: 0; }
+        .admin-input-flex {
+            flex: 1;
+            min-width: 200px;
+        }
 
-        .admin-list-container { background: #f8f9fa; padding: 12px; border-radius: 6px; }
-        @media (min-width: 576px) { .admin-list-container { padding: 15px; border-radius: 8px; } }
+        .admin-button-nowrap {
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
 
-        .admin-list-title { margin-bottom: 8px; color: #2c3e50; font-size: 1em; }
-        @media (min-width: 576px) { .admin-list-title { margin-bottom: 10px; font-size: 1.1em; } }
+        .admin-list-container {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 6px;
+        }
+
+        @media (min-width: 576px) {
+            .admin-list-container {
+                padding: 15px;
+                border-radius: 8px;
+            }
+        }
+
+        .admin-list-title {
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-size: 1em;
+        }
+
+        @media (min-width: 576px) {
+            .admin-list-title {
+                margin-bottom: 10px;
+                font-size: 1.1em;
+            }
+        }
 
         .admin-instructions {
             background: #e7f3ff;
@@ -611,24 +1119,61 @@
             margin-top: 15px;
         }
 
-        @media (min-width: 576px) { .admin-instructions { border-radius: 8px; padding: 15px; margin-top: 20px; } }
+        @media (min-width: 576px) {
+            .admin-instructions {
+                border-radius: 8px;
+                padding: 15px;
+                margin-top: 20px;
+            }
+        }
 
-        .admin-instructions h4 { color: #004085; margin-bottom: 8px; font-size: 1em; }
-        @media (min-width: 576px) { .admin-instructions h4 { margin-bottom: 10px; font-size: 1.1em; } }
+        .admin-instructions h4 {
+            color: #004085;
+            margin-bottom: 8px;
+            font-size: 1em;
+        }
 
-        .admin-instructions ul { color: #004085; line-height: 1.5; padding-left: 20px; }
-        @media (min-width: 576px) { .admin-instructions ul { line-height: 1.6; } }
+        @media (min-width: 576px) {
+            .admin-instructions h4 {
+                margin-bottom: 10px;
+                font-size: 1.1em;
+            }
+        }
 
-        .admin-instructions li { margin-bottom: 4px; font-size: 0.9em; }
-        @media (min-width: 576px) { .admin-instructions li { margin-bottom: 5px; font-size: 1em; } }
+        .admin-instructions ul {
+            color: #004085;
+            line-height: 1.5;
+            padding-left: 20px;
+        }
 
+        @media (min-width: 576px) {
+            .admin-instructions ul {
+                line-height: 1.6;
+            }
+        }
+
+        .admin-instructions li {
+            margin-bottom: 4px;
+            font-size: 0.9em;
+        }
+
+        @media (min-width: 576px) {
+            .admin-instructions li {
+                margin-bottom: 5px;
+                font-size: 1em;
+            }
+        }
+
+        /* Highlight animation */
         @keyframes highlight {
             0% { background-color: #fff3e0; }
             50% { background-color: #ffecb3; }
             100% { background-color: #fff3e0; }
         }
 
-        .employee-card.highlight-animation { animation: highlight 1s ease-in-out; }
+        .employee-card.highlight-animation {
+            animation: highlight 1s ease-in-out;
+        }
     </style>
 </head>
 <body>
@@ -636,26 +1181,184 @@
         <div class="header">
             <h1>Amal Yaumi Kantor Pusat</h1>
             <div class="date-info" id="currentDate"></div>
-            <div class="status-info" id="statusInfo"></div>
+            <div class="status-info" id="statusInfo">🔄 Memuat aplikasi...</div>
         </div>
 
-        <div class="nav-tabs" id="navTabs"></div>
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('checklist')">Checklist Harian</button>
+            <button class="nav-tab" id="reportTab" onclick="switchTab('report')">Rekap Bulanan</button>
+            <button class="nav-tab" id="adminTab" onclick="switchTab('admin')" style="display: none;">Admin Panel</button>
+            <button class="nav-tab" id="loginTab" onclick="switchTab('login')">Login Admin</button>
+        </div>
 
         <div class="content">
             <div class="error-message" id="errorMessage"></div>
             <div class="success-message" id="successMessage"></div>
             
             <!-- Checklist Tab -->
-            <div id="checklist" class="tab-content"></div>
+            <div id="checklist" class="tab-content active">
+                <div class="auto-reset-info">
+                    <span>Rasulullah dawuh, "Amal yang paling Allah cintai adalah yang berkelanjutan sekalipun jumlahnya sedikit"</span>
+                </div>
+                
+                <!-- Quick Navigation -->
+                <div class="quick-nav">
+                    <div class="quick-nav-label">
+                        🔍 Cari nama dengan cepat
+                    </div>
+                    <select id="employeeSelector" onchange="navigateToEmployee()">
+                        <option value="">-- Pilih Nama --</option>
+                    </select>
+                </div>
+                
+                <div class="loading-spinner" id="loadingSpinner">
+                    <div>Memuat data...</div>
+                </div>
+                <div class="employee-grid" id="employeeGrid"></div>
+            </div>
 
             <!-- Report Tab -->
-            <div id="report" class="tab-content"></div>
+            <div id="report" class="tab-content">
+                <div id="reportContent">
+                    <div class="month-selector-container">
+                        <div class="month-selector-flex">
+                            <label for="monthSelector" class="month-selector-label">
+                                📅 Pilih Bulan Rekap:
+                            </label>
+                            <select id="monthSelector" onchange="generateReport()" class="month-selector-select">
+                            </select>
+                            <div class="month-selector-hint">
+                                <small>💡 Bulan baru akan otomatis ditambahkan setiap pergantian bulan</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-stats" id="summaryStats"></div>
+                    <div class="table-responsive">
+                        <div class="report-table">
+                            <table id="reportTable">
+                                <thead>
+                                    <tr>
+                                        <th>Nama Pegawai</th>
+                                        <th>Qiyamul Lail</th>
+                                        <th>Shubuh berjamaah</th>
+                                        <th>Sedekah</th>
+                                        <th>Sholat Dhuha</th>
+                                        <th>Silaturahim</th>
+                                        <th>Doa untuk Ibka</th>
+                                        <th>Istighfar & Sholawat</th>
+                                        <th>Rata‑rata</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="reportBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="accessDenied" class="access-denied" style="display: none;">
+                    <span class="access-denied-icon">🔒</span>
+                    <h3>Akses Terbatas</h3>
+                    <p>
+                        Maaf, fitur <strong>Rekap Bulanan</strong> hanya dapat diakses oleh Administrator.<br>
+                        Silakan login sebagai admin untuk melihat laporan statistik dan analisis data pegawai.
+                    </p>
+                    <button class="btn" onclick="switchTab('login')">
+                        🔑 Login sebagai Admin
+                    </button>
+                </div>
+            </div>
 
             <!-- Login Tab -->
-            <div id="login" class="tab-content"></div>
+            <div id="login" class="tab-content">
+                <div class="login-container">
+                    <h2 class="login-title">🔐 Login Admin</h2>
+                    <div class="admin-card">
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: 600;">Email Admin:</label>
+                            <input type="email" id="adminEmail" class="admin-input" placeholder="admin@amalyaumi.com">
+                        </div>
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: 600;">Password:</label>
+                            <input type="password" id="adminPassword" class="admin-input" placeholder="Masukkan password">
+                        </div>
+                        <button onclick="loginAdmin()" class="btn btn-primary" style="width: 100%; padding: 12px;">
+                            🚀 Login Admin
+                        </button>
+                        <div id="loginMessage" style="margin-top: 15px; text-align: center;"></div>
+                    </div>
+                    <div style="text-align: center; margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                        <small style="color: #6c757d;">
+                            💡 <strong>Petunjuk:</strong> Hanya admin yang memiliki akses untuk mengelola data pegawai dan tugas harian serta melihat rekap bulanan.
+                        </small>
+                    </div>
+                </div>
+            </div>
 
             <!-- Admin Panel Tab -->
-            <div id="admin" class="tab-content"></div>
+            <div id="admin" class="tab-content">
+                <div class="admin-header">
+                    <h2 class="admin-title">⚙️ Admin Panel</h2>
+                    <button onclick="logoutAdmin()" class="btn btn-danger">
+                        🚪 Logout
+                    </button>
+                </div>
+                
+                <!-- Manage Employees Section -->
+                <div class="admin-card">
+                    <h3 class="admin-section-title">
+                        🧑‍💼 Kelola Pegawai
+                    </h3>
+                    
+                    <div class="admin-input-group">
+                        <input type="text" id="newEmployeeName" placeholder="Nama pegawai baru (contoh: Ahmad)" 
+                               class="admin-input admin-input-flex">
+                        <button onclick="addEmployee()" class="btn btn-success admin-button-nowrap">
+                            ➕ Tambah Pegawai
+                        </button>
+                    </div>
+                    
+                    <div class="admin-list-container">
+                        <h4 class="admin-list-title">📋 Daftar Pegawai Saat Ini:</h4>
+                        <div id="employeeList" style="display: grid; gap: 8px;"></div>
+                    </div>
+                </div>
+                
+                <!-- Manage Tasks Section -->
+                <div class="admin-card">
+                    <h3 class="admin-section-title" style="border-bottom-color: #007bff;">
+                        📋 Kelola Tugas Harian
+                    </h3>
+                    
+                    <div class="admin-input-group">
+                        <input type="text" id="newTaskName" placeholder="Tugas baru (contoh: Sholat Maghrib)" 
+                               class="admin-input admin-input-flex">
+                        <button onclick="addTask()" class="btn btn-primary admin-button-nowrap">
+                            ➕ Tambah Tugas
+                        </button>
+                    </div>
+                    
+                    <div class="admin-list-container">
+                        <h4 class="admin-list-title">✅ Daftar Tugas Saat Ini:</h4>
+                        <div id="taskList" style="display: grid; gap: 8px;"></div>
+                    </div>
+                </div>
+
+                <!-- Admin Instructions -->
+                <div class="admin-instructions">
+                    <h4>📖 Petunjuk Penggunaan Admin:</h4>
+                    <ul>
+                        <li><strong>Menambah Pegawai:</strong> Ketik nama pegawai baru dan klik "Tambah Pegawai"</li>
+                        <li><strong>Mengedit Pegawai:</strong> Klik tombol "Edit" di samping nama pegawai, ubah nama, lalu klik "Simpan"</li>
+                        <li><strong>Menghapus Pegawai:</strong> Klik tombol "Hapus" di samping nama pegawai</li>
+                        <li><strong>Menambah Tugas:</strong> Ketik nama tugas baru dan klik "Tambah Tugas"</li>
+                        <li><strong>Mengedit Tugas:</strong> Klik tombol "Edit" di samping nama tugas, ubah nama, lalu klik "Simpan"</li>
+                        <li><strong>Menghapus Tugas:</strong> Klik tombol "Hapus" di samping nama tugas</li>
+                        <li><strong>Rekap Bulanan:</strong> Akses statistik dan laporan lengkap hanya tersedia untuk admin</li>
+                        <li><strong>⚠️ Peringatan:</strong> Menghapus pegawai atau tugas akan menghilangkan semua data checklist terkait</li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -690,6 +1393,7 @@
 
         // Admin Variables
         let currentUser = null;
+        let isAdminLoggedIn = false;
         let adminEmployees = [...employees];
         let adminTasks = [...checklistItems];
 
@@ -702,6 +1406,31 @@
         // Edit mode tracking
         let editingEmployee = null;
         let editingTask = null;
+
+        // Access Control Functions
+        function checkReportAccess() {
+            const reportContent = document.getElementById('reportContent');
+            const accessDenied = document.getElementById('accessDenied');
+            
+            if (!isAdminLoggedIn) {
+                reportContent.style.display = 'none';
+                accessDenied.style.display = 'block';
+                return false;
+            } else {
+                reportContent.style.display = 'block';
+                accessDenied.style.display = 'none';
+                return true;
+            }
+        }
+
+        function updateReportTabStyle() {
+            const reportTab = document.getElementById('reportTab');
+            if (isAdminLoggedIn) {
+                reportTab.classList.remove('disabled');
+            } else {
+                reportTab.classList.add('disabled');
+            }
+        }
 
         // Utility Functions
         function getTodayKey() {
@@ -729,9 +1458,11 @@
                     year: 'numeric', 
                     month: 'long' 
                 });
+                
                 months.push({ key: monthKey, name: monthName });
                 startDate.setMonth(startDate.getMonth() + 1);
             }
+            
             return months.reverse();
         }
 
@@ -758,10 +1489,12 @@
                 const option = document.createElement('option');
                 option.value = month.key;
                 option.textContent = month.name;
+                
                 if ((currentSelection && month.key === currentSelection) || 
                     (!currentSelection && month.key === currentMonthKey)) {
                     option.selected = true;
                 }
+                
                 selector.appendChild(option);
             });
         }
@@ -772,80 +1505,52 @@
 
         function updateStatusInfo(message, isError = false) {
             const statusEl = document.getElementById('statusInfo');
-            if (statusEl) {
-                statusEl.textContent = message;
-                statusEl.style.background = isError ? 'rgba(248, 215, 218, 0.9)' : 'rgba(255,255,255,0.1)';
-                statusEl.style.color = isError ? '#721c24' : 'white';
+            statusEl.textContent = message;
+            if (isError) {
+                statusEl.style.background = 'rgba(248, 215, 218, 0.9)';
+                statusEl.style.color = '#721c24';
+            } else {
+                statusEl.style.background = 'rgba(255,255,255,0.1)';
+                statusEl.style.color = 'white';
             }
         }
 
         function showMessage(message, isError = false) {
             const errorEl = document.getElementById('errorMessage');
             const successEl = document.getElementById('successMessage');
-            if (errorEl && successEl) {
-                if (isError) {
-                    errorEl.textContent = message;
-                    errorEl.classList.add('show');
-                    successEl.classList.remove('show');
-                    setTimeout(() => errorEl.classList.remove('show'), 5000);
-                } else {
-                    successEl.textContent = message;
-                    successEl.classList.add('show');
-                    errorEl.classList.remove('show');
-                    setTimeout(() => successEl.classList.remove('show'), 3000);
-                }
+            
+            if (isError) {
+                errorEl.textContent = message;
+                errorEl.classList.add('show');
+                successEl.classList.remove('show');
+                setTimeout(() => errorEl.classList.remove('show'), 5000);
+            } else {
+                successEl.textContent = message;
+                successEl.classList.add('show');
+                errorEl.classList.remove('show');
+                setTimeout(() => successEl.classList.remove('show'), 3000);
             }
         }
 
         function showLoading(show = true) {
             const spinner = document.getElementById('loadingSpinner');
-            if (spinner) {
-                spinner.classList[show ? 'add' : 'remove']('show');
+            if (show) {
+                spinner.classList.add('show');
+            } else {
+                spinner.classList.remove('show');
             }
         }
 
-        // Tab Switching
-        function switchTab(tabId) {
-            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
-            const targetTab = document.querySelector(`.nav-tab[onclick="switchTab('${tabId}')"]`);
-            const targetContent = document.getElementById(tabId);
-
-            if (!targetTab || !targetContent) {
-                console.error(`Tab or content with ID ${tabId} not found`);
-                showMessage('⚠️ Tab tidak ditemukan', true);
-                switchTab('checklist');
-                return;
-            }
-
-            if (tabId === 'report' && !currentUser) {
-                showMessage('⚠️ Harap login sebagai admin untuk mengakses Rekap Bulanan', true);
-                switchTab('login');
-                return;
-            }
-
-            if (tabId === 'admin' && !currentUser) {
-                showMessage('⚠️ Harap login sebagai admin untuk mengakses Admin Panel', true);
-                switchTab('login');
-                return;
-            }
-
-            targetTab.classList.add('active');
-            targetContent.classList.add('active');
-
-            if (tabId === 'report') {
-                generateReport();
-            }
-        }
-
-        // Quick Navigation
+        // Quick Navigation Functions
         function populateEmployeeSelector() {
             const selector = document.getElementById('employeeSelector');
             if (!selector) return;
             
+            const sortedEmployees = [...employees].sort((a, b) => a.localeCompare(b, 'id'));
+            
             selector.innerHTML = '<option value="">-- Pilih Pegawai --</option>';
-            employees.sort((a, b) => a.localeCompare(b, 'id')).forEach(employee => {
+            
+            sortedEmployees.forEach(employee => {
                 const option = document.createElement('option');
                 option.value = employee;
                 option.textContent = employee;
@@ -874,16 +1579,22 @@
                     card.classList.remove('highlighted', 'highlight-animation');
                 });
                 
-                targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                targetCard.classList.add('highlighted', 'highlight-animation');
+                targetCard.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
                 
                 setTimeout(() => {
-                    targetCard.classList.remove('highlight-animation');
-                }, 1000);
-                
-                setTimeout(() => {
-                    targetCard.classList.remove('highlighted');
-                }, 3000);
+                    targetCard.classList.add('highlighted', 'highlight-animation');
+                    
+                    setTimeout(() => {
+                        targetCard.classList.remove('highlight-animation');
+                    }, 1000);
+                    
+                    setTimeout(() => {
+                        targetCard.classList.remove('highlighted');
+                    }, 3000);
+                }, 100);
             }
             
             selector.selectedIndex = 0;
@@ -896,245 +1607,65 @@
                     firebase.initializeApp(firebaseConfig);
                 }
                 window.db = firebase.firestore();
+                
                 return window.db.enableNetwork().then(() => {
+                    console.log('✅ Firebase connected successfully');
                     isFirebaseConnected = true;
                     updateStatusInfo('🟢 Firebase terhubung - Data tersinkron real-time');
-                    initializeFirebaseListener();
-                    loadDynamicData();
+                    return true;
                 }).catch(error => {
-                    console.error('❌ Firebase connection failed:', error);
+                    console.error('❌ Firebase connection test failed:', error);
                     isFirebaseConnected = false;
                     updateStatusInfo('🔴 Firebase error - Mode offline', true);
-                    initializeEmptyData();
-                    generateEmployeeCards();
-                    populateEmployeeSelector();
+                    return false;
                 });
             } catch (error) {
                 console.error('❌ Firebase initialization error:', error);
                 isFirebaseConnected = false;
                 updateStatusInfo('🔴 Firebase initialization failed - Mode offline', true);
-                initializeEmptyData();
-                generateEmployeeCards();
-                populateEmployeeSelector();
+                return Promise.resolve(false);
             }
         }
 
-        function initializeEmptyData() {
-            checklistData = {};
-            employees.forEach(employee => {
-                checklistData[employee] = {};
-                checklistItems.forEach(item => {
-                    checklistData[employee][item] = false;
-                });
-            });
-        }
-
-        function initializeFirebaseListener() {
-            if (!window.db || !isFirebaseConnected) {
-                showMessage('⚠️ Database tidak tersedia - menggunakan mode offline', true);
-                initializeEmptyData();
-                generateEmployeeCards();
-                return;
-            }
-
-            const todayKey = getTodayKey();
-            const todayDocRef = window.db.collection("checklist").doc(todayKey);
-
-            showLoading(true);
-            initializeEmptyData();
-
-            todayDocRef.get().then(doc => {
-                if (!doc.exists) {
-                    const initialData = {};
-                    employees.forEach(employee => {
-                        initialData[employee] = {};
-                        checklistItems.forEach(item => {
-                            initialData[employee][item] = false;
-                        });
-                    });
-                    return todayDocRef.set(initialData).then(() => {
-                        console.log('✅ Created new checklist document for today');
-                        showMessage('✅ Checklist hari ini siap digunakan');
-                    });
-                }
-            }).catch(error => {
-                console.error("❌ Error creating document:", error);
-                showMessage("⚠️ Gagal membuat dokumen checklist - menggunakan mode offline", true);
-                showLoading(false);
-                generateEmployeeCards();
-            });
-
-            unsubscribe = todayDocRef.onSnapshot(
-                (doc) => {
-                    showLoading(false);
-                    if (doc.exists) {
-                        checklistData = doc.data();
-                        console.log('📡 Real-time data updated');
-                    } else {
-                        initializeEmptyData();
-                    }
-                    generateEmployeeCards();
-                    populateEmployeeSelector();
-                },
-                (error) => {
-                    console.error("❌ Error listening to document:", error);
-                    showMessage("⚠️ Koneksi real-time terputus - data mungkin tidak tersinkron", true);
-                    showLoading(false);
-                    initializeEmptyData();
-                    generateEmployeeCards();
-                    populateEmployeeSelector();
-                }
-            );
-        }
-
-        function updateChecklistItem(employee, item, checked) {
-            if (!window.db || !isFirebaseConnected) {
-                checklistData[employee][item] = checked;
-                generateEmployeeCards();
-                showMessage('⚠️ Mode offline - perubahan tidak akan tersinkron', true);
-                return;
-            }
-
-            const todayKey = getTodayKey();
-            const todayDocRef = window.db.collection("checklist").doc(todayKey);
-
-            const updateData = {};
-            updateData[`${employee}.${item}`] = checked;
-
-            todayDocRef.update(updateData).then(() => {
-                console.log(`✅ Updated ${employee} - ${item}: ${checked}`);
-            }).catch(error => {
-                console.error("❌ Error updating checklist:", error);
-                showMessage("⚠️ Gagal menyimpan perubahan - coba lagi", true);
-                const checkbox = document.querySelector(`input[data-employee="${employee}"][data-item="${item}"]`);
-                if (checkbox) {
-                    checkbox.checked = !checked;
-                }
-            });
-        }
-
-        // Report Generation
-        async function generateReport() {
-            const reportBody = document.getElementById('reportBody');
-            const summaryStats = document.getElementById('summaryStats');
-            if (!reportBody || !summaryStats) {
-                console.error('Report elements not found');
-                showMessage('⚠️ Gagal menampilkan rekap bulanan', true);
-                return;
-            }
-
-            showLoading(true);
-            const monthKey = getSelectedMonthKey();
-            reportBody.innerHTML = '';
-            summaryStats.innerHTML = '';
-
-            try {
-                if (!isFirebaseConnected) {
-                    showMessage('⚠️ Mode offline - data rekap tidak tersedia', true);
-                    showLoading(false);
-                    return;
-                }
-
-                const year = monthKey.split('-')[0];
-                const month = monthKey.split('-')[1];
-                const daysInMonth = getDaysInMonth(year, parseInt(month));
-                const reportData = {};
-
-                employees.forEach(emp => {
-                    reportData[emp] = checklistItems.reduce((acc, item) => {
-                        acc[item] = 0;
-                        return acc;
-                    }, {});
-                });
-
-                for (let day = 1; day <= daysInMonth; day++) {
-                    const dateKey = `${year}-${month}-${String(day).padStart(2, '0')}`;
-                    const docRef = window.db.collection('checklist').doc(dateKey);
-                    const doc = await docRef.get();
-                    if (doc.exists) {
-                        const dailyData = doc.data();
-                        employees.forEach(emp => {
-                            checklistItems.forEach(item => {
-                                if (dailyData[emp]?.[item]) {
-                                    reportData[emp][item]++;
-                                }
-                            });
-                        });
-                    }
-                }
-
-                const totalEmployees = employees.length;
-                const stats = checklistItems.map(item => {
-                    const completed = employees.reduce((sum, emp) => sum + reportData[emp][item], 0);
-                    const percentage = ((completed / (totalEmployees * daysInMonth)) * 100).toFixed(1);
-                    return `
-                        <div class="stat-card">
-                            <div class="stat-number">${percentage}%</div>
-                            <div class="stat-label">${item}</div>
-                        </div>
-                    `;
-                });
-                summaryStats.innerHTML = stats.join('');
-
-                const rows = employees.map(emp => {
-                    const percentages = checklistItems.map(item => {
-                        const completion = reportData[emp][item];
-                        const percentage = ((completion / daysInMonth) * 100).toFixed(1);
-                        return `
-                            <td>
-                                <div class="percentage-bar">
-                                    <div class="percentage-fill" style="width: ${percentage}%"></div>
-                                </div>
-                                ${percentage}%
-                            </td>
-                        `;
-                    });
-                    const average = checklistItems.reduce((sum, item) => sum + (reportData[emp][item] / daysInMonth * 100), 0) / checklistItems.length;
-                    return `
-                        <tr>
-                            <td>${emp}</td>
-                            ${percentages.join('')}
-                            <td>${average.toFixed(1)}%</td>
-                        </tr>
-                    `;
-                });
-                reportBody.innerHTML = rows.join('');
-
-                showLoading(false);
-                showMessage('✅ Rekap bulanan berhasil dimuat');
-            } catch (error) {
-                console.error('Error generating report:', error);
-                showMessage('⚠️ Gagal memuat rekap bulanan', true);
-                showLoading(false);
-            }
-        }
-
-        // Admin Authentication
+        // Admin Authentication Functions
         async function loginAdmin() {
             const email = document.getElementById('adminEmail').value;
             const password = document.getElementById('adminPassword').value;
             const messageEl = document.getElementById('loginMessage');
-
+            
             if (!email || !password) {
                 messageEl.innerHTML = '<span style="color: #dc3545;">⚠️ Harap isi email dan password</span>';
                 return;
             }
-
+            
             try {
                 messageEl.innerHTML = '<span style="color: #007bff;">🔄 Memproses login...</span>';
+                
                 const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
                 currentUser = userCredential.user;
-
+                isAdminLoggedIn = true;
+                
+                updateReportTabStyle();
+                
                 document.getElementById('adminTab').style.display = 'block';
-                document.getElementById('reportTab').style.display = 'block';
                 document.getElementById('loginTab').style.display = 'none';
-
-                loadAdminData();
+                
+                adminEmployees = [...employees];
+                adminTasks = [...checklistItems];
+                
+                if (isFirebaseConnected) {
+                    loadAdminData().catch(console.error);
+                } else {
+                    updateAdminUI();
+                }
+                
                 switchTab('admin');
-                showMessage('✅ Login berhasil! Selamat datang Admin');
+                showMessage('✅ Login berhasil! Selamat datang Admin - Akses penuh telah diaktifkan');
+                
             } catch (error) {
                 console.error('Login error:', error);
                 let errorMessage = '❌ Login gagal';
+                
                 if (error.code === 'auth/user-not-found') {
                     errorMessage = '❌ Email tidak terdaftar';
                 } else if (error.code === 'auth/wrong-password') {
@@ -1144,6 +1675,7 @@
                 } else if (error.code === 'auth/network-request-failed') {
                     errorMessage = '❌ Tidak ada koneksi internet';
                 }
+                
                 messageEl.innerHTML = `<span style="color: #dc3545;">${errorMessage}</span>`;
             }
         }
@@ -1151,23 +1683,27 @@
         function logoutAdmin() {
             firebase.auth().signOut().then(() => {
                 currentUser = null;
+                isAdminLoggedIn = false;
+                
+                updateReportTabStyle();
+                
                 editingEmployee = null;
                 editingTask = null;
-
+                
                 document.getElementById('adminTab').style.display = 'none';
-                document.getElementById('reportTab').style.display = 'none';
                 document.getElementById('loginTab').style.display = 'block';
-
+                
                 switchTab('checklist');
-                showMessage('👋 Logout berhasil');
-
+                
+                showMessage('👋 Logout berhasil - Kembali ke mode pengguna biasa');
+                
                 document.getElementById('adminEmail').value = '';
                 document.getElementById('adminPassword').value = '';
                 document.getElementById('loginMessage').innerHTML = '';
             });
         }
 
-        // Admin Data Management
+        // Admin data management functions
         async function loadAdminData() {
             try {
                 const employeesDoc = await window.db.collection('config').doc('employees').get();
@@ -1176,20 +1712,17 @@
                 } else {
                     adminEmployees = [...employees];
                 }
-
+                
                 const tasksDoc = await window.db.collection('config').doc('tasks').get();
                 if (tasksDoc.exists) {
                     adminTasks = tasksDoc.data().list || [...checklistItems];
                 } else {
                     adminTasks = [...checklistItems];
                 }
-
-                employees = [...adminEmployees];
-                checklistItems = [...adminTasks];
-                initializeEmptyData();
-                generateEmployeeCards();
-                populateEmployeeSelector();
+                
+                console.log('✅ Admin data loaded - Employees:', adminEmployees, 'Tasks:', adminTasks);
                 updateAdminUI();
+                
             } catch (error) {
                 console.error('Error loading admin data:', error);
                 adminEmployees = [...employees];
@@ -1207,21 +1740,19 @@
                     if (dynamicEmployees && dynamicEmployees.length > 0) {
                         employees.length = 0;
                         employees.push(...dynamicEmployees);
+                        console.log('✅ Loaded employees:', employees);
                     }
                 }
-
+                
                 const tasksDoc = await window.db.collection('config').doc('tasks').get();
                 if (tasksDoc.exists) {
                     const dynamicTasks = tasksDoc.data().list;
                     if (dynamicTasks && dynamicTasks.length > 0) {
                         checklistItems.length = 0;
                         checklistItems.push(...dynamicTasks);
+                        console.log('✅ Loaded tasks:', checklistItems);
                     }
                 }
-
-                initializeEmptyData();
-                generateEmployeeCards();
-                populateEmployeeSelector();
             } catch (error) {
                 console.error('Error loading dynamic data:', error);
                 showMessage('⚠️ Gagal memuat konfigurasi - menggunakan data default', true);
@@ -1234,6 +1765,7 @@
                     console.log('⚠️ Firebase not available, saving locally only');
                     return true;
                 }
+                
                 await window.db.collection('config').doc('employees').set({
                     list: adminEmployees,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1253,6 +1785,7 @@
                     console.log('⚠️ Firebase not available, saving locally only');
                     return true;
                 }
+                
                 await window.db.collection('config').doc('tasks').set({
                     list: adminTasks,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1266,7 +1799,7 @@
             }
         }
 
-        // Employee Management
+        // Employee management functions
         async function addEmployee() {
             const input = document.getElementById('newEmployeeName');
             const name = input.value.trim();
@@ -1288,7 +1821,6 @@
             
             if (!employees.includes(name)) {
                 employees.push(name);
-                initializeEmptyData();
                 generateEmployeeCards();
                 populateEmployeeSelector();
             }
@@ -1346,7 +1878,6 @@
                 const mainIndex = employees.indexOf(oldName);
                 if (mainIndex > -1) {
                     employees[mainIndex] = newName;
-                    initializeEmptyData();
                     generateEmployeeCards();
                     populateEmployeeSelector();
                 }
@@ -1370,7 +1901,6 @@
                 const index = employees.indexOf(name);
                 if (index > -1) {
                     employees.splice(index, 1);
-                    initializeEmptyData();
                     generateEmployeeCards();
                     populateEmployeeSelector();
                 }
@@ -1401,7 +1931,6 @@
             
             if (!checklistItems.includes(task)) {
                 checklistItems.push(task);
-                initializeEmptyData();
                 generateEmployeeCards();
             }
             
@@ -1458,7 +1987,6 @@
                 const mainIndex = checklistItems.indexOf(oldTask);
                 if (mainIndex > -1) {
                     checklistItems[mainIndex] = newTask;
-                    initializeEmptyData();
                     generateEmployeeCards();
                 }
                 
@@ -1481,7 +2009,6 @@
                 const index = checklistItems.indexOf(task);
                 if (index > -1) {
                     checklistItems.splice(index, 1);
-                    initializeEmptyData();
                     generateEmployeeCards();
                 }
                 
@@ -1489,7 +2016,7 @@
             }
         }
 
-        // UI Updates
+        // UI Update Functions
         function updateAdminUI() {
             updateEmployeeList();
             updateTaskList();
@@ -1497,8 +2024,6 @@
 
         function updateEmployeeList() {
             const container = document.getElementById('employeeList');
-            if (!container) return;
-            
             if (adminEmployees.length === 0) {
                 container.innerHTML = '<p style="text-align: center; color: #6c757d; padding: 20px;">Belum ada pegawai</p>';
                 return;
@@ -1513,8 +2038,12 @@
                                        data-edit-employee="${employee}" style="margin: 0;">
                             </div>
                             <div class="list-item-actions">
-                                <button onclick="saveEmployeeEdit('${employee}')" class="btn btn-success btn-sm">💾 Simpan</button>
-                                <button onclick="cancelEmployeeEdit()" class="btn btn-warning btn-sm">❌ Batal</button>
+                                <button onclick="saveEmployeeEdit('${employee}')" class="btn btn-success btn-sm">
+                                    💾 Simpan
+                                </button>
+                                <button onclick="cancelEmployeeEdit()" class="btn btn-warning btn-sm">
+                                    ❌ Batal
+                                </button>
                             </div>
                         </div>
                     `;
@@ -1525,8 +2054,12 @@
                                 <span class="list-item-name">👤 ${employee}</span>
                             </div>
                             <div class="list-item-actions">
-                                <button onclick="editEmployee('${employee}')" class="btn btn-warning btn-sm">✏️ Edit</button>
-                                <button onclick="removeEmployee('${employee}')" class="btn btn-danger btn-sm">🗑️ Hapus</button>
+                                <button onclick="editEmployee('${employee}')" class="btn btn-warning btn-sm">
+                                    ✏️ Edit
+                                </button>
+                                <button onclick="removeEmployee('${employee}')" class="btn btn-danger btn-sm">
+                                    🗑️ Hapus
+                                </button>
                             </div>
                         </div>
                     `;
@@ -1536,8 +2069,6 @@
 
         function updateTaskList() {
             const container = document.getElementById('taskList');
-            if (!container) return;
-            
             if (adminTasks.length === 0) {
                 container.innerHTML = '<p style="text-align: center; color: #6c757d; padding: 20px;">Belum ada tugas</p>';
                 return;
@@ -1552,8 +2083,12 @@
                                        data-edit-task="${task}" style="margin: 0;">
                             </div>
                             <div class="list-item-actions">
-                                <button onclick="saveTaskEdit('${task}')" class="btn btn-success btn-sm">💾 Simpan</button>
-                                <button onclick="cancelTaskEdit()" class="btn btn-warning btn-sm">❌ Batal</button>
+                                <button onclick="saveTaskEdit('${task}')" class="btn btn-success btn-sm">
+                                    💾 Simpan
+                                </button>
+                                <button onclick="cancelTaskEdit()" class="btn btn-warning btn-sm">
+                                    ❌ Batal
+                                </button>
                             </div>
                         </div>
                     `;
@@ -1564,8 +2099,12 @@
                                 <span class="list-item-name">✅ ${task}</span>
                             </div>
                             <div class="list-item-actions">
-                                <button onclick="editTask('${task}')" class="btn btn-warning btn-sm">✏️ Edit</button>
-                                <button onclick="removeTask('${task}')" class="btn btn-danger btn-sm">🗑️ Hapus</button>
+                                <button onclick="editTask('${task}')" class="btn btn-warning btn-sm">
+                                    ✏️ Edit
+                                </button>
+                                <button onclick="removeTask('${task}')" class="btn btn-danger btn-sm">
+                                    🗑️ Hapus
+                                </button>
                             </div>
                         </div>
                     `;
@@ -1573,17 +2112,112 @@
             }).join('');
         }
 
-        // Daily Reset
+        function initializeFirebaseListener() {
+            if (!window.db || !isFirebaseConnected) {
+                showMessage('Database tidak tersedia - menggunakan mode offline', true);
+                initializeEmptyData();
+                generateEmployeeCards();
+                return;
+            }
+
+            const todayKey = getTodayKey();
+            const todayDocRef = window.db.collection("checklist").doc(todayKey);
+
+            showLoading(true);
+            initializeEmptyData();
+
+            todayDocRef.get().then(doc => {
+                if (!doc.exists) {
+                    const initialData = {};
+                    employees.forEach(employee => {
+                        initialData[employee] = {};
+                        checklistItems.forEach(item => {
+                            initialData[employee][item] = false;
+                        });
+                    });
+                    
+                    return todayDocRef.set(initialData).then(() => {
+                        console.log('✅ Created new checklist document for today');
+                        showMessage('✅ Checklist hari ini siap digunakan');
+                    });
+                }
+            }).catch(error => {
+                console.error("❌ Error creating document:", error);
+                showMessage("Gagal membuat dokumen checklist - menggunakan mode offline", true);
+                showLoading(false);
+                generateEmployeeCards();
+            });
+
+            unsubscribe = todayDocRef.onSnapshot(
+                (doc) => {
+                    showLoading(false);
+                    if (doc.exists) {
+                        checklistData = doc.data();
+                        console.log('📡 Real-time data updated');
+                    } else {
+                        initializeEmptyData();
+                    }
+                    generateEmployeeCards();
+                    populateEmployeeSelector();
+                },
+                (error) => {
+                    console.error("❌ Error listening to document:", error);
+                    showMessage("Koneksi real-time terputus - data mungkin tidak tersinkron", true);
+                    showLoading(false);
+                    initializeEmptyData();
+                    generateEmployeeCards();
+                    populateEmployeeSelector();
+                }
+            );
+        }
+
+        function initializeEmptyData() {
+            checklistData = {};
+            employees.forEach(employee => {
+                checklistData[employee] = {};
+                checklistItems.forEach(item => {
+                    checklistData[employee][item] = false;
+                });
+            });
+        }
+
+        function updateChecklistItem(employee, item, checked) {
+            if (!window.db || !isFirebaseConnected) {
+                showMessage('Mode offline - perubahan tidak akan tersinkron', true);
+                return;
+            }
+
+            const todayKey = getTodayKey();
+            const todayDocRef = window.db.collection("checklist").doc(todayKey);
+
+            const updateData = {};
+            updateData[`${employee}.${item}`] = checked;
+
+            todayDocRef.update(updateData).then(() => {
+                console.log(`✅ Updated ${employee} - ${item}: ${checked}`);
+            }).catch(error => {
+                console.error("❌ Error updating checklist:", error);
+                showMessage("Gagal menyimpan perubahan - coba lagi", true);
+                
+                const checkbox = document.querySelector(`input[data-employee="${employee}"][data-item="${item}"]`);
+                if (checkbox) {
+                    checkbox.checked = !checked;
+                }
+            });
+        }
+
         function setupDailyReset() {
             lastResetCheck = getTodayKey();
             scheduleNextMidnightReset();
             
             setInterval(() => {
                 const currentDate = getTodayKey();
+                
                 if (lastResetCheck && lastResetCheck !== currentDate) {
                     console.log('🔄 Date changed detected, reinitializing checklist');
                     performDailyReset();
                 }
+                
                 lastResetCheck = currentDate;
             }, 60000);
         }
@@ -1595,219 +2229,443 @@
             tomorrow.setHours(0, 0, 0, 0);
             
             const timeUntilMidnight = tomorrow.getTime() - now.getTime();
+            
+            console.log(`⏰ Next reset scheduled in ${Math.round(timeUntilMidnight / 1000 / 60)} minutes (at midnight)`);
+            
             setTimeout(() => {
-                console.log('🌙 Midnight reset triggered');
+                console.log('🌙 Midnight reset triggered at exactly 00:00');
                 performDailyReset();
                 scheduleNextMidnightReset();
             }, timeUntilMidnight);
         }
 
         function performDailyReset() {
+            console.log('🔄 Performing daily reset...');
+            
             if (unsubscribe) {
                 unsubscribe();
             }
+            
             if (isFirebaseConnected) {
                 initializeFirebaseListener();
             } else {
                 initializeEmptyData();
                 generateEmployeeCards();
+                populateEmployeeSelector();
+            }
+            
+            updateCurrentDate();
+            showMessage('🌅 Checklist baru untuk hari ini telah dimuat (Reset pukul 00:00)');
+            
+            checkAndUpdateMonthSelector();
+            lastResetCheck = getTodayKey();
+        }
+
+        function checkAndUpdateMonthSelector() {
+            const reportTab = document.getElementById('report');
+            if (reportTab && reportTab.classList.contains('active')) {
+                const oldOptionsCount = document.getElementById('monthSelector').options.length;
+                populateMonthSelector();
+                const newOptionsCount = document.getElementById('monthSelector').options.length;
+                
+                if (newOptionsCount > oldOptionsCount) {
+                    const currentMonth = new Date().toLocaleDateString('id-ID', { 
+                        year: 'numeric', 
+                        month: 'long' 
+                    });
+                    showMessage(`📅 Bulan baru ditambahkan: ${currentMonth}`);
+                }
             }
         }
 
-        // Generate Employee Cards
+        // UI Generation Functions
         function generateEmployeeCards() {
-            const grid = document.getElementById('employeeGrid');
-            if (!grid) {
-                console.error('Employee grid element not found');
-                showMessage('⚠️ Gagal menampilkan daftar checklist', true);
-                return;
-            }
+            const grid = document.getElementById("employeeGrid");
+            grid.innerHTML = "";
 
-            grid.innerHTML = '';
             employees.forEach(employee => {
                 const employeeData = checklistData[employee] || {};
-
-                const card = document.createElement('div');
-                card.className = 'employee-card';
-                card.id = `employee-${employee}`;
+                const completed = checklistItems.filter(item => employeeData[item]).length;
+                
+                const card = document.createElement("div");
+                card.className = "employee-card";
+                card.id = `employee-${employee.replace(/\s+/g, '-')}`;
+                
                 card.innerHTML = `
-                    <div class="employee-name">👤 ${employee}</div>
+                    <div class="employee-name">
+                        ${employee}
+                        <span class="progress-badge">${completed}/${checklistItems.length}</span>
+                    </div>
                     <div class="checklist-items">
-                        ${checklistItems.map(item => `
-                            <div class="checklist-item ${employeeData[item] ? 'completed' : ''}">
-                                <input type="checkbox" 
-                                       data-employee="${employee}" 
-                                       data-item="${item}" 
-                                       ${employeeData[item] ? 'checked' : ''} 
-                                       onchange="updateChecklistItem('${employee}', '${item}', this.checked)">
-                                <label>${item}</label>
-                            </div>
-                        `).join('')}
+                        ${checklistItems.map((item, index) => {
+                            const isChecked = employeeData[item] || false;
+                            const checkboxId = `${employee}-${index}`;
+                            
+                            return `
+                                <div class="checklist-item ${isChecked ? 'completed' : ''}">
+                                    <input 
+                                        type="checkbox" 
+                                        id="${checkboxId}" 
+                                        data-employee="${employee}"
+                                        data-item="${item}"
+                                        ${isChecked ? 'checked' : ''} 
+                                        onchange="toggleChecklistItem('${employee}', '${item}', this)"
+                                    />
+                                    <label for="${checkboxId}">${item}</label>
+                                </div>
+                            `;
+                        }).join('')}
                     </div>
                 `;
+                
                 grid.appendChild(card);
             });
         }
 
-        // Initialize UI
-        function initializeUI() {
-            // Initialize Nav Tabs
-            const navTabs = document.getElementById('navTabs');
-            navTabs.innerHTML = `
-                <button class="nav-tab active" id="checklistTab" onclick="switchTab('checklist')">Checklist Harian</button>
-                <button class="nav-tab" id="reportTab" onclick="switchTab('report')" style="display: none;">Rekap Bulanan</button>
-                <button class="nav-tab" id="adminTab" onclick="switchTab('admin')" style="display: none;">Admin Panel</button>
-                <button class="nav-tab" id="loginTab" onclick="switchTab('login')">Login Admin</button>
-            `;
-
-            // Initialize Checklist Tab
-            const checklistTab = document.getElementById('checklist');
-            checklistTab.innerHTML = `
-                <div class="auto-reset-info">
-                    <span>Rasulullah dawuh, "Amal yang paling Allah cintai adalah yang berkelanjutan sekalipun jumlahnya sedikit"</span>
-                </div>
-                <div class="quick-nav">
-                    <div class="quick-nav-label">🔍 Cari nama dengan cepat</div>
-                    <select id="employeeSelector" onchange="navigateToEmployee()">
-                        <option value="">-- Pilih Pegawai --</option>
-                    </select>
-                </div>
-                <div class="loading-spinner" id="loadingSpinner">
-                    <div>Memuat data...</div>
-                </div>
-                <div class="employee-grid" id="employeeGrid"></div>
-            `;
-
-            // Initialize Report Tab
-            const reportTab = document.getElementById('report');
-            reportTab.innerHTML = `
-                <div class="month-selector-container">
-                    <div class="month-selector-flex">
-                        <label for="monthSelector" class="month-selector-label">📅 Pilih Bulan Rekap:</label>
-                        <select id="monthSelector" onchange="generateReport()" class="month-selector-select"></select>
-                        <div class="month-selector-hint">
-                            <small>💡 Bulan baru akan otomatis ditambahkan setiap pergantian bulan</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="summary-stats" id="summaryStats"></div>
-                <div class="table-responsive">
-                    <div class="report-table">
-                        <table id="reportTable">
-                            <thead>
-                                <tr>
-                                    <th>Nama Pegawai</th>
-                                    <th>Qiyamul Lail</th>
-                                    <th>Shubuh berjamaah</th>
-                                    <th>Sedekah</th>
-                                    <th>Sholat Dhuha</th>
-                                    <th>Silaturahim</th>
-                                    <th>Doa untuk Ibka</th>
-                                    <th>Istighfar & Sholawat</th>
-                                    <th>Rata‑rata</th>
-                                </tr>
-                            </thead>
-                            <tbody id="reportBody"></tbody>
-                        </table>
-                    </div>
-                </div>
-            `;
-
-            // Initialize Login Tab
-            const loginTab = document.getElementById('login');
-            loginTab.innerHTML = `
-                <div class="login-container">
-                    <h2 class="login-title">🔐 Login Admin</h2>
-                    <div class="admin-card">
-                        <div style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 5px; font-weight: 600;">Email Admin:</label>
-                            <input type="email" id="adminEmail" class="admin-input" placeholder="admin@amalyaumi.com">
-                        </div>
-                        <div style="margin-bottom: 20px;">
-                            <label style="display: block; margin-bottom: 5px; font-weight: 600;">Password:</label>
-                            <input type="password" id="adminPassword" class="admin-input" placeholder="Masukkan password">
-                        </div>
-                        <button onclick="loginAdmin()" class="btn btn-primary" style="width: 100%; padding: 12px;">
-                            🚀 Login Admin
-                        </button>
-                        <div id="loginMessage" style="margin-top: 15px; text-align: center;"></div>
-                    </div>
-                    <div style="text-align: center; margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
-                        <small style="color: #6c757d;">
-                            💡 <strong>Petunjuk:</strong> Hanya admin yang memiliki akses untuk mengelola data pegawai dan tugas harian.
-                        </small>
-                    </div>
-                </div>
-            `;
-
-            // Initialize Admin Tab
-            const adminTab = document.getElementById('admin');
-            adminTab.innerHTML = `
-                <div class="admin-header">
-                    <h2 class="admin-title">⚙️ Admin Panel</h2>
-                    <button onclick="logoutAdmin()" class="btn btn-danger">🚪 Logout</button>
-                </div>
-                <div class="admin-card">
-                    <h3 class="admin-section-title">🧑‍💼 Kelola Pegawai</h3>
-                    <div class="admin-input-group">
-                        <input type="text" id="newEmployeeName" placeholder="Nama pegawai baru (contoh: Ahmad)" 
-                               class="admin-input admin-input-flex">
-                        <button onclick="addEmployee()" class="btn btn-success admin-button-nowrap">➕ Tambah Pegawai</button>
-                    </div>
-                    <div class="admin-list-container">
-                        <h4 class="admin-list-title">📋 Daftar Pegawai Saat Ini:</h4>
-                        <div id="employeeList" style="display: grid; gap: 8px;"></div>
-                    </div>
-                </div>
-                <div class="admin-card">
-                    <h3 class="admin-section-title" style="border-bottom-color: #007bff;">📋 Kelola Tugas Harian</h3>
-                    <div class="admin-input-group">
-                        <input type="text" id="newTaskName" placeholder="Tugas baru (contoh: Sholat Maghrib)" 
-                               class="admin-input admin-input-flex">
-                        <button onclick="addTask()" class="btn btn-primary admin-button-nowrap">➕ Tambah Tugas</button>
-                    </div>
-                    <div class="admin-list-container">
-                        <h4 class="admin-list-title">✅ Daftar Tugas Saat Ini:</h4>
-                        <div id="taskList" style="display: grid; gap: 8px;"></div>
-                    </div>
-                </div>
-                <div class="admin-instructions">
-                    <h4>📖 Petunjuk Penggunaan Admin:</h4>
-                    <ul>
-                        <li><strong>Menambah Pegawai:</strong> Ketik nama pegawai baru dan klik "Tambah Pegawai"</li>
-                        <li><strong>Mengedit Pegawai:</strong> Klik tombol "Edit" di samping nama pegawai, ubah nama, lalu klik "Simpan"</li>
-                        <li><strong>Menghapus Pegawai:</strong> Klik tombol "Hapus" di samping nama pegawai</li>
-                        <li><strong>Menambah Tugas:</strong> Ketik nama tugas baru dan klik "Tambah Tugas"</li>
-                        <li><strong>Mengedit Tugas:</strong> Klik tombol "Edit" di samping nama tugas, ubah nama, lalu klik "Simpan"</li>
-                        <li><strong>Menghapus Tugas:</strong> Klik tombol "Hapus" di samping nama tugas</li>
-                        <li><strong>⚠️ Peringatan:</strong> Menghapus pegawai atau tugas akan menghilangkan semua data checklist terkait</li>
-                    </ul>
-                </div>
-            `;
+        function toggleChecklistItem(employee, item, checkbox) {
+            updateChecklistItem(employee, item, checkbox.checked);
+            
+            const checklistItem = checkbox.closest('.checklist-item');
+            if (checkbox.checked) {
+                checklistItem.classList.add('completed');
+            } else {
+                checklistItem.classList.remove('completed');
+            }
+            
+            const employeeCard = checklistItem.closest('.employee-card');
+            const checkboxes = employeeCard.querySelectorAll('input[type="checkbox"]:checked');
+            const progressBadge = employeeCard.querySelector('.progress-badge');
+            progressBadge.textContent = `${checkboxes.length}/${checklistItems.length}`;
         }
 
-        // Initialize App
-        function initializeApp() {
-            const dateEl = document.getElementById('currentDate');
-            if (dateEl) {
-                dateEl.textContent = new Date().toLocaleDateString('id-ID', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
+        // MODIFIED Report Generation Functions with complete stats
+        async function generateReport() {
+            if (!isAdminLoggedIn) {
+                showMessage('🔒 Akses ditolak - Hanya admin yang dapat melihat rekap bulanan', true);
+                return;
             }
 
-            updateStatusInfo('🔄 Memuat aplikasi...');
-            initializeUI();
-            initializeFirebase();
-            switchTab('checklist');
-            populateEmployeeSelector();
-            setupDailyReset();
-            populateMonthSelector();
+            try {
+                showLoading(true);
+                const selectedMonthKey = getSelectedMonthKey();
+                console.log(`📊 Generating report for: ${selectedMonthKey}`);
+                
+                await Promise.all([
+                    generateSummaryStats(selectedMonthKey),
+                    generateReportTable(selectedMonthKey)
+                ]);
+                
+                const selectedMonthName = document.getElementById('monthSelector').selectedOptions[0]?.textContent;
+                if (selectedMonthName) {
+                    updateStatusInfo(`📊 Rekap ${selectedMonthName} berhasil dimuat`);
+                }
+                
+            } catch (error) {
+                console.error("Error generating report:", error);
+                showMessage("Gagal membuat laporan", true);
+            } finally {
+                showLoading(false);
+            }
         }
 
-        document.addEventListener('DOMContentLoaded', initializeApp);
+        async function generateSummaryStats(monthKey) {
+            const statsContainer = document.getElementById('summaryStats');
+
+            const [year, monthStr] = monthKey.split('-');
+            const daysInMonth = getDaysInMonth(Number(year), Number(monthStr));
+
+            try {
+                const monthlyData = await getMonthlyData(monthKey);
+                
+                let totalEmployees = employees.length;
+                let totalCompletionRate = 0;
+                let itemStats = {};
+                
+                checklistItems.forEach(item => {
+                    itemStats[item] = { total: 0, employees: 0 };
+                });
+
+                Object.keys(monthlyData).forEach(employee => {
+                    const employeeData = monthlyData[employee];
+                    const dates = Object.keys(employeeData);
+                    
+                    if (dates.length > 0) {
+                        let employeeTotal = 0;
+                        
+                        checklistItems.forEach(item => {
+                            const completedDays = dates.filter(date => 
+                                employeeData[date] && employeeData[date][item]
+                            ).length;
+                            const itemPercentage = (completedDays / daysInMonth) * 100;
+                            employeeTotal += itemPercentage;
+                            
+                            itemStats[item].total += itemPercentage;
+                            itemStats[item].employees++;
+                        });
+                        
+                        totalCompletionRate += (employeeTotal / checklistItems.length);
+                    }
+                });
+
+                const averageCompletionRate = totalEmployees > 0 ? 
+                    Math.round(totalCompletionRate / totalEmployees) : 0;
+
+                // Create stats cards for each checklist item
+                let statsHtml = `
+                    <div class="stat-card">
+                        <div class="stat-number">${totalEmployees}</div>
+                        <div class="stat-label">Total Pegawai</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${averageCompletionRate}%</div>
+                        <div class="stat-label">Rata-rata Keseluruhan</div>
+                    </div>
+                `;
+
+                // Add a card for each checklist item
+                checklistItems.forEach(item => {
+                    const avgPercentage = itemStats[item].employees > 0 ? 
+                        Math.round(itemStats[item].total / itemStats[item].employees) : 0;
+                    
+                    const shortName = item.split('(')[0].trim(); // Remove text in parentheses for display
+                    
+                    statsHtml += `
+                        <div class="stat-card">
+                            <div class="stat-number">${avgPercentage}%</div>
+                            <div class="stat-label">${shortName}</div>
+                        </div>
+                    `;
+                });
+
+                statsContainer.innerHTML = statsHtml;
+            } catch (error) {
+                console.error("Error generating summary stats:", error);
+                statsContainer.innerHTML = '<div class="stat-card"><div class="stat-label">Error loading stats</div></div>';
+            }
+        }
+
+        async function generateReportTable(monthKey) {
+            const tbody = document.getElementById('reportBody');
+            tbody.innerHTML = '';
+
+            const [year, monthStr] = monthKey.split('-');
+            const daysInMonth = getDaysInMonth(Number(year), Number(monthStr));
+
+            try {
+                const monthlyData = await getMonthlyData(monthKey);
+
+                employees.forEach(employee => {
+                    const employeeData = monthlyData[employee] || {};
+                    const dates = Object.keys(employeeData);
+                    
+                    const itemPercentages = {};
+                    checklistItems.forEach(item => {
+                        const completedDays = dates.filter(date => 
+                            employeeData[date] && employeeData[date][item]
+                        ).length;
+                        itemPercentages[item] = dates.length > 0 ? 
+                            Math.round((completedDays / daysInMonth) * 100) : 0;
+                    });
+
+                    const averagePercentage = Math.round(
+                        Object.values(itemPercentages).reduce((sum, pct) => sum + pct, 0) / checklistItems.length
+                    );
+
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><strong>${employee}</strong></td>
+                        ${checklistItems.map(item => `
+                            <td>
+                                <div class="percentage-bar">
+                                    <div class="percentage-fill" style="width: ${itemPercentages[item]}%"></div>
+                                </div>
+                                <small>${itemPercentages[item]}%</small>
+                            </td>
+                        `).join('')}
+                        <td><strong>${averagePercentage}%</strong></td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error("Error generating report table:", error);
+                tbody.innerHTML = '<tr><td colspan="9">Error loading report data</td></tr>';
+            }
+        }
+
+        async function getMonthlyData(monthKey) {
+            if (!window.db || !isFirebaseConnected) {
+                throw new Error('Database tidak tersedia');
+            }
+
+            const [year, monthStr] = monthKey.split('-');
+            const daysInMonth = getDaysInMonth(Number(year), Number(monthStr));
+            
+            const snapshot = await window.db.collection("checklist")
+                .where(firebase.firestore.FieldPath.documentId(), '>=', `${monthKey}-01`)
+                .where(firebase.firestore.FieldPath.documentId(), '<=', `${monthKey}-${String(daysInMonth).padStart(2,'0')}`)
+                .get();
+
+            const monthlyData = {};
+            employees.forEach(employee => {
+                monthlyData[employee] = {};
+            });
+
+            snapshot.forEach(doc => {
+                const date = doc.id;
+                const data = doc.data();
+                
+                employees.forEach(employee => {
+                    if (data[employee]) {
+                        monthlyData[employee][date] = data[employee];
+                    }
+                });
+            });
+
+            return monthlyData;
+        }
+
+        // Tab Management with access control
+        function switchTab(tabName) {
+            if (tabName === 'report' && !isAdminLoggedIn) {
+                showMessage('🔒 Akses ditolak - Hanya admin yang dapat melihat rekap bulanan', true);
+                return;
+            }
+            
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
+            
+            if (tabName === 'report') {
+                if (checkReportAccess()) {
+                    setTimeout(() => {
+                        populateMonthSelector();
+                        generateReport();
+                    }, 100);
+                }
+            } else if (tabName === 'admin') {
+                setTimeout(() => {
+                    if (currentUser && (adminEmployees.length === 0 || adminTasks.length === 0)) {
+                        adminEmployees = [...employees];
+                        adminTasks = [...checklistItems];
+                        updateAdminUI();
+                    }
+                }, 100);
+            }
+        }
+
+        // Date Management
+        function updateCurrentDate() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            document.getElementById('currentDate').textContent = 
+                now.toLocaleDateString('id-ID', options);
+        }
+
+        // Application Initialization
+        async function startApplication() {
+            console.log('🚀 Starting Amal Yaumi application...');
+            
+            updateCurrentDate();
+            lastResetCheck = getTodayKey();
+            
+            updateReportTabStyle();
+            checkReportAccess();
+            
+            populateMonthSelector();
+            
+            const firebaseReady = await initializeFirebase();
+            
+            if (firebaseReady) {
+                await loadDynamicData();
+                initializeFirebaseListener();
+            } else {
+                showMessage('Berjalan dalam mode offline - data tidak akan tersinkron', true);
+                initializeEmptyData();
+                generateEmployeeCards();
+                populateEmployeeSelector();
+                showLoading(false);
+            }
+            
+            setupDailyReset();
+            setInterval(updateCurrentDate, 60000);
+            
+            console.log('✅ Application initialized');
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(startApplication, 100);
+        });
+
+        window.addEventListener('beforeunload', function() {
+            if (unsubscribe) {
+                unsubscribe();
+            }
+        });
+
+        window.addEventListener('online', function() {
+            updateStatusInfo('🟢 Kembali online - mencoba menyambung ke Firebase...');
+            setTimeout(() => {
+                if (isFirebaseConnected) {
+                    initializeFirebaseListener();
+                }
+            }, 1000);
+        });
+
+        window.addEventListener('offline', function() {
+            updateStatusInfo('🔴 Tidak ada koneksi internet - mode offline', true);
+        });
+
+        // Handle input events for better UX
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                if (editingEmployee) {
+                    const input = document.querySelector(`input[data-edit-employee="${editingEmployee}"]`);
+                    if (input && document.activeElement === input) {
+                        saveEmployeeEdit(editingEmployee);
+                    }
+                }
+                
+                if (editingTask) {
+                    const input = document.querySelector(`input[data-edit-task="${editingTask}"]`);
+                    if (input && document.activeElement === input) {
+                        saveTaskEdit(editingTask);
+                    }
+                }
+            }
+            
+            if (e.key === 'Escape') {
+                if (editingEmployee) {
+                    cancelEmployeeEdit();
+                }
+                if (editingTask) {
+                    cancelTaskEdit();
+                }
+            }
+        });
+
+        // Handle tab click events with access control
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('nav-tab') && e.target.classList.contains('disabled')) {
+                e.preventDefault();
+                showMessage('🔒 Akses terbatas - Silakan login sebagai admin untuk melihat rekap bulanan', true);
+            }
+        });
     </script>
 </body>
 </html>
